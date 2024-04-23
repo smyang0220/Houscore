@@ -1,56 +1,95 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:houscore/common/view/root_tab.dart';
+import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 
-class KakaoLoginButton extends StatelessWidget {
+class KakaoLoginButton extends StatefulWidget {
   const KakaoLoginButton({Key? key}) : super(key: key);
 
   @override
+  State<KakaoLoginButton> createState() => _KakaoLoginButtonState();
+}
+
+class _KakaoLoginButtonState extends State<KakaoLoginButton> {
+  @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all(Color(0xFFFEE500)), // 카카오 색상
-        foregroundColor: MaterialStateProperty.all(Colors.black), // 글자 색상
-        textStyle: MaterialStateProperty.all(
-          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        ),
-        padding: MaterialStateProperty.all(
-            EdgeInsets.symmetric(vertical: 12, horizontal: 24)),
-        shape: MaterialStateProperty.all(
-          RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15)),
-        ),
-      ),
-      onPressed: () => _loginWithKakao(context), // context를 전달
-      child: Row(
-        mainAxisSize: MainAxisSize.min, // 버튼 안의 내용에 맞게 너비를 설정
+    return Column(
         children: [
-          Image.asset('asset/img/logo/kakao_logo.png', height: 20), // 카카오 로고 이미지
-          SizedBox(width: 8),
-          Text('카카오톡으로 로그인'), // 고정된 텍스트
+          getKakaoLoginButton(context), // 0215 새로생김
         ],
-      ),
-    );
+      );
   }
+}
 
-  void _loginWithKakao(BuildContext context) { // context를 매개변수로 받음
-    // 소셜 로그인 코드 작성해야 함
+Widget getKakaoLoginButton(BuildContext context) {
+  return InkWell(
+    onTap: () async {
+      try{
+        await signInWithKakao(); // 기존에 있던것, 그 외는 0215새로 생김
+        Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => RootTab()));
+      }catch(e){
+        print("로그인 실패");
+      }
+    },
+//thing to do
 
-    // 임시 알림
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('알림'),
-          content: Text('준비중입니다.'),
-          actions: <Widget>[
-            TextButton(
-              child: Text('확인'),
-              onPressed: () {
-                Navigator.of(context).pop(); // 대화상자를 닫습니다.
-              },
-            ),
-          ],
-        );
-      },
-    );
+    child: Card(
+      margin: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
+      elevation: 2,
+      child: Container(
+        height: 50,
+        decoration: BoxDecoration(
+          color: Colors.yellow,
+          borderRadius: BorderRadius.circular(7),
+        ), // BoxDecoration
+        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Image.asset('asset/img/logo/kakao_login_medium_wide.png', height: 30 ,width: MediaQuery.of(context).size.width * 0.7,),
+        ]), // Row
+      ), //
+    ),
+  );
+}
+
+Future<void> signInWithKakao() async {
+  print("10");
+  if (await isKakaoTalkInstalled()) {
+    print("설치됨");
+    try {
+      print(await KakaoSdk.origin);
+      print('출력완료');
+      OAuthToken token = await UserApi.instance.loginWithKakaoTalk();
+      print('카카오톡으로 로그인 성공 ${token.accessToken}');
+    } catch (error) {
+      print('카카오톡으로 로그인 실패 $error');
+      if (error is PlatformException && error.code == 'CANCELED') {
+        print("체크1");
+        return;
+      }
+      try {
+        print(await KakaoSdk.origin);
+        print('출력완료');
+        OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
+        print('카카오계정으로 로그인 성공 ${token.accessToken}');
+      } catch (error) {
+        print('카카오계정으로 로그인 실패 $error');
+        print("체크2");
+        throw Error();
+      }
+    }
+  } else {
+    print("설치안됨");
+    try {
+      print("else");
+      print(await KakaoSdk.origin);
+      print('출력완료');
+      OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
+      print('카카오계정으로 로그인 성공 ${token.accessToken}');
+    } catch (error) {
+      print('카카오계정으로 로그인 실패 $error');
+      print("체크3");
+      throw Error();
+    }
   }
 }
