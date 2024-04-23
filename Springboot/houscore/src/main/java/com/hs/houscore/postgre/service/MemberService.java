@@ -5,7 +5,6 @@ import com.hs.houscore.postgre.entity.MemberEntity;
 import com.hs.houscore.postgre.repository.MemberRepository;
 import com.hs.houscore.oauth2.member.OAuth2MemberInfo;
 import jakarta.transaction.Transactional;
-import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,11 +32,6 @@ public class MemberService {
         }
 
         return memberRepository.save(member);
-    }
-
-    // 사용자 초대시 검색을 통해 이메일 리스트를 반환
-    public List<MemberDTO> searchMembersByEmail(String email) {
-        return memberRepository.findByEmailContaining(email);
     }
 
     public String getMemberNameByEmail(String memberEmail) {
@@ -86,14 +80,5 @@ public class MemberService {
     public boolean updateMemberProfileImage(String memberEmail, String imageUrl) {
         int updatedRows = memberRepository.updateProfileImage(memberEmail, imageUrl);
         return updatedRows > 0;
-    }
-
-    @Transactional
-    public Optional<MemberDTO> updateMemberName(String memberEmail, String newMemberName) {
-        return memberRepository.findByMemberEmail(memberEmail).map(member -> {
-            member.setMemberName(newMemberName);
-            memberRepository.save(member);
-            return new MemberDTO(member.getMemberEmail(), member.getMemberName(), member.getProfileImage());
-        });
     }
 }

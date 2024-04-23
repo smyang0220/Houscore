@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
     Optional<MemberEntity> findByMemberEmail(String memberEmail);
-    Optional<MemberEntity> findByMemberName(String memberName);
     Optional<MemberEntity> findByRefreshToken(String refreshToken);
 
     // 이메일에 특정 문자열이 포함된 사용자를 검색하는 쿼리
