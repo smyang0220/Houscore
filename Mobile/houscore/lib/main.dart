@@ -14,8 +14,8 @@ class _App extends StatelessWidget {
       theme: ThemeData(
         fontFamily: 'NotoSans',
       ),
-      debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
+      debugShowCheckedModeBanner: false, // 우측 상단 Beta 지우기
+      home: SplashScreen(), // 우선 SplashScreen으로 시작
     );
   }
 }
