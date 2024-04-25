@@ -42,7 +42,7 @@ dependencies:
   logger: any  #for logging purpose
   flutter_riverpod: ^1.0.4
   flutter_svg: ^0.22.0
-
+  remedi_kopo: ^0.0.2
 
 dev_dependencies:
   flutter_test:
