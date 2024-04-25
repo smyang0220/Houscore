@@ -15,7 +15,7 @@ class _KakaoLoginButtonState extends State<KakaoLoginButton> {
   Widget build(BuildContext context) {
     return Column(
         children: [
-          getKakaoLoginButton(context), // 0215 새로생김
+          getKakaoLoginButton(context),
         ],
       );
   }
@@ -53,42 +53,31 @@ Widget getKakaoLoginButton(BuildContext context) {
 }
 
 Future<void> signInWithKakao() async {
-  print("10");
   if (await isKakaoTalkInstalled()) {
-    print("설치됨");
+    // 카카오가 설치됐을때
     try {
       print(await KakaoSdk.origin);
-      print('출력완료');
       OAuthToken token = await UserApi.instance.loginWithKakaoTalk();
-      print('카카오톡으로 로그인 성공 ${token.accessToken}');
+      print('로그인 성공 ${token.accessToken}');
     } catch (error) {
-      print('카카오톡으로 로그인 실패 $error');
+      print('로그인 실패 $error');
       if (error is PlatformException && error.code == 'CANCELED') {
-        print("체크1");
         return;
       }
       try {
         print(await KakaoSdk.origin);
-        print('출력완료');
         OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
-        print('카카오계정으로 로그인 성공 ${token.accessToken}');
+        print('로그인 성공 ${token.accessToken}');
       } catch (error) {
-        print('카카오계정으로 로그인 실패 $error');
-        print("체크2");
         throw Error();
       }
     }
-  } else {
-    print("설치안됨");
+  } else { // 카카오가 설치 안됐을때
     try {
-      print("else");
       print(await KakaoSdk.origin);
-      print('출력완료');
       OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
-      print('카카오계정으로 로그인 성공 ${token.accessToken}');
+      print('로그인 성공 ${token.accessToken}');
     } catch (error) {
-      print('카카오계정으로 로그인 실패 $error');
-      print("체크3");
       throw Error();
     }
   }
