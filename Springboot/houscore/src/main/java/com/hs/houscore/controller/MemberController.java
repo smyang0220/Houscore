@@ -26,7 +26,7 @@ public class MemberController {
     }
 
     @GetMapping("/search") // 이메일 값은 엑세스 토큰 디코딩 하면 페이로드에 있음
-    @Operation(summary = "사용자 검색", description = "유저 초대시 사용자 검색")
+    @Operation(summary = "사용자 검색", description = "이메일로 사용자 검색")
     public List<MemberDTO> searchMembers(
             @RequestParam @Parameter(description = "검색할 사용자 id") String memberEmail) {
         //return memberService.searchMembersByEmail(memberEmail);
