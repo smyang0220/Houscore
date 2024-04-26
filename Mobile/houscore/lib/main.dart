@@ -24,6 +24,7 @@ class _App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // MaterialApp의 경우
     return MaterialApp(
       theme: ThemeData(
         fontFamily: 'NotoSans',
@@ -33,3 +34,6 @@ class _App extends StatelessWidget {
     );
   }
 }
+/*
+routes와 initialRoute를 활용해서 구성할 수도 있음
+ */
