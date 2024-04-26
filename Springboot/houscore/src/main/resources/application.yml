@@ -1,4 +1,25 @@
 spring:
+  application:
+    name: Houscore-spring
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    jpa:
+      hibernate:
+        ddl-auto: update
+      show-sql: true
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      properties:
+        hibernate:
+          format_sql: true
+
   security:
     oauth2:
       client:
@@ -29,3 +50,6 @@ jwt: # base64로 인코딩된 512비트(64바이트) 이상의 키
   refresh:
     expiration: 86400000 # 1일
     header: Authorization-refresh
+
+server:
+  port: ${SERVER_PORT} # jenkins와 8080 포트 충돌 방지
