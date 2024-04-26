@@ -42,6 +42,7 @@ dependencies:
   logger: any  #for logging purpose
   flutter_riverpod: ^1.0.4
   flutter_svg: ^0.22.0
+  flashy_tab_bar2: ^0.0.10
 
 dev_dependencies:
   flutter_test:
