@@ -19,15 +19,9 @@ import java.util.Date;
 public class MemberEntity {
     @Id
     private String memberEmail;
-    private String name;
     private String memberName;
     private String password;
     private String profileImage;
-    private String age_range;
-    private String social;
-
-    @Enumerated(EnumType.STRING)
-    private Gender gender; // 성별 enum 타입
 
     @Enumerated(EnumType.STRING)
     private Role role; // 역할 enum 타입
@@ -61,11 +55,6 @@ public class MemberEntity {
     @PreUpdate
     protected void onUpdate() {
         this.updatedAt = new Date();
-    }
-
-    // 성별을 위한 Enum 타입
-    public enum Gender {
-        MAN, WOMAN
     }
 
     // 역할을 위한 Enum 타입
