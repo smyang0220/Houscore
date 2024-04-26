@@ -1,8 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
 import 'package:houscore/common/const/color.dart';
 import 'package:houscore/common/layout/default_layout.dart';
 import 'package:remedi_kopo/remedi_kopo.dart';
+=======
+import 'package:houscore/common/const/color.dart'; // 필요에 따라 사용
+
+import 'home_screen.dart';
+>>>>>>> mo/feat/main
 
 class RootTab extends StatefulWidget {
   const RootTab({super.key});
@@ -11,24 +17,20 @@ class RootTab extends StatefulWidget {
   State<RootTab> createState() => _RootTabState();
 }
 
-class _RootTabState extends State<RootTab>
-    with
-        SingleTickerProviderStateMixin{
+class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
   late TabController controller;
 
   int index = 0;
 
   @override
-  void initState(){
-    controller = TabController(length: 4, vsync: this);
-
+  void initState() {
+    controller = TabController(length: 3, vsync: this);
     controller.addListener(tabListener);
   }
 
   @override
   void dispose() {
     controller.removeListener(tabListener);
-
     super.dispose();
   }
 
@@ -37,22 +39,24 @@ class _RootTabState extends State<RootTab>
       index = controller.index;
     });
   }
-  // vsync
 
   @override
   Widget build(BuildContext context) {
-    return DefaultLayout(
-      backgroundColor: PRIMARY_COLOR,
-        title: '넥스트그라운드'
-      ,
-      child : TabBarView(
+    return Scaffold(
+      body: TabBarView(
         controller: controller,
-        physics: NeverScrollableScrollPhysics(), // 안움직이게 만듬
+        physics: NeverScrollableScrollPhysics(),
         children: [
+<<<<<<< HEAD
           Center(child: Container(child: Text('홈'))),
           KakaoAddressScreen(),
           Center(child: Container(child: Text('주문'))),
           Center(child: Container(child: Text('프로필'))),
+=======
+          HomeScreen(),
+          Center(child: Text('리뷰')),
+          Center(child: Text('My')),
+>>>>>>> mo/feat/main
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -66,25 +70,14 @@ class _RootTabState extends State<RootTab>
             this.index = index;
             controller.animateTo(index);
           });
-        },
+        },// 탭바 배경색 설정
         currentIndex: index,
         items: [
-        BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-        label: '홈'
-        ),
-        BottomNavigationBarItem(
-            icon: Icon(Icons.fastfood_outlined),
-            label: '음식'
-        ),    BottomNavigationBarItem(
-            icon: Icon(Icons.receipt_long_outlined),
-            label: '주문'
-        ),  BottomNavigationBarItem(
-            icon: Icon(Icons.person_outlined),
-            label: '프로필'
-        ),
-      ],
-       ),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
+          BottomNavigationBarItem(icon: Icon(Icons.rate_review_rounded), label: '리뷰'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: '마이'),
+        ],
+      ),
     );
   }
 }
