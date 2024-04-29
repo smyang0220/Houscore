@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:houscore/common/const/color.dart';
 
-import 'search_screen.dart';
+import '../../residence/view/search_screen.dart';
 
 class SearchResidences extends StatelessWidget {
   final String? title;

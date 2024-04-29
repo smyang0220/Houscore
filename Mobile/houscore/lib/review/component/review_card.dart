@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+import '../../residence/view/residence_detail.dart';
+
 class ReviewCard extends StatelessWidget {
   final String address;
   final double userRating;
@@ -25,11 +27,17 @@ class ReviewCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         print('${this.address} tapped!');
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ResidenceDetail(address: address),
+          ),
+        );
       },
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 4.0),
         padding: const EdgeInsets.all(16.0),
-        width: MediaQuery.of(context).size.width * 0.8,
+        width: MediaQuery.of(context).size.width * 0.9,
         decoration: BoxDecoration(
           border: Border.all(color: Colors.grey, width: 1),
           borderRadius: BorderRadius.circular(8.0),

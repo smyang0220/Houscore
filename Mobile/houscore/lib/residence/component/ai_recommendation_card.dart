@@ -14,7 +14,7 @@ class AiRecommendationCard extends StatefulWidget {
   final int? transactionPrice;
   final int? pricePerPyeong;
   final int? reviewCount;
-  final CategoryScores categoryScores;  // 추가된 카테고리 점수
+  final CategoryScores? categoryScores;
 
   AiRecommendationCard({
     required this.address,
@@ -22,7 +22,7 @@ class AiRecommendationCard extends StatefulWidget {
     this.transactionPrice,
     this.pricePerPyeong,
     this.reviewCount,
-    required this.categoryScores, // 필수 인자로 변경
+    this.categoryScores,
   });
 
   @override
@@ -54,18 +54,44 @@ class _AiRecommendationCardState extends State<AiRecommendationCard> with Ticker
 
   @override
   Widget build(BuildContext context) {
-    List<double> scores = [
-      widget.categoryScores.transportation,
-      widget.categoryScores.building,
-      widget.categoryScores.safety,
-      widget.categoryScores.location,
-      widget.categoryScores.education
+    final scores = [
+      widget.categoryScores?.transportation ?? 4.2,
+      widget.categoryScores?.building ?? 4.5,
+      widget.categoryScores?.safety ?? 3.6,
+      widget.categoryScores?.location ?? 1.7,
+      widget.categoryScores?.education ?? 0.1
     ];
 
     double maxScore = scores.reduce(max);
     double minScore = scores.reduce(min);
 
     List<RadarEntry> radarEntries = scores.map((score) => RadarEntry(value: (score - minScore) / (maxScore - minScore) * 5)).toList();
+    // List<RadarEntry> radarEntries = scores.map((score) => RadarEntry(value: score)).toList();
+
+    Widget chartWidget = RadarChart(
+      RadarChartData(
+        getTitle: (index, angle) {
+          switch (index) {
+            case 0: return RadarChartTitle(text: '교통', positionPercentageOffset: 0.2);
+            case 1: return RadarChartTitle(text: '건물', positionPercentageOffset: 0.2);
+            case 2: return RadarChartTitle(text: '치안', positionPercentageOffset: 0.2);
+            case 3: return RadarChartTitle(text: '입지', positionPercentageOffset: 0.2);
+            case 4: return RadarChartTitle(text: '학군', positionPercentageOffset: 0.2);
+            default: return RadarChartTitle(text: '');
+          }
+        },
+        radarBackgroundColor: Colors.transparent,
+        borderData: FlBorderData(show: false),
+        titleTextStyle: TextStyle(color: Colors.grey, fontSize: 12),
+        tickCount: 4,
+        tickBorderData: BorderSide(color: Colors.grey, width: 1),
+        ticksTextStyle: TextStyle(color: Colors.transparent, fontSize: 0),
+        radarBorderData: BorderSide(color: Colors.black, width: 3),
+        gridBorderData: BorderSide(color: Colors.grey, width: 1),
+        radarShape: RadarShape.polygon,
+        dataSets: [RadarDataSet(borderColor: PRIMARY_COLOR, fillColor: PRIMARY_COLOR.withOpacity(0.4), dataEntries: radarEntries)],
+      ),
+    );
 
     return Card(
       elevation: 2,
@@ -96,39 +122,27 @@ class _AiRecommendationCardState extends State<AiRecommendationCard> with Ticker
                       SizedBox(height: 5),
                       Text('평당가격: ${formatPrice(widget.pricePerPyeong)}', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
                       SizedBox(height: 5),
-                      Text('리뷰건수: ${widget.reviewCount ?? '정보 없음'}건', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+                      Text('리뷰건수: ${widget.reviewCount ?? '0'}건', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
                     ],
                   ),
                   AnimatedBuilder(
                     animation: _chartAnimationController,
                     builder: (context, child) {
-                      return SizedBox(
-                        height: 150,
-                        width: 150,
-                        child: RadarChart(
-                          RadarChartData(
-                            getTitle: (index, angle) {
-                              switch (index) {
-                                case 0: return RadarChartTitle(text: '교통', positionPercentageOffset: 0.2);
-                                case 1: return RadarChartTitle(text: '건물', positionPercentageOffset: 0.2);
-                                case 2: return RadarChartTitle(text: '치안', positionPercentageOffset: 0.2);
-                                case 3: return RadarChartTitle(text: '입지', positionPercentageOffset: 0.2);
-                                case 4: return RadarChartTitle(text: '학군', positionPercentageOffset: 0.2);
-                                default: return RadarChartTitle(text: '');
-                              }
-                            },
-                            radarBackgroundColor: Colors.transparent,
-                            borderData: FlBorderData(show: false),
-                            titleTextStyle: TextStyle(color: Colors.grey, fontSize: 12),
-                            tickCount: 4,
-                            tickBorderData: BorderSide(color: Colors.grey, width: 1),
-                            ticksTextStyle: TextStyle(color: Colors.transparent, fontSize: 0),
-                            radarBorderData: BorderSide(color: Colors.black, width: 3),
-                            gridBorderData: BorderSide(color: Colors.grey, width: 1),
-                            radarShape: RadarShape.polygon,
-                            dataSets: [RadarDataSet(borderColor: PRIMARY_COLOR, fillColor: PRIMARY_COLOR.withOpacity(0.4), dataEntries: radarEntries)],
+                      return Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          SizedBox(
+                            height: 150,
+                            width: 150,
+                            child: chartWidget,
                           ),
-                        ),
+                          // 'categoryScores'가 null인 경우 텍스트를 중앙에 표시합니다.
+                          // if (widget.categoryScores == null)
+                          //   Text(
+                          //     "사용자 리뷰가 아직 없습니다",
+                          //     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          //   ),
+                        ],
                       );
                     },
                   ),

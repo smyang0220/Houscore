@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+import '../../residence/view/residence_detail.dart';
+
 class ReviewCardWithPhoto extends StatelessWidget {
   final String address;
   final double userRating;
@@ -25,6 +27,12 @@ class ReviewCardWithPhoto extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         print('${this.address} tapped!');
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ResidenceDetail(address: address),
+          ),
+        );
       },
       child: Card(
         clipBehavior: Clip.antiAlias,
