@@ -2,13 +2,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:houscore/common/component/review_card.dart';
-import 'package:houscore/common/component/reviews_with_pictures.dart';
+import 'package:houscore/review/component/photo_reviews.dart';
+import 'package:houscore/common/component/search_residences.dart';
 import 'package:houscore/common/const/color.dart';
+import 'package:houscore/common/const/design.dart';
 
+import '../../building/component/ai_recommendation.dart';
 import '../component/main_logo_app_name.dart';
-import '../component/nearby_residences_reviews.dart';
-import '../component/recent_reviews.dart';
+import '../../review/component/nearby_recent_reviews.dart';
+import '../../review/component/recent_reviews.dart';
 import '../layout/default_layout.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -72,22 +74,22 @@ class _HomeScreenState extends State<HomeScreen> {
       'dislike': '여름철에 관광객이 많습니다.',
       'imageUrl': 'https://example.com/images/review3.jpg'
     },
-    {
-      'address': '경기도 성남시 분당구 판교역 로데오',
-      'userRating': 3.5,
-      'aiRating': 3.0,
-      'like': '기술 회사들이 많아 접근성이 좋습니다.',
-      'dislike': '출퇴근 시간대에 교통이 혼잡합니다.',
-      'imageUrl': 'https://example.com/images/review4.jpg'
-    },
-    {
-      'address': '제주도 서귀포시 중문관광단지',
-      'userRating': 5.0,
-      'aiRating': 4.8,
-      'like': '자연 경관이 아름답고 평화롭습니다.',
-      'dislike': '겨울철에는 날씨가 다소 쌀쌀합니다.',
-      'imageUrl': 'https://example.com/images/review5.jpg'
-    },
+    // {
+    //   'address': '경기도 성남시 분당구 판교역 로데오',
+    //   'userRating': 3.5,
+    //   'aiRating': 3.0,
+    //   'like': '기술 회사들이 많아 접근성이 좋습니다.',
+    //   'dislike': '출퇴근 시간대에 교통이 혼잡합니다.',
+    //   'imageUrl': 'https://example.com/images/review4.jpg'
+    // },
+    // {
+    //   'address': '제주도 서귀포시 중문관광단지',
+    //   'userRating': 5.0,
+    //   'aiRating': 4.8,
+    //   'like': '자연 경관이 아름답고 평화롭습니다.',
+    //   'dislike': '겨울철에는 날씨가 다소 쌀쌀합니다.',
+    //   'imageUrl': 'https://example.com/images/review5.jpg'
+    // },
   ];
 
   @override
@@ -125,24 +127,22 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-              SizedBox(height: 40),
+              SizedBox(height: 30),
+              // 검색창
+              SearchResidences(title: null),
+              SizedBox(height: VERTICAL_GAP),
+              AiRecommendation(),
+              SizedBox(height: VERTICAL_GAP),
               // 근처 거주지 리뷰
               NearbyResidencesReview(
-                residenceNames: residenceNames,
+                reviewsWithImages: reviewsWithImages,
                 onViewAll: () {
                   // 전체 보기 시 다른 화면
                 },
               ),
               // 최근 등록 리뷰
-              SizedBox(height: 40),
-              RecentReviews(
-                reviews: reviews,
-                onViewAll: () {
-                  // 전체 보기 시 다른 화면
-                },
-              ),
-              SizedBox(height: 40),
-              ReviewsWithPictures(
+              SizedBox(height: VERTICAL_GAP),
+              PhotoReviews(
                   reviewsWithImages: reviewsWithImages,
                   onViewAll: () {
                     // 전체 보기 시 다른 화면
