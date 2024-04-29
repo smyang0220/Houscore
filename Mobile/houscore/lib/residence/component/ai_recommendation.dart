@@ -291,7 +291,7 @@ class _AiRecommendationState extends State<AiRecommendation> {
   bool _isSubRegionExpanded = false; // 세부 지역 선택창 열렸는지 여부
 
   void _toggleOverlay(
-      BuildContext context, List<String> items, bool isSubRegion) {
+      BuildContext context, List<String> items, bool isSubRegion)  {
     // 상태 먼저 반영
     setState(() {
       // 세부 지역을 누른거면
@@ -391,7 +391,7 @@ class _AiRecommendationState extends State<AiRecommendation> {
   @override
   Widget build(BuildContext context) {
     return
-      // SingleChildScrollView( child:
+      SingleChildScrollView( child:
       Column(
         children: [
           Padding(
@@ -456,9 +456,10 @@ class _AiRecommendationState extends State<AiRecommendation> {
               ),
             ),
           ),
-          // AiRecommendationCard(),
+          if (selectedSubRegion != null)
+          AiRecommendationCard(address: '서울특별시 중구 중앙동 12-34', aiScore: 4.2,),
         ],
-      // ),
+      ),
     );
   }
 
@@ -478,7 +479,6 @@ class _AiRecommendationState extends State<AiRecommendation> {
           borderRadius: BorderRadius.circular(30.0),
         ),
         child: Row(
-          // mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(

@@ -38,7 +38,7 @@ class ReviewListScreen extends StatelessWidget {
             address: '서울 강서구 공항동 36-40',
             rating: 4.0,
             aiScore: 2.8,
-            imageAsset: 'asset/img/building/building1.jpg',
+            imageAsset: 'asset/img/residence/building1.jpg',
             reviewSummary: '사람이 별로 없어서 조용합니다. 배달음식을 위한 오트바이도 없어요.',
           ),
           ReviewCard(
@@ -46,7 +46,7 @@ class ReviewListScreen extends StatelessWidget {
             address: '대전 유성구 동서대로 8-39',
             rating: 4.5,
             aiScore: 3.1,
-            imageAsset: 'asset/img/building/building2.jpg',
+            imageAsset: 'asset/img/residence/building2.jpg',
             reviewSummary: '역시 삼성은 삼성! 소문으로만 듣다가 입주했는데, 방 컨디션은 물론 제공되는 식사도 대박 맛있어요!',
           ),
         ],

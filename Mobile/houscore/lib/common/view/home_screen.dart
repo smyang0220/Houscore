@@ -7,7 +7,7 @@ import 'package:houscore/common/component/search_residences.dart';
 import 'package:houscore/common/const/color.dart';
 import 'package:houscore/common/const/design.dart';
 
-import '../../building/component/ai_recommendation.dart';
+import '../../residence/component/ai_recommendation.dart';
 import '../component/main_logo_app_name.dart';
 import '../../review/component/nearby_recent_reviews.dart';
 import '../../review/component/recent_reviews.dart';

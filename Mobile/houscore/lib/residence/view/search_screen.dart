@@ -8,7 +8,7 @@ class SearchPage extends StatelessWidget {
         title: Text("주소 검색"),
       ),
       body: Center(
-        child: Text("여기에 주소 검색 기능을 구현하세요."),
+        child: Text("여기에 주소 검색 기능을 구현"),
       ),
     );
   }
