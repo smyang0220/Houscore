@@ -61,7 +61,7 @@
             android:turnScreenOn="true"
             tools:ignore="Instantiatable">
             <!-- Specifies an Android theme to apply to this Activity as soon as
-                 the Android process has started. This theme is visible to the user
+                 the Android process has started. This theme is visible to the member
                  while the Flutter UI initializes. After that, this theme continues
                  to determine the Window background behind the Flutter UI. -->
             <meta-data
