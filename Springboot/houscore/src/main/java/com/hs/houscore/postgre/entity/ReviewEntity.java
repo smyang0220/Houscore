@@ -13,12 +13,13 @@ import java.util.Date;
 @AllArgsConstructor
 @Data
 @Builder
+@Getter
 @Table(name = "review")
 public class ReviewEntity {
     @Id
     @GeneratedValue (strategy = GenerationType.SEQUENCE)
     private Long id;
-    private Long memberId;
+    private String memberId;
     private Long buildingId;
     private String address;
     private ResidenceType residenceType;
@@ -48,6 +49,7 @@ public class ReviewEntity {
     protected void onUpdate() {
         this.updatedAt = new Date();
     }
+
 
     public enum ResidenceType {
         VILLA, APT, OFFICETEL
