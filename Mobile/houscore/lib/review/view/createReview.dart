@@ -52,18 +52,18 @@ void _updateYearValue(String? newValue) {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(title: Text('리뷰 작성(1/2)')),
-        body: SingleChildScrollView(
+        body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(height: 12),
-              Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: DropdownType(
-                  value: typeValue,
-                  onChanged: _updateTypeValue,
-                ),
-              ),
+              // SizedBox(height: 12),
+              // Padding(
+              //   padding: const EdgeInsets.all(12.0),
+              //   child: DropdownType(
+              //     value: typeValue,
+              //     onChanged: _updateTypeValue,
+              //   ),
+              // ),
               SizedBox(height: 12),
               Padding(
                 padding: const EdgeInsets.all(12.0),
