@@ -36,6 +36,13 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
 	implementation 'com.okta.spring:okta-spring-boot-starter:3.0.6'
 
+	// S3 저장 관련 의존성
+	compileOnly 'org.springframework.cloud:spring-cloud-starter-aws:2.0.2.RELEASE'
+	implementation platform('com.amazonaws:aws-java-sdk-bom:1.11.228')
+	implementation 'com.amazonaws:aws-java-sdk-s3'
+	implementation 'commons-io:commons-io:2.7'
+	implementation 'net.coobird:thumbnailator:0.4.14'
+
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
