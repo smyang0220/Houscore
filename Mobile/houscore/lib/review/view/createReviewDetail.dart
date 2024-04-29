@@ -1,15 +1,16 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:houscore/review/ImageUpload.dart';
-import 'ImageUpload.dart';
+import 'package:houscore/review/component/ImageUpload.dart';
+import 'package:houscore/review/view/createConfirmed.dart';
 
 void main() {
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    // home: createReview2ndPage(),
-    home: ImageUpload(),
-
-  ));
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: createReview2ndPage(),
+    ),
+  );
 }
 
 class createReview2ndPage extends StatefulWidget {
@@ -62,37 +63,45 @@ class _createReview2ndPageState extends State<createReview2ndPage> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         appBar: AppBar(title: Text('리뷰 작성 (2/2)')),
-        body: SingleChildScrollView(
+        body: Container(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               buildTextFieldSection(_recommendController, '추천해요!', Colors.blue,
                   100, _isRecommendRequired),
-              SizedBox(height: 20),
-              buildTextFieldSection(_dislikeController, '별로에요!', Colors.red,
+              SizedBox(height: 5),
+              buildTextFieldSection(_dislikeController, '별로예요!', Colors.red,
                   100, _isDislikeRequired),
-              SizedBox(height: 20),
+              SizedBox(height: 5),
               buildTextFieldSection(_maintenanceController, '관리비', null, 10,
                   _isMaintenanceRequired),
-              SizedBox(height: 30),
-              Container(),
-              //TODO 여기에 imguploader 들어가야 함
-              ElevatedButton(
-                onPressed:
-                    _isButtonEnabled ? () => print('제출 버튼이 눌렸습니다.') : null,
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                    (Set<MaterialState> states) {
-                      if (states.contains(MaterialState.disabled))
-                        return Colors.grey;
-                      return Colors.blue; // Default enabled color
-                    },
+              SizedBox(height: 5),
+              ImageUpload(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ElevatedButton(onPressed: () {
+                    Navigator.pop(context);
+                  }, child: Text('이전으로')),
+                  ElevatedButton(
+                    onPressed:
+                        _isButtonEnabled ? () => Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => ConfirmedScreen())) : null,
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                        (Set<MaterialState> states) {
+                          if (states.contains(MaterialState.disabled))
+                            return Colors.grey;
+                          return Colors.blue; // Default enabled color
+                        },
+                      ),
+                      foregroundColor:
+                          MaterialStateProperty.all<Color>(Colors.white),
+                    ),
+                    child: Text('완료'),
                   ),
-                  foregroundColor:
-                      MaterialStateProperty.all<Color>(Colors.white),
-                ),
-                child: Text('완료'),
+                ],
               ),
             ],
           ),
@@ -122,10 +131,10 @@ class _createReview2ndPageState extends State<createReview2ndPage> {
                     '\n'
                     '무의미한 내용 및 문자반복, 다른 리뷰 붙여넣기 등 성의 없는 리뷰는 승인되지 않습니다.',
                 counterText: "($minChars자 이상)",
-                helperText: "",
+                // helperText: "",
               ),
-              minLines: 4,
-              maxLines: 100,
+              // minLines: 2,
+              // maxLines: 10,
               keyboardType: TextInputType.text,
               textInputAction: TextInputAction.done,
               autocorrect: false,
