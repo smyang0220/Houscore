@@ -1,0 +1,77 @@
+[
+  {
+    "address": "서울시 강남구 역삼동 123-12",
+    "aiScore": 4.5,
+    "categoryScores": {
+      "transportation": 4.7,
+      "building": 4.4,
+      "safety": 4.6,
+      "location": 4.3,
+      "education": 4.5
+    },
+    "transactionPrice": 120000000,
+    "pricePerPyeong": 3000000,
+    "priceGapFromNearby": 5.2,
+    "reviewCount": 34
+  },
+  {
+    "address": "서울시 강남구 역삼동 123-45",
+    "aiScore": 4.3,
+    "categoryScores": {
+      "transportation": 4.2,
+      "building": 4.5,
+      "safety": 4.1,
+      "location": 4.3,
+      "education": 4.4
+    },
+    "transactionPrice": 115000000,
+    "pricePerPyeong": 2900000,
+    "priceGapFromNearby": 4.5,
+    "reviewCount": 29
+  },
+  {
+    "address": "서울시 강남구 역삼동 124-01",
+    "aiScore": 4.2,
+    "categoryScores": {
+      "transportation": 4.0,
+      "building": 4.3,
+      "safety": 4.5,
+      "location": 4.1,
+      "education": 4.2
+    },
+    "transactionPrice": 110000000,
+    "pricePerPyeong": 2850000,
+    "priceGapFromNearby": -3.9,
+    "reviewCount": 25
+  },
+  {
+    "address": "서울시 강남구 역삼동 125-30",
+    "aiScore": 4.1,
+    "categoryScores": {
+      "transportation": 4.1,
+      "building": 4.2,
+      "safety": 4.3,
+      "location": 4.0,
+      "education": 4.1
+    },
+    "transactionPrice": 105000000,
+    "pricePerPyeong": 2800000,
+    "priceGapFromNearby": -1.5,
+    "reviewCount": 20
+  },
+  {
+    "address": "서울시 강남구 역삼동 126-53",
+    "aiScore": 4.0,
+    "categoryScores": {
+      "transportation": 3.9,
+      "building": 4.1,
+      "safety": 4.2,
+      "location": 4.0,
+      "education": 4.0
+    },
+    "transactionPrice": 100000000,
+    "pricePerPyeong": 2750000,
+    "priceGapFromNearby": -2.0,
+    "reviewCount": 15
+  }
+]

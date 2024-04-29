@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:houscore/common/component/review_card.dart';
-import 'package:houscore/common/component/review_card_with_photo.dart';
-import 'package:houscore/common/const/color.dart';
-
-class ReviewsWithPictures extends StatelessWidget {
+import 'package:houscore/review/component/review_card.dart';
+class NearbyResidencesReview extends StatelessWidget {
   final List<Map<String, dynamic>> reviewsWithImages;
   final VoidCallback onViewAll;
 
-  const ReviewsWithPictures({
+  const NearbyResidencesReview({
     Key? key,
     required this.reviewsWithImages,
     required this.onViewAll,
@@ -21,7 +18,7 @@ class ReviewsWithPictures extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(bottom: 5.0),
+            padding: const EdgeInsets.only(bottom: 8.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -29,12 +26,12 @@ class ReviewsWithPictures extends StatelessWidget {
                 Row(
                   children: [
                     // Icon(
-                    //   Icons.camera_alt_rounded,
+                    //   Icons.explore,
                     //   size: 32.0,
                     //   color: PRIMARY_COLOR,
                     // ),
                     Text(
-                      '🖼 백문이 불여일견! 사진 리뷰',
+                      '🚩 근처 거주지 최근 리뷰',
                       style: TextStyle(
                         fontFamily: 'NotoSans',
                         fontSize: 20,
@@ -47,30 +44,21 @@ class ReviewsWithPictures extends StatelessWidget {
                 TextButton(
                     onPressed: onViewAll,
                     child: Text(
-                      '전체보기',
+                      '위치보기',
                       style: TextStyle(color: Colors.grey),
                     )),
               ],
             ),
           ),
-          Container(
-            // height: MediaQuery.of(context).size.height * 0.22,
-            height: 190,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: reviewsWithImages.length,
-              itemBuilder: (context, index) {
-                final review = reviewsWithImages[index];
-                return ReviewCardWithPhoto(
-                  address: review['address'],
-                  userRating: review['userRating'],
-                  aiRating: review['aiRating'],
-                  like: review['like'],
-                  dislike: review['dislike'],
-                  imageUrl: review['imageUrl'],
-                );
-              },
-            ),
+          Column(
+            children: reviewsWithImages.map((review) => ReviewCard(
+              address: review['address'],
+              userRating: review['userRating'],
+              aiRating: review['aiRating'],
+              like: review['like'],
+              dislike: review['dislike'],
+              imageUrl: review['imageUrl'],
+            )).toList(),
           ),
         ],
       ),

@@ -2,7 +2,7 @@ import 'package:houscore/common/const/color.dart';
 import 'package:houscore/common/const/data.dart';
 import 'package:houscore/common/layout/default_layout.dart';
 import 'package:houscore/common/view/root_tab.dart';
-import 'package:houscore/user/view/login_screen.dart';
+import 'package:houscore/member/view/login_screen.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';

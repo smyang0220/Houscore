@@ -36,12 +36,13 @@ dependencies:
   cupertino_icons: ^1.0.2
   dio: ^5.0.3
   flutter_secure_storage: ^5.0.2
-  json_annotation: ^4.4.0
+  json_annotation: ^4.9.0
   retrofit: ^4.0.1
   kakao_flutter_sdk_user: ^1.7.0 # 카카오 로그인
   logger: any  #for logging purpose
   flutter_riverpod: ^1.0.4
   flutter_svg: ^0.22.0
+  fl_chart: ^0.67.0
 
 dev_dependencies:
   flutter_test:
@@ -54,8 +55,9 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
   build_runner: ^2.0.0
-  json_serializable: ^6.0.0
+  json_serializable: ^6.2.0
   retrofit_generator: ^8.1.0
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
