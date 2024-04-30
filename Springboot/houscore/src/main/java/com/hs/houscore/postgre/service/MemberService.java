@@ -26,6 +26,7 @@ public class MemberService {
                         .memberEmail(memberInfo.getEmail())
                         .memberName(memberInfo.getMemberName())
                         .profileImage(memberInfo.getProfileImageUrl())
+                        .role(memberInfo.getRole())
                         .provider(memberInfo.getProvider())
                         .build());
 
@@ -81,11 +82,5 @@ public class MemberService {
     public MemberEntity getMemberByRefreshToken(String refreshToken) {
         Optional<MemberEntity> memberOptional = memberRepository.findByRefreshToken(refreshToken);
         return memberOptional.orElse(null);
-    }
-
-    @Transactional
-    public boolean updateMemberProfileImage(String memberEmail, String imageUrl) {
-        int updatedRows = memberRepository.updateProfileImage(memberEmail, imageUrl);
-        return updatedRows > 0;
     }
 }

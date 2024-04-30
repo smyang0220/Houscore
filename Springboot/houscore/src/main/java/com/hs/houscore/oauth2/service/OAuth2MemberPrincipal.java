@@ -58,7 +58,7 @@ public class OAuth2MemberPrincipal implements OAuth2User, UserDetails {
 
     @Override
     public String getName() {
-        return memberInfo.getEmail();
+        return memberInfo.getMemberName();
     }
 
     public OAuth2MemberInfo getUserInfo() {

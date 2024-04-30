@@ -8,6 +8,8 @@ import com.hs.houscore.oauth2.handler.OAuth2AuthenticationFailureHandler;
 import com.hs.houscore.oauth2.handler.OAuth2AuthenticationSuccessHandler;
 import com.hs.houscore.oauth2.service.CustomOAuth2MemberService;
 import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -33,7 +35,6 @@ public class SecurityConfig {
     private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
     private final JwtService jwtService;
-    private final MemberService memberService;
 
     public SecurityConfig( // 순환문제 때문에 lazy 사용해서 생성자 만들기
                            CustomOAuth2MemberService customOAuth2MemberService,
@@ -47,7 +48,6 @@ public class SecurityConfig {
         this.oAuth2AuthenticationFailureHandler = oAuth2AuthenticationFailureHandler;
         this.httpCookieOAuth2AuthorizationRequestRepository = httpCookieOAuth2AuthorizationRequestRepository;
         this.jwtService = jwtService;
-        this.memberService = memberService;
     }
 
     @Bean
@@ -88,7 +88,7 @@ public class SecurityConfig {
         configuration.addAllowedOriginPattern("https://k10s206.p.ssafy.io");
         configuration.addAllowedOriginPattern("*"); // 프론트 배포 전까지만 허용
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "DELETE", "PATCH", "PUT"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
