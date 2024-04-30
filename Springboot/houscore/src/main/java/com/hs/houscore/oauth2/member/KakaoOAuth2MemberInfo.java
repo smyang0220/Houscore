@@ -1,5 +1,7 @@
 package com.hs.houscore.oauth2.member;
 
+import com.hs.houscore.postgre.entity.MemberEntity;
+
 import java.util.Map;
 
 public class KakaoOAuth2MemberInfo implements OAuth2MemberInfo {
@@ -7,6 +9,7 @@ public class KakaoOAuth2MemberInfo implements OAuth2MemberInfo {
     private final Map<String, Object> attributes;
     private final String accessToken;
     private final String id;
+    private final MemberEntity.Role role;
     private final String email;
     private final String memberName;
     private final String profileImageUrl;
@@ -20,7 +23,7 @@ public class KakaoOAuth2MemberInfo implements OAuth2MemberInfo {
 
         this.id = ((Long) attributes.get("id")).toString();
         this.email = (String) kakaoAccount.get("email");
-
+        this.role = MemberEntity.Role.MEMBER;
         this.memberName = (String) kakaoProfile.get("nickname");
 
         this.profileImageUrl = (String) kakaoProfile.get("profile_image_url");
@@ -62,5 +65,10 @@ public class KakaoOAuth2MemberInfo implements OAuth2MemberInfo {
     @Override
     public String getProfileImageUrl() {
         return profileImageUrl;
+    }
+
+    @Override
+    public MemberEntity.Role getRole() {
+        return role;
     }
 }
