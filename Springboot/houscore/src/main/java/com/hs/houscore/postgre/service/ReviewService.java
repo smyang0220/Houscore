@@ -30,7 +30,7 @@ public class ReviewService {
     }
 
     //리뷰 등록
-    public ReviewEntity setReview(ReviewEntity review) {
+    public void setReview(ReviewEntity review) {
         // 유효성 검사
         if (review == null || review.getMemberId() == null || review.getBuildingId() == null) {
             throw new IllegalArgumentException("리뷰 데이터가 올바르지 않습니다.");
@@ -38,22 +38,21 @@ public class ReviewService {
 
         // 데이터 저장
         try {
-            return reviewRepository.save(review);
+            reviewRepository.save(review);
         } catch (Exception e) {
             // 데이터 저장 중 예외 발생시 예외 처리
             throw new RuntimeException("리뷰 등록을 실패했습니다.", e);
         }
     }
 
-    public ReviewEntity updateReview(ReviewEntity review){
+    public void updateReview(ReviewEntity review){
         ReviewEntity reviewEntity = reviewRepository.findByIdAndMemberId(review.getId(), review.getMemberId()).orElse(null);
 
         if(reviewEntity == null){
             throw new IllegalArgumentException("수정 가능한 리뷰가 없습니다.");
         }
         try {
-            review.setCreatedAt(reviewEntity.getCreatedAt());
-            return reviewRepository.save(review);
+            reviewRepository.save(review);
         } catch (Exception e) {
             // 데이터 저장 중 예외 발생시 예외 처리
             throw new RuntimeException("리뷰 등록을 실패했습니다.", e);
@@ -62,15 +61,11 @@ public class ReviewService {
     }
 
     public void deleteReview(Long id){
-        if (!reviewRepository.existsById(id)) {
-            throw new IllegalArgumentException("삭제할 리뷰가 존재하지 않습니다.");
-        }
-
-        try {
-            reviewRepository.deleteById(id);
-        } catch (Exception e) {
-            throw new RuntimeException("리뷰 삭제를 실패했습니다.", e);
-        }
-
+        reviewRepository.findById(id)
+                .map(reviewEntity -> {
+                    reviewRepository.delete(reviewEntity);
+                    return reviewEntity;
+                })
+                .orElseThrow(() -> new IllegalArgumentException("해당 데이터가 존재 하지 않습니다."));
     }
 }

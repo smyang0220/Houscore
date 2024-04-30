@@ -72,7 +72,7 @@ public class ReviewController {
     @Operation(summary = "거주지 리뷰 수정", description = "거주지 리뷰 수정")
     public ResponseEntity<?> updateReview(@RequestBody ReviewEntity review) {
         try{
-            ReviewEntity updateReview = reviewService.updateReview(review);
+            reviewService.updateReview(review);
             return ResponseEntity.status(HttpStatus.CREATED).body("리뷰 수정 성공");
         }catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("유효하지 않은 리뷰 데이터");

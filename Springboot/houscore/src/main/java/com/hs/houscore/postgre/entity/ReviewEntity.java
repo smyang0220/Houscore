@@ -13,9 +13,9 @@ import java.util.Date;
 @AllArgsConstructor
 @Data
 @Builder
-@Getter
 @Table(name = "review")
-public class ReviewEntity {
+@SequenceGenerator(name="review_seq", sequenceName="review_seq", initialValue=1, allocationSize=1)
+public class ReviewEntity extends BaseTimeEntity{
     @Id
     @GeneratedValue (strategy = GenerationType.SEQUENCE)
     private Long id;
@@ -31,25 +31,6 @@ public class ReviewEntity {
     private String cons;
     private String maintenanceCost;
     private String images;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createdAt; // 생성 날짜
-
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date updatedAt; // 업데이트 날짜
-
-    // 엔티티가 영속성 컨텍스트에 저장되기 전에 호출됩니다.
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = new Date();
-    }
-
-    // 엔티티가 영속성 컨텍스트에 merge 될 때 호출됩니다.
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = new Date();
-    }
-
 
     public enum ResidenceType {
         VILLA, APT, OFFICETEL
