@@ -29,7 +29,6 @@ public class MemberController {
     @Operation(summary = "사용자 검색", description = "이메일로 사용자 검색")
     public List<MemberDTO> searchMembers(
             @RequestParam @Parameter(description = "검색할 사용자 id") String memberEmail) {
-        //return memberService.searchMembersByEmail(memberEmail);
-        return null;
+        return memberService.searchMembersByEmail(memberEmail);
     }
 }
