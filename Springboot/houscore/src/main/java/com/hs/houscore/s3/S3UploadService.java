@@ -4,14 +4,11 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.hs.houscore.dto.FileUploadDTO;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Base64;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Service
@@ -24,7 +21,7 @@ public class S3UploadService {
     private String bucket;
 
     public String saveImage(FileUploadDTO fileUploadDTO) {
-        String filenameWithPath = fileUploadDTO.getType() +"/"+ fileUploadDTO.getImageName();
+        String filenameWithPath = fileUploadDTO.getImageName();
         byte[] decodedImg = Base64.getDecoder().decode(fileUploadDTO.getImageBase64().split(",")[1]);
         ByteArrayInputStream inputStream = new ByteArrayInputStream(decodedImg);
 
