@@ -2,16 +2,20 @@ import 'package:flutter/material.dart';
 
 final List<String> categories = ['교통', '건물', '내부', '인프라', '치안'];
 
-class RatingsPage extends StatelessWidget {
+class ReviewRating extends StatelessWidget {
   final Function(String, int) onRatingUpdated;
 
-  RatingsPage({required this.onRatingUpdated});
+  ReviewRating({required this.onRatingUpdated});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: categories.map((category) => ListTile(
-        title: Text(category),
+        title: Expanded(
+          child: Center(
+            child: Text(category, textAlign: TextAlign.center),
+          ),
+        ),
         trailing: RatingWidget(
           onRatingChanged: (rating) => onRatingUpdated(category, rating),
         ),
@@ -48,10 +52,10 @@ class _RatingWidgetState extends State<RatingWidget> {
             });
             widget.onRatingChanged(_currentRating);
           },
-          iconSize: 35,
+          iconSize: 30,
         )),
-        SizedBox(width: 5),
-        Text('$_currentRating / 5', style: TextStyle(fontSize: 20))
+        SizedBox(width: 3),
+        Text('$_currentRating / 5', style: TextStyle(fontSize: 16)) // 폰트 크기도 조금 줄임
       ],
     );
   }
