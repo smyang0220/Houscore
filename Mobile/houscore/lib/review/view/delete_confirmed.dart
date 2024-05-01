@@ -2,20 +2,14 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:confirmation_success/confirmation_success.dart';
+import 'package:houscore/review/view/my_review_list.dart';
 
-void main() {
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: ConfirmedScreen(),
-  ));
-}
-
-class ConfirmedScreen extends StatefulWidget {
+class DeleteConfirmed extends StatefulWidget {
   @override
-  State<ConfirmedScreen> createState() => _ConfirmedScreenState();
+  State<DeleteConfirmed> createState() => _DeleteConfirmedState();
 }
 
-class _ConfirmedScreenState extends State<ConfirmedScreen> {
+class _DeleteConfirmedState extends State<DeleteConfirmed> {
   StreamSubscription<void>? _sub;
   bool isSuccess = false;
 
@@ -42,8 +36,7 @@ class _ConfirmedScreenState extends State<ConfirmedScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: navigateToHome,
+    return PopScope(
       child: Container(
         color: Colors.white,
         child: Stack(
@@ -53,8 +46,8 @@ class _ConfirmedScreenState extends State<ConfirmedScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ConfirmationSuccess(
-                    reactColor: Colors.blue,
-                    bubbleColors: [Colors.blue],
+                    reactColor: Colors.red,
+                    bubbleColors: [Colors.red],
                     numofBubbles: 35,
                     maxBubbleRadius: 8,
                     child: const Icon(
@@ -71,18 +64,11 @@ class _ConfirmedScreenState extends State<ConfirmedScreen> {
                       child: Column(children: [
                         SizedBox(height: 40),
                         Text(
-                          "리뷰 등록이 성공적으로 완료되었습니다!\n",
+                          "리뷰 삭제가 성공적으로 완료되었습니다!\n",
                           style: TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.bold,
                             fontSize: 18,
-                          ),
-                        ),
-                        Text(
-                          "리뷰는 심사 후 등록될 예정입니다",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 15,
                           ),
                         ),
                       ]),
@@ -111,10 +97,14 @@ class _ConfirmedScreenState extends State<ConfirmedScreen> {
                         borderRadius: BorderRadius.circular(5.0),
                       ),
                     ),
-                    child: Text('건물정보'),
+                    child: Text('홈'),
                   ),
                   OutlinedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => MyReviewList()),
+                    );},
                     style: OutlinedButton.styleFrom(
                       foregroundColor: Colors.white,
                       backgroundColor: Colors.blue,

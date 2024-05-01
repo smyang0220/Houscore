@@ -43,6 +43,9 @@ dependencies:
   flutter_riverpod: ^1.0.4
   flutter_svg: ^0.22.0
   fl_chart: ^0.67.0
+  confirmation_success: ^0.0.2
+  image_picker: ^1.1.0
+  rflutter_alert: ^2.0.7
 
 dev_dependencies:
   flutter_test:
