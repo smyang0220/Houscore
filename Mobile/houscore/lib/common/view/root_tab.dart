@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:houscore/common/const/color.dart';
 import '../../building/view/api_test_screen.dart';
+import 'package:houscore/review/view/create_review.dart';
+import 'package:houscore/review/view/my_review_list.dart';
 import 'home_screen.dart';
 
 class RootTab extends StatefulWidget {
@@ -42,8 +44,8 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
         physics: NeverScrollableScrollPhysics(),
         children: [
           HomeScreen(),
-          Center(child: Text('리뷰')),
-          Center(child: Text('My')),
+          CreateReview(),
+          MyReviewList(),
           ApiTestScreen(),
         ],
       ),
