@@ -14,10 +14,10 @@ class _KakaoLoginButtonState extends State<KakaoLoginButton> {
   @override
   Widget build(BuildContext context) {
     return Column(
-        children: [
-          getKakaoLoginButton(context),
-        ],
-      );
+      children: [
+        getKakaoLoginButton(context),
+      ],
+    );
   }
 }
 
