@@ -17,7 +17,7 @@ class NearbyInfra extends StatefulWidget {
 }
 
 class _NearbyInfraState extends State<NearbyInfra> {
-  InfraType? _selectedType;
+  InfraType? _selectedType = InfraType.hospital;
 
   @override
   Widget build(BuildContext context) {
