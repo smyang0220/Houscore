@@ -1,6 +1,20 @@
 import 'package:houscore/common/const/data.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+final dioProvider = Provider<Dio>((ref) {
+  final dio = Dio();
+
+  // final storage = ref.watch(secureStorageProvider);
+  //
+  // dio.interceptors.add(
+  //   CustomInterceptor(storage: storage),
+  // );
+
+  return dio;
+});
+
 
 // 인터셉터 클래스
 class CustomInterceptor extends Interceptor {

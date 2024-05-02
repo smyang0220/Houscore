@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/services.dart'; // SystemChrome을 사용하기 위해 필요
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
-import 'common/view/splash_screen.dart';
+import 'common/view/splash_screen.dart'; // SplashScreen의 경로에 따라 수정해주세요.
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Flutter 바인딩 초기화
@@ -15,7 +16,9 @@ void main() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]).then((_) {
-    runApp(const _App()); // 모든 초기화 후 앱 실행
+    runApp(
+      ProviderScope(child: const _App()), // 모든 초기화 후 앱 실행 with ProviderScope
+    );
   });
 }
 
@@ -29,11 +32,8 @@ class _App extends StatelessWidget {
       theme: ThemeData(
         fontFamily: 'NotoSans',
       ),
-      debugShowCheckedModeBanner: false, // 우측 상단 Beta 지우기
-      home: SplashScreen(), // 우선 SplashScreen으로 시작
+      debugShowCheckedModeBanner: false, // 우측 상단 '디버그' 배지 제거
+      home: SplashScreen(), // 우선 SplashScreen으로 시작합니다.
     );
   }
 }
-/*
-routes와 initialRoute를 활용해서 구성할 수도 있음
- */

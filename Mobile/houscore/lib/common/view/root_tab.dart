@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:houscore/common/const/color.dart';
+import '../../building/view/api_test_screen.dart';
 import 'home_screen.dart';
 
 class RootTab extends StatefulWidget {
@@ -17,7 +18,7 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
 
   @override
   void initState() {
-    controller = TabController(length: 3, vsync: this);
+    controller = TabController(length: 4, vsync: this);
     controller.addListener(tabListener);
   }
 
@@ -43,6 +44,7 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
           HomeScreen(),
           Center(child: Text('리뷰')),
           Center(child: Text('My')),
+          ApiTestScreen(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -62,6 +64,7 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
           BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
           BottomNavigationBarItem(icon: Icon(Icons.rate_review_rounded), label: '리뷰'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: '마이'),
+          BottomNavigationBarItem(icon: Icon(Icons.telegram_sharp), label: '통신테스트')
         ],
       ),
     );
