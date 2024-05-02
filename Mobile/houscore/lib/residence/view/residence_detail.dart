@@ -14,18 +14,34 @@ class ResidenceDetail extends StatefulWidget {
   State<ResidenceDetail> createState() => _ResidenceDetailState();
 }
 
+
+
 class _ResidenceDetailState extends State<ResidenceDetail>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+
+  // 주석친 부분들을 이미 TabController가 자동으로 연결된 TabBar와 TabBarView를 관리하기 때문에 필요 X
+  // 커스텀 이벤트 트리거가 필요한 경우에만 활용할 것!
+
+  // int index = 0;
+
+  // void _tabListener() {
+  //   setState(() {
+  //     this.index = _tabController.index;
+  //     print(index);
+  //   });
+  // }
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    // _tabController.addListener(_tabListener);
   }
 
   @override
   void dispose() {
+    // _tabController.removeListener(_tabListener);
     _tabController.dispose();
     super.dispose();
   }
@@ -83,6 +99,7 @@ class _ResidenceDetailState extends State<ResidenceDetail>
           Expanded(
             child: TabBarView(
               controller: _tabController,
+              physics: NeverScrollableScrollPhysics(), // 스크롤 하다가 가로로 스크롤 되서 탭 바뀌는 거 방지!
               children: [
                 // 첫 번째 탭 '상세 정보'의 내용
                 NearbyIndicators(),
