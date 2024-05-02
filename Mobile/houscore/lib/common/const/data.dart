@@ -9,7 +9,8 @@ const REFRESH_TOKEN_KEY = 'REFRESH_TOKEN';
 final emulatorIp = '10.0.2.2:3000';
 final simulatorIp = '127.0.0.1:3000';
 
-final ip = Platform.isIOS ? simulatorIp : emulatorIp;
+// final ip = Platform.isIOS ? simulatorIp : emulatorIp;
+final ip = '192.168.31.166:8084';
 
 // 사용자 개인 정보나 인증 토큰과 같은 중요한 데이터를 안전하게 보관하는데 사용되는 플러그인
 // iOS : Keychain 활용

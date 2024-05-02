@@ -26,6 +26,33 @@ Widget getKakaoLoginButton(BuildContext context) {
     onTap: () async {
       try{
         await signInWithKakao(); // 기존에 있던것, 그 외는 0215새로 생김
+/*
+        String token = stringToBase64.encode(rawString);
+
+        final resp = await dio.post(
+          'http://$ip/auth/login',
+          options: Options(
+            headers: {
+              'authorization': 'Basic $token',
+            },
+          ),
+        );
+
+        final refreshToken = resp.data['refreshToken'];
+        final accessToken = resp.data['accessToken'];
+
+        final storage = ref.read(secureStorageProvider);
+
+        await storage.write(key: REFRESH_TOKEN_KEY, value: refreshToken);
+        await storage.write(key: ACCESS_TOKEN_KEY, value: accessToken);
+
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => RootTab(),
+          ),
+        ); */
+
+
         Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => RootTab()));
       }catch(e){
