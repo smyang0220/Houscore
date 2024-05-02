@@ -24,7 +24,6 @@ abstract class BuildingRepository {
   factory BuildingRepository(Dio dio, {String baseUrl}) =
   _BuildingRepository;
 
-
   @GET('/detail')
   @Headers({
     'accessToken': 'true',
@@ -32,7 +31,4 @@ abstract class BuildingRepository {
   Future<CursorPagination<BuildingDetailModel>> getBuildingDetail({
     @Query('address') required String address,
   });
-
-
-
 }
