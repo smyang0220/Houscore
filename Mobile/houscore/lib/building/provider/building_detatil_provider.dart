@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:houscore/building/repository/building_repository.dart';
 
+import '../../common/const/data.dart';
 import '../../common/model/cursor_pagination_model.dart';
 
 final buildingProvider =
@@ -84,6 +85,9 @@ class BuildingStateNotifier extends StateNotifier<CursorPaginationBase> {
         }
       }
 
+      print("스토리지 키값");
+      final token = await storage.read(key: ACCESS_TOKEN_KEY);
+      print(token);
       print("통신전");
       final resp = await repository.getBuildingDetail(address: '서울특별시 강동구 천호대로 1121');
       print("통신후");

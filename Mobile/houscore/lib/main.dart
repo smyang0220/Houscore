@@ -8,8 +8,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Flutter 바인딩 초기화
 
   KakaoSdk.init(
-    nativeAppKey: '9be0dbc80cce4d34bd4dae40010dacb6',
-    javaScriptAppKey: '6291268ed3dc5224d56ed06634b9942c',
+    nativeAppKey: 'f8e1285dd805d944e38eb1d45c5828ea',
+    javaScriptAppKey: '5f2fbbc85d5b81134644be60613eae1f',
   );
 
   SystemChrome.setPreferredOrientations([ // 화면 방향 설정
