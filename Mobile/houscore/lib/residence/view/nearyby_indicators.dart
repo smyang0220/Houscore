@@ -3,6 +3,7 @@ import 'package:houscore/residence/component/nearby_infra.dart';
 import 'package:houscore/residence/component/nearby_public_transportation.dart';
 
 import '../component/about_residence.dart';
+import '../component/nearby_living_facilities.dart';
 import '../component/price_per_pyeong.dart';
 import '../model/about_residence_model.dart';
 import '../model/nearby_infra_model.dart';
@@ -18,11 +19,23 @@ class NearbyIndicators extends StatefulWidget {
 class _NearbyIndicatorsState extends State<NearbyIndicators> {
 
   List<Infra> infraItems = [
-    // 가상의 데이터
-    Infra(name: '청담가정의학과의원', minutes: 15, distance: 0.9, hospitalOrPark: true),
-    Infra(name: '대청메디컬내과의원', minutes: 8, distance: 2.4, hospitalOrPark: true),
-    Infra(name: '유성소공원', minutes: 12, distance: 3.3, hospitalOrPark: false),
-    Infra(name: '강아름대공원', minutes: 20, distance: 6.7, hospitalOrPark: false),
+    // 병원 예시
+    Infra(name: "시내 병원", minutes: 5, distance: 0.5, type: InfraType.hospital),
+    Infra(name: "서울 종합 병원", minutes: 8, distance: 1.2, type: InfraType.hospital),
+    Infra(name: "강남 성형외과", minutes: 10, distance: 2.0, type: InfraType.hospital),
+    Infra(name: "노원 구급 센터", minutes: 12, distance: 3.0, type: InfraType.hospital),
+
+    // 공원 예시
+    Infra(name: "중앙 공원", minutes: 7, distance: 0.8, type: InfraType.park),
+    Infra(name: "강변 공원", minutes: 15, distance: 1.5, type: InfraType.park),
+    Infra(name: "시립 공원", minutes: 20, distance: 2.5, type: InfraType.park),
+    Infra(name: "해변 산책로", minutes: 30, distance: 4.0, type: InfraType.park),
+
+    // 학교 예시
+    Infra(name: "중앙 초등학교", minutes: 3, distance: 0.3, type: InfraType.school),
+    Infra(name: "서울 고등학교", minutes: 6, distance: 0.7, type: InfraType.school),
+    Infra(name: "대학교 본부", minutes: 10, distance: 1.0, type: InfraType.school),
+    Infra(name: "국제 대학교", minutes: 15, distance: 1.8, type: InfraType.school),
   ];
 
   List<PublicTransport> transportItems = [
@@ -49,6 +62,7 @@ class _NearbyIndicatorsState extends State<NearbyIndicators> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            NearbyLivingFacilities(),
             NearbyInfra(infraItems: infraItems),
             NearbyPublicTransportation(transportItems: transportItems),
             AboutResidence(
