@@ -2,20 +2,38 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'nearby_infra_model.g.dart'; // `build_runner`가 생성할 파일
 
+enum InfraType {
+  hospital,
+  park,
+  school
+}
+
+class InfraTypeConverter implements JsonConverter<InfraType, String> {
+  const InfraTypeConverter();
+
+  @override
+  InfraType fromJson(String json) {
+    return InfraType.values.firstWhere((e) => e.toString().split('.').last == json);
+  }
+
+  @override
+  String toJson(InfraType object) => object.toString().split('.').last;
+}
+
 // `Infra` 클래스 정의
 @JsonSerializable()
+@InfraTypeConverter()
 class Infra {
   final String name;
   final int minutes;
   final double distance;
-  @JsonKey(name: 'hospitalOrPark') // JSON 키 커스터마이징
-  final bool hospitalOrPark; // 병원/공원 구분 플래그
+  final InfraType type;
 
   Infra({
     required this.name,
     required this.minutes,
     required this.distance,
-    required this.hospitalOrPark,
+    required this.type,
   });
 
   // JSON에서 `Infra` 객체로
