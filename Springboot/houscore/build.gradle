@@ -43,6 +43,10 @@ dependencies {
 	implementation 'commons-io:commons-io:2.7'
 	implementation 'net.coobird:thumbnailator:0.4.14'
 
+	//배치 관련 의존성
+	implementation 'org.springframework.boot:spring-boot-starter-batch'
+
+
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 

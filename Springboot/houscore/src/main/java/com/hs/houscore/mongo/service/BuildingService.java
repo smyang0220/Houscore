@@ -30,7 +30,7 @@ public class BuildingService {
     }
 
     public BuildingEntity getBuildingByAddress(String address){
-        return buildingRepository.findByInformation_BuildingInfo_NewPlatPlc(address)
+        return buildingRepository.findByNewPlatPlc(address)
                 .orElseThrow(() -> new IllegalArgumentException(address + " 해당 주소의 건물 정보가 존재하지 않습니다."));
     }
 
@@ -39,14 +39,14 @@ public class BuildingService {
     }
 
     public List<RecommendAiDTO> getRecommendAiScoreTop5(String sigungu){
-        List<BuildingEntity> buildingEntities = buildingRepository.findTop5ByInformation_BuildingInfo_NewPlatPlcContaining(sigungu);
+        List<BuildingEntity> buildingEntities = buildingRepository.findTop5ByNewPlatPlcContaining(sigungu);
         List<RecommendAiDTO> recommendAiDTOS = new ArrayList<>();
 
         for(BuildingEntity buildingEntity : buildingEntities){
             BuildingEntity.BuildingInfo buildingInfo = buildingEntity.getInformation().getBuildingInfo();
-            Long reviewCnt = reviewRepository.countByAddressStartingWith(buildingInfo.getNewPlatPlc());
+            Long reviewCnt = reviewRepository.countByAddressStartingWith(buildingEntity.getNewPlatPlc());
             recommendAiDTOS.add(RecommendAiDTO.builder()
-                            .address(buildingInfo.getNewPlatPlc())
+                            .address(buildingEntity.getNewPlatPlc())
                             .aiScore(buildingEntity.getScore())
                             .pricePerRegion(setPricePerRegion(sigungu, 1000))
                             .pricePerPyeong(setPricePerPyeong(1000, buildingInfo.getArchArea()))
