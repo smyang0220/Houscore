@@ -1,16 +1,25 @@
 package com.hs.houscore.postgre.service;
 
 import com.hs.houscore.dto.MemberDTO;
+import com.hs.houscore.oauth2.member.KakaoOAuth2MemberInfo;
 import com.hs.houscore.postgre.entity.MemberEntity;
 import com.hs.houscore.postgre.repository.MemberRepository;
 import com.hs.houscore.oauth2.member.OAuth2MemberInfo;
 import jakarta.transaction.Transactional;
 
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpHeaders;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 @Transactional
@@ -18,6 +27,7 @@ import org.springframework.stereotype.Service;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final RestTemplate restTemplate;
 
     public MemberEntity createMember(OAuth2MemberInfo memberInfo) {
         MemberEntity member = memberRepository.findByMemberEmail(memberInfo.getEmail())
@@ -36,6 +46,36 @@ public class MemberService {
     public String getMemberNameByEmail(String memberEmail) {
         Optional<MemberEntity> member = memberRepository.findByMemberEmail(memberEmail);
         return member.map(MemberEntity::getMemberName).orElse(null); // 사용자가 존재하지 않는 경우 null 반환
+    }
+
+    public OAuth2MemberInfo getMemberInfo(String provider, String accessToken) throws OAuth2AuthenticationException {
+        if (!provider.equals("kakao")) {
+            throw new OAuth2AuthenticationException("Unsupported provider: " + provider);
+        }
+        return fetchKakaoUserInfo(accessToken);
+    }
+
+    private OAuth2MemberInfo fetchKakaoUserInfo(String accessToken) {
+        String url = "https://kapi.kakao.com/v2/user/me";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(accessToken);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<Map<String, Object>> response = restTemplate.exchange(url, HttpMethod.GET, entity, new ParameterizedTypeReference<Map<String, Object>>() {});
+        if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+            return parseKakaoUserInfo(accessToken, response.getBody());
+        } else {
+            throw new OAuth2AuthenticationException("Failed to fetch user info from Kakao");
+        }
+    }
+
+    private OAuth2MemberInfo parseKakaoUserInfo(String accessToken, Map<String, Object> kakaoData) {
+        // Ensure all data exists as expected, handling potential null or missing values.
+        Map<String, Object> kakaoAccount = (Map<String, Object>) Optional.ofNullable(kakaoData.get("kakao_account"))
+                .orElseThrow(() -> new OAuth2AuthenticationException("Missing account details"));
+        // Use the entire kakaoData which includes 'id', 'kakao_account', etc., as the attributes
+        return new KakaoOAuth2MemberInfo(accessToken, kakaoData);
     }
 
     // 사용자의 이메일로 공급자 정보를 조회하는 메서드

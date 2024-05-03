@@ -2,18 +2,24 @@ package com.hs.houscore.controller;
 
 import com.hs.houscore.dto.MemberDTO;
 import com.hs.houscore.jwt.service.JwtService;
+import com.hs.houscore.oauth2.exception.OAuth2AuthenticationProcessingException;
+import com.hs.houscore.oauth2.member.OAuth2MemberInfo;
+import com.hs.houscore.postgre.entity.MemberEntity;
 import com.hs.houscore.postgre.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
+import java.util.Map;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -38,7 +44,7 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    @Operation(summary = "사용자 로그인", description = "사용자 이메일로 로그인하고 토큰을 발급")
+    @Operation(summary = "사용자 로그인 - 보류", description = "사용자 이메일로 로그인하고 토큰을 발급")
     public ResponseEntity<?> login(@RequestBody MemberDTO loginData) {
         if (memberService.validateMember(loginData.getMemberEmail())) {
             String memberEmail = loginData.getMemberEmail();
@@ -52,6 +58,34 @@ public class MemberController {
             return ResponseEntity.ok().headers(headers).body("Login successful");
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication failed");
+    }
+
+    @PostMapping("/login/kakao")
+    @Operation(summary = "카카오 토큰으로 로그인", description = "카카오 토큰을 검증하고 사용자 정보를 바탕으로 자체 토큰을 발급")
+    public ResponseEntity<?> loginWithKakaoToken(@RequestBody Map<String, String> tokenData) {
+        String kakaoAccessToken = tokenData.get("accessToken");
+
+        try {
+            OAuth2MemberInfo kakaoMemberInfo = memberService.getMemberInfo("kakao", kakaoAccessToken);
+
+            // 여기에서는 사용자 이메일이 필요하므로 Email 검증을 추가
+            if (!StringUtils.hasText(kakaoMemberInfo.getEmail())) {
+                throw new OAuth2AuthenticationProcessingException("Email not found from Kakao data");
+            }
+
+            // 시스템에 사용자를 등록하거나 업데이트하고, 토큰을 발급
+            MemberEntity member = memberService.createMember(kakaoMemberInfo);
+            String accessToken = jwtService.createAccessToken(member.getMemberEmail(), member.getMemberName(), member.getProvider().toString());
+            String refreshToken = jwtService.createRefreshToken(member.getMemberEmail(), member.getProvider().toString());
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Access-Token", accessToken);
+            headers.add("Refresh-Token", refreshToken);
+
+            return ResponseEntity.ok().headers(headers).body("Login successful with Kakao");
+        } catch (AuthenticationException ex) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication failed with Kakao token: " + ex.getMessage());
+        }
     }
 
     @GetMapping("/refresh")
