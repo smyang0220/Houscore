@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 public class MemberService {
 
     private final MemberRepository memberRepository;
-    private final PasswordEncoder passwordEncoder;
 
     public MemberEntity createMember(OAuth2MemberInfo memberInfo) {
         MemberEntity member = memberRepository.findByMemberEmail(memberInfo.getEmail())
@@ -28,11 +27,8 @@ public class MemberService {
                         .profileImage(memberInfo.getProfileImageUrl())
                         .role(memberInfo.getRole())
                         .provider(memberInfo.getProvider())
+                        .refreshToken(memberInfo.getAccessToken())
                         .build());
-
-        if (member.getPassword() != null && !member.getPassword().isEmpty()) {
-            member.passwordEncode(passwordEncoder);
-        }
 
         return memberRepository.save(member);
     }
@@ -82,5 +78,11 @@ public class MemberService {
     public MemberEntity getMemberByRefreshToken(String refreshToken) {
         Optional<MemberEntity> memberOptional = memberRepository.findByRefreshToken(refreshToken);
         return memberOptional.orElse(null);
+    }
+
+    // 유저 존재 검증
+    public boolean validateMember(String memberEmail) {
+        Optional<MemberEntity> member = memberRepository.findByMemberEmail(memberEmail);
+        return member.isPresent();
     }
 }
