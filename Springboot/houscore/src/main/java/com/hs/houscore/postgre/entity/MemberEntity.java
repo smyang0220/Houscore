@@ -20,7 +20,6 @@ public class MemberEntity {
     @Id
     private String memberEmail;
     private String memberName;
-    private String password;
     private String profileImage;
 
     @Enumerated(EnumType.STRING)
@@ -36,10 +35,6 @@ public class MemberEntity {
     private Date updatedAt; // 업데이트 날짜
 
     private String refreshToken;
-
-    public void passwordEncode(PasswordEncoder passwordEncoder) {
-        this.password = passwordEncoder.encode(this.password);
-    }
 
     public void updateRefreshToken(String updateRefreshToken) {
         this.refreshToken = updateRefreshToken;
