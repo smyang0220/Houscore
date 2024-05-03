@@ -52,51 +52,53 @@ class _CreateReviewdetailState extends State<CreateReviewdetail> {
   @override
   Widget build(BuildContext context) {
     return DefaultLayout(
-      child: Scaffold(
-        appBar: AppBar(title: Text('리뷰 작성 (2/2)')),
-        body: SingleChildScrollView(
-          child: Container(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                buildTextFieldSection(_recommendController, '추천해요!', Colors.blue,
-                    100, _isRecommendRequired),
-                SizedBox(height: 5),
-                buildTextFieldSection(_dislikeController, '별로예요!', Colors.red,
-                    100, _isDislikeRequired),
-                SizedBox(height: 5),
-                buildTextFieldSection(_maintenanceController, '관리비', null, 10,
-                    _isMaintenanceRequired),
-                SizedBox(height: 5),
-                ImageUpload(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    ElevatedButton(onPressed: () {
-                      Navigator.pop(context);
-                    }, child: Text('이전으로')),
-                    ElevatedButton(
-                      onPressed:
-                          _isButtonEnabled ? () => Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => CreateConfirmed())) : null,
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                          (Set<MaterialState> states) {
-                            if (states.contains(MaterialState.disabled))
-                              return Colors.grey;
-                            return Colors.blue; // Default enabled color
-                          },
-                        ),
-                        foregroundColor:
-                            MaterialStateProperty.all<Color>(Colors.white),
+      child: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              buildTextFieldSection(_recommendController, '추천해요!', Colors.blue,
+                  100, _isRecommendRequired),
+              SizedBox(height: 5),
+              buildTextFieldSection(_dislikeController, '별로예요!', Colors.red, 100,
+                  _isDislikeRequired),
+              SizedBox(height: 5),
+              buildTextFieldSection(_maintenanceController, '관리비', null, 10,
+                  _isMaintenanceRequired),
+              SizedBox(height: 5),
+              ImageUpload(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text('이전으로')),
+                  ElevatedButton(
+                    onPressed: _isButtonEnabled
+                        ? () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => CreateConfirmed()))
+                        : null,
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                        (Set<MaterialState> states) {
+                          if (states.contains(MaterialState.disabled))
+                            return Colors.grey;
+                          return Colors.blue; // Default enabled color
+                        },
                       ),
-                      child: Text('완료'),
+                      foregroundColor:
+                          MaterialStateProperty.all<Color>(Colors.white),
                     ),
-                  ],
-                ),
-              ],
-            ),
+                    child: Text('완료'),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),
