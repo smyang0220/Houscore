@@ -23,7 +23,8 @@ public class BuildingEntity {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    private static class Information {
+    @Getter
+    public static class Information {
         private BuildingInfo buildingInfo;
         private InfraInfo infraInfo;
         private SecurityInfo securityInfo;
@@ -33,7 +34,8 @@ public class BuildingEntity {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    private static class BuildingInfo {
+    @Getter
+    public static class BuildingInfo {
         private String mgmBldrgstPk;
         private String platPlc;
         private String newPlatPlc;
@@ -63,21 +65,21 @@ public class BuildingEntity {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    private static class InfraInfo {
+    public static class InfraInfo {
         private Integer parkCnt;
     }
 
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    private static class SecurityInfo {
+    public static class SecurityInfo {
         private Integer safetyGrade;
     }
 
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    private static class TrafficInfo {
+    public static class TrafficInfo {
         private Integer bus;
         private Integer subway;
     }

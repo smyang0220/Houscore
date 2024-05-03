@@ -1,5 +1,6 @@
 package com.hs.houscore.controller;
 
+import com.hs.houscore.dto.RecommendAiDTO;
 import com.hs.houscore.mongo.entity.BuildingEntity;
 import com.hs.houscore.mongo.service.BuildingService;
 import com.hs.houscore.postgre.entity.ReviewEntity;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/building")
+@RequestMapping("/api/residence")
 @Tag(name = "건물 컨트롤러", description = "건물 관련 컨트롤러")
 public class BuildingController {
     private final BuildingService buildingService;
@@ -40,5 +41,17 @@ public class BuildingController {
     @Operation(summary = "건물 리뷰 정보", description = "건물 리뷰 정보 검색")
     public List<ReviewEntity> getBuildingReview(@RequestParam String address){
         return buildingService.getBuildingReviewList(address);
+    }
+
+    @GetMapping("/recommend/ai")
+    @Operation(summary = "AI 추천 거주지 조회 ", description = "AI 추천 거주지 조회 (1위~5위)")
+    public List<RecommendAiDTO> getRecommendAiScoreTop5(@RequestParam String sigungu){
+        return buildingService.getRecommendAiScoreTop5(sigungu);
+    }
+
+    @GetMapping("/recommend/nearby")
+    @Operation(summary = "근처 거주지 최근 리뷰 조회 ", description = "가장 가까운 거주지 중 리뷰가 있는 2개의 거주지에서 가장 최근의 리뷰 하나씩 총 2개")
+    public List<RecommendAiDTO> getRecommendNearby(@RequestParam Double lat, @RequestParam Double lng){
+        return null;
     }
 }
