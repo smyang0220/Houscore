@@ -43,7 +43,6 @@ df['announced_date'] = pd.to_datetime(df['기준연도'] + df['기준월'], form
 df['데이터기준일자'] = pd.to_datetime(df['데이터기준일자'])
 
 # 주소 컬럼 추가
-# Correctly apply strip to the entire Series
 df['plat_plc'] = df['법정동명'].astype(str).str.strip() + " " + df['지번'].astype(str).str.strip()
 
 # 공시일자와 announced_date를 기준으로 데이터 정렬
@@ -59,7 +58,9 @@ result.rename(columns={'공시지가': 'official_price', '고유번호': 'pnu_co
 
 print(result)
 
-df = pd.read_csv('files/dataset/건물정보/전처리_개별공시지가.csv')
+result.to_csv('files/dataset/건물정보/전처리_개별공시지가.csv')
+
+df = pd.read_csv('files/dataset/건물정보/전처리_개별공시지가.csv', dtype={'pnu_code': str})
 
 try:
     with engine.connect() as connection:
