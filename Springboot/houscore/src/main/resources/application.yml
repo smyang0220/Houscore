@@ -1,4 +1,6 @@
 spring:
+  main:
+    allow-bean-definition-overriding: true
   application:
     name: Houscore-spring
   jackson:
@@ -10,7 +12,6 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
-
   jpa:
     hibernate:
       ddl-auto: update
@@ -23,6 +24,11 @@ spring:
   data:
     mongodb:
       uri: mongodb://admin:OTIJWI2mHbWy0KMoXG@13.124.84.12:27017/admin
+  batch:
+    job:
+      enabled: true # 서버 재시작시 배치 자동실행 방지 = false
+      jdbc:
+        initialize-schema: always
   security:
     oauth2:
       client:

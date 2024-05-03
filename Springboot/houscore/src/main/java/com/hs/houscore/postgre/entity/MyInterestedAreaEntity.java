@@ -3,6 +3,7 @@ package com.hs.houscore.postgre.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor

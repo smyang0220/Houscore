@@ -16,14 +16,20 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class BuildingEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     private Double score;
+    private Double lat;
+    private Double lng;
+    private String platPlc;
+    private String newPlatPlc;
+    private String batchYn;
     private Information information;
 
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Getter
+    @Builder
     public static class Information {
         private BuildingInfo buildingInfo;
         private InfraInfo infraInfo;
@@ -35,10 +41,9 @@ public class BuildingEntity {
     @NoArgsConstructor
     @AllArgsConstructor
     @Getter
+    @Builder
     public static class BuildingInfo {
         private String mgmBldrgstPk;
-        private String platPlc;
-        private String newPlatPlc;
         private String etcPurps;
         private String mainPurpsCdNm;
         private String mainAtchGbCdNm;
@@ -65,6 +70,7 @@ public class BuildingEntity {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
+    @Builder
     public static class InfraInfo {
         private Integer parkCnt;
     }
@@ -72,6 +78,7 @@ public class BuildingEntity {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
+    @Builder
     public static class SecurityInfo {
         private Integer safetyGrade;
     }
@@ -79,6 +86,7 @@ public class BuildingEntity {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
+    @Builder
     public static class TrafficInfo {
         private Integer bus;
         private Integer subway;
