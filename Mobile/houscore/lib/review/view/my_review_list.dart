@@ -1,17 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:houscore/common/layout/default_layout.dart';
-import 'package:houscore/review/component/my_reviews.dart';
-import 'package:houscore/review/component/photo_reviews.dart';
-import 'package:houscore/common/component/search_residences.dart';
-import 'package:houscore/common/const/color.dart';
 import 'package:houscore/common/const/design.dart';
-
-import '../../residence/component/ai_recommendation.dart';
-import '../../review/component/nearby_recent_reviews.dart';
-import '../../review/component/recent_reviews.dart';
+import 'package:houscore/review/component/my_review_card.dart';
 
 class MyReviewList extends StatefulWidget {
   const MyReviewList({Key? key}) : super(key: key);
@@ -20,7 +12,6 @@ class MyReviewList extends StatefulWidget {
   State<MyReviewList> createState() => _MyReviewListState();
 }
 
-// 더미 최근 검색 거주지
 class _MyReviewListState extends State<MyReviewList> {
 
   // 더비 리뷰 데이터
@@ -78,12 +69,40 @@ class _MyReviewListState extends State<MyReviewList> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(height: VERTICAL_GAP),
-              MyReview(
-                reviewsWithImages: reviewsWithImages,
-                onViewAll: () {
-                  // 전체 보기 시 다른 화면
-                },
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 2),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          '내가 쓴 리뷰',
+                          style: TextStyle(
+                            fontFamily: 'NotoSans',
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 15),
+              Column(
+                children: reviewsWithImages
+                    .map((review) => MyReviewCard(
+                  address: review['address'],
+                  userRating: review['userRating'],
+                  aiRating: review['aiRating'],
+                  like: review['like'],
+                  dislike: review['dislike'],
+                  imageUrl: review['imageUrl'],
+                ))
+                    .toList(),
               ),
               // 최근 등록 리뷰
             ],

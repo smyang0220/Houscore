@@ -34,7 +34,6 @@ class _ApiTestScreenState extends ConsumerState<ApiTestScreen> {
   @override
   Widget build(BuildContext context) {
     final data = ref.watch(buildingProvider);
-    print("야호");
 
     // 완전 처음 로딩일때
     if (data is CursorPaginationLoading) {
