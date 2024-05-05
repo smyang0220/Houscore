@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  app:
+    image: houscore-springboot-app
+    ports:
+      - "8084:8084"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod

@@ -49,7 +49,7 @@ dependencies {
 
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-
+	developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
 	runtimeOnly 'org.postgresql:postgresql'
 	runtimeOnly ('io.jsonwebtoken:jjwt-impl:0.11.2')
 	runtimeOnly ('io.jsonwebtoken:jjwt-jackson:0.11.2')
@@ -62,4 +62,10 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+bootJar {
+	archiveBaseName = 'houscore-springboot-app'
+	archiveVersion = '0.1.0'
+	archiveFileName = "${archiveBaseName.get()}-${archiveVersion.get()}.jar"
 }
