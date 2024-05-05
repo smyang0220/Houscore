@@ -63,8 +63,9 @@ public class MemberController {
     @PostMapping("/login/kakao")
     @Operation(summary = "카카오 토큰으로 로그인", description = "카카오 토큰을 검증하고 사용자 정보를 바탕으로 자체 토큰을 발급")
     public ResponseEntity<?> loginWithKakaoToken(@RequestBody Map<String, String> tokenData) {
+        System.out.println("야발3");
         String kakaoAccessToken = tokenData.get("accessToken");
-
+        System.out.println(kakaoAccessToken);
         try {
             OAuth2MemberInfo kakaoMemberInfo = memberService.getMemberInfo("kakao", kakaoAccessToken);
 
