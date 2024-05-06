@@ -4,21 +4,25 @@ import 'dart:ui' as ui;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:houscore/common/const/color.dart';
 import 'package:houscore/residence/component/place_with_minute.dart';
+import 'package:houscore/residence/model/residence_detail_indicators_model.dart';
 import '../utils/place_utils.dart';
 
 class NearbyLivingFacilities extends StatefulWidget {
-  const NearbyLivingFacilities({Key? key});
+  final List<Infra>? closestInfras;
+
+  const NearbyLivingFacilities({Key? key, this.closestInfras}) : super(key: key);
 
   @override
-  _NearbyLivingFacilities createState() => _NearbyLivingFacilities();
+  _NearbyLivingFacilitiesState createState() => _NearbyLivingFacilitiesState();
 }
 
 // 그림 그리기
 class FacilitiesPainter extends CustomPainter {
   // 생활시설들 배열
-  final List<NearbyLivingFacilityWithDistance> places;
+  final List<Infra> places;
   final ui.Image? backgroundImg;
   // Painter 생성자 place들을 외부에서 전달 받음
   FacilitiesPainter(this.places, this.backgroundImg);
@@ -155,10 +159,11 @@ class FacilitiesPainter extends CustomPainter {
       var place = places[i];
       var placeInfo = PlaceUtils.convertDistance(place.distance);
       int minute = placeInfo['minute'] ?? 0; // Null이면 0
+      Color color = placeInfo['transportType'] == '차량' ? CAR_COLOR : WALK_COLOR;
 
       // 텍스트 스타일과 TextSpan 설정
       final textStyle = TextStyle(
-          color: Colors.black, fontSize: 14, fontWeight: FontWeight.normal, letterSpacing: 2);
+          color: Colors.black, fontSize: 12, fontWeight: FontWeight.w600, letterSpacing: 1.2);
       final textSpan = TextSpan(
           text: '${PlaceUtils.typeName(place.type)}(${minute}분)',
           style: textStyle);
@@ -169,8 +174,8 @@ class FacilitiesPainter extends CustomPainter {
       textPainter.layout();
 
       // 텍스트 위치 계산
-      double gap = 40;
-      double xPosition = spacing * (i + 1) - textPainter.width / 2 + 40;
+      double gap = 35;
+      double xPosition = spacing * (i + 1) - textPainter.width / 2 + 33;
       double yPosition = baseHeight - ((i + 1) * gap); // 각 항목을 30 픽셀씩 상승
 
       // 점선 그리기
@@ -185,16 +190,16 @@ class FacilitiesPainter extends CustomPainter {
       // 텍스트 배경 사각형 설정
       // 도보냐 차량이냐에 따라 배경 색 설정
       Paint fillPaint = Paint()
-        ..color = place.walkOrCar ? WALK_COLOR : CAR_COLOR;
+        ..color = color;
       // 배경 크기 및 위치 (텍스트 박스 기준)
       Rect rect = Rect.fromLTWH(
-          xPosition - 10, // 좌우 // 너비/2 가 되어야 함!
+          xPosition - 12, // 좌우 // 너비/2 가 되어야 함!
           yPosition - textPainter.height - 5, // 위아래 // 높이/2 가 되어야 함!
           textPainter.width + 20, // 전체 너비
           textPainter.height + 10 // 전체 높이
           );
       // 둥글기 설정
-      RRect rRect = RRect.fromRectAndRadius(rect, Radius.circular(8));
+      RRect rRect = RRect.fromRectAndRadius(rect, Radius.circular(16));
       // 텍스트 배경 그리기
       canvas.drawRRect(rRect, fillPaint);
 
@@ -224,11 +229,11 @@ class FacilitiesPainter extends CustomPainter {
   }
 }
 
-class _NearbyLivingFacilities extends State<NearbyLivingFacilities> {
-  List<NearbyLivingFacilityWithDistance> places = [];
+class _NearbyLivingFacilitiesState extends State<NearbyLivingFacilities> {
+  // 빌딩 숲 배경
   ui.Image? backgroundImg;
 
-  // 이미지 로드 함수를 클래스 메서드로 선언
+  // assets에서 가져옴
   Future<ui.Image> loadImage(String imagePath) async {
     ByteData data = await rootBundle.load(imagePath);
     Uint8List bytes = data.buffer.asUint8List();
@@ -240,45 +245,37 @@ class _NearbyLivingFacilities extends State<NearbyLivingFacilities> {
   @override
   void initState() {
     super.initState();
-    places = [
-      NearbyLivingFacilityWithDistance(
-          type: PlaceType.library,
-          name: "도서관A",
-          distance: 0.07,
-          walkOrCar: true),
-      NearbyLivingFacilityWithDistance(
-          type: PlaceType.bus, name: "버스정류장C", distance: 0.2, walkOrCar: true),
-      NearbyLivingFacilityWithDistance(
-          type: PlaceType.medicalFacility,
-          name: "의료시설E",
-          distance: 3,
-          walkOrCar: false), // 차량으로 이동
-      NearbyLivingFacilityWithDistance(
-          type: PlaceType.park, name: "공원F", distance: 0.267, walkOrCar: true),
-      NearbyLivingFacilityWithDistance(
-          type: PlaceType.subway,
-          name: "지하철역D",
-          distance: 0.333,
-          walkOrCar: true),
-      NearbyLivingFacilityWithDistance(
-          type: PlaceType.supermarket,
-          name: "마트B",
-          distance: 0.467,
-          walkOrCar: true),
-    ];
 
-    // Sort the places list by distance
-    places.sort((a, b) => a.distance.compareTo(b.distance));
+    // 리스트 정렬 (distance에 따라 오름차순)
+    if (widget.closestInfras != null) {
+      widget.closestInfras!.sort((a, b) => a.distance.compareTo(b.distance));
+    }
 
     loadImage('asset/img/building/building_background.png').then((img) {
       setState(() {
-        this.backgroundImg = img;
+        backgroundImg = img;
       });
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    if (widget.closestInfras == null || widget.closestInfras!.isEmpty) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '주변 생활 시설',
+            style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+          ),
+          Center(
+            child: Text("반경 nkm 내에 주변 생활 시설이 없습니다.",
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          )
+        ],
+      );
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -291,17 +288,17 @@ class _NearbyLivingFacilities extends State<NearbyLivingFacilities> {
           child: backgroundImg == null
               ? CircularProgressIndicator()
               : CustomPaint(
-                  painter: FacilitiesPainter(places, backgroundImg),
-                  child: Container(
-                    height: 320,
-                    alignment: Alignment.bottomLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child:
-                          Icon(Icons.home_filled, size: 35, color: PRIMARY_COLOR),
-                    ),
-                  ),
-                ),
+            painter: FacilitiesPainter(widget.closestInfras!, backgroundImg),
+            child: Container(
+              height: 320,
+              alignment: Alignment.bottomLeft,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child:
+                Icon(Icons.home_filled, size: 35, color: PRIMARY_COLOR),
+              ),
+            ),
+          ),
         ),
       ],
     );
