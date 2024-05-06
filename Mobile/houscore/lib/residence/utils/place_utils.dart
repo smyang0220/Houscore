@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:houscore/residence/model/residence_detail_indicators_model.dart';
 
 import '../component/place_with_minute.dart';
 
@@ -13,20 +14,22 @@ enum PlaceType {
 
 class PlaceUtils {
 
-  static String typeName(PlaceType type) {
+  static String typeName(InfraType type) {
     switch (type) {
-      case PlaceType.library:
+      case InfraType.library:
         return "도서관";
-      case PlaceType.supermarket:
+      case InfraType.supermarket:
         return "대형마트";
-      case PlaceType.bus:
+      case InfraType.bus:
         return "버스정류장";
-      case PlaceType.subway:
+      case InfraType.subway:
         return "지하철역";
-      case PlaceType.medicalFacility:
+      case InfraType.medicalFacilities:
         return "병원";
-      case PlaceType.park:
+      case InfraType.park:
         return "공원";
+      case InfraType.school:
+        return "학교";
       default:
         return "알 수 없음";
     }

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:houscore/common/const/color.dart';
 import 'package:houscore/residence/utils/place_utils.dart';
-
-import '../model/nearby_public_transportation_model.dart';
+import '../model/residence_detail_indicators_model.dart';
 
 class NearbyPublicTransportation extends StatefulWidget {
-  final List<PublicTransport> transportItems;
+  final List<Infra> transportItems;
 
   const NearbyPublicTransportation({
     Key? key,
@@ -25,7 +24,7 @@ class _NearbyPublicTransportationState
   Widget build(BuildContext context) {
     // 필터링된 리스트: _showBuses 값에 따라 버스 또는 지하철만 표시
     // List<PublicTransport> filteredList = widget.transportItems.where((item) => item.busOrSubway == _showBuses).toList();
-    List<PublicTransport> transportList = widget.transportItems.toList();
+    List<Infra> transportList = widget.transportItems.toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -42,11 +41,11 @@ class _NearbyPublicTransportationState
         ),
         SizedBox(height: 15),
         ...List.generate(transportList.length, (index) {
-          PublicTransport transport = transportList[index];
+          Infra transport = transportList[index];
           String transportType;
           int time = PlaceUtils.convertDistance(transport.distance)['minute'];
           Image leadingIcon = Image.asset(
-            transport.busOrSubway
+            transport.type == InfraType.bus
                 ? 'asset/icon/bus.png'
                 : 'asset/icon/subway.png',
             width: 15,

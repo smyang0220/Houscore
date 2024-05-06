@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:houscore/common/const/color.dart';
 import 'package:houscore/residence/utils/place_utils.dart';
-
-import '../model/nearby_infra_model.dart';
+import '../model/residence_detail_indicators_model.dart';
 
 class NearbyInfra extends StatefulWidget {
-  final List<Infra> infraItems;
+  final List<Infra> infras;
 
   const NearbyInfra({
     Key? key,
-    required this.infraItems,
+    required this.infras,
   }) : super(key: key);
 
   @override
@@ -17,11 +15,17 @@ class NearbyInfra extends StatefulWidget {
 }
 
 class _NearbyInfraState extends State<NearbyInfra> {
-  InfraType? _selectedType = InfraType.hospital;
+  InfraType? _selectedType = InfraType.medicalFacilities;
+  List<Infra> getFilteredInfras(List<Infra> list, InfraType? selectedType) {
+    if (selectedType == null) {
+      return list;
+    } else {
+      return list.where((infra) => infra.type == selectedType).toList();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    List<Infra> filteredList = _selectedType == null ? widget.infraItems : widget.infraItems.where((item) => item.type == _selectedType).toList();
 
     // 버튼 구성
     Widget buttonContent(String iconPath, String label) {
@@ -37,7 +41,7 @@ class _NearbyInfraState extends State<NearbyInfra> {
       );
     }
 
-    // 필터링된 부분 구성
+    // 버튼에 따라 달라지는 리스트 구성
     List<Widget> buildInfraList(List<Infra> list) {
       return list.map((infra) {
         var results = PlaceUtils.convertDistance(infra.distance);
@@ -67,6 +71,8 @@ class _NearbyInfraState extends State<NearbyInfra> {
         );
       }).toList();
     }
+
+    List<Infra> filteredList = getFilteredInfras(widget.infras, _selectedType);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,10 +108,24 @@ class _NearbyInfraState extends State<NearbyInfra> {
               ],
               onPressed: (int index) {
                 setState(() {
-                  _selectedType = InfraType.values[index];
+                  switch (index) {
+                    case 0: // 병원 버튼
+                      _selectedType = InfraType.medicalFacilities;
+                      break;
+                    case 1: // 공원 버튼
+                      _selectedType = InfraType.park;
+                      break;
+                    case 2: // 학교 버튼
+                      _selectedType = InfraType.school;
+                      break;
+                  }
                 });
               },
-              isSelected: InfraType.values.map((e) => e == _selectedType).toList(),
+              isSelected: [
+                _selectedType == InfraType.medicalFacilities, // 병원 버튼이 선택되었는지
+                _selectedType == InfraType.park, // 공원 버튼이 선택되었는지
+                _selectedType == InfraType.school, // 학교 버튼이 선택되었는지
+              ],
             ),
           ],
         ),
