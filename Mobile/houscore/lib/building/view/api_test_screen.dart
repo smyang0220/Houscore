@@ -49,6 +49,12 @@ class _ApiTestScreenState extends ConsumerState<ApiTestScreen> {
       );
     }
 
+    if (data is CursorPaginationRefetching) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
     // 에러
     if (data is CursorPaginationError) {
       return Center(
