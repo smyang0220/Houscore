@@ -1,7 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:houscore/common/view/root_tab.dart';
+import 'package:houscore/member/repository/kakao_login_repository.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 
 import '../../common/const/data.dart';
@@ -17,43 +19,26 @@ class KakaoLoginButton extends ConsumerStatefulWidget {
 class _KakaoLoginButtonState extends ConsumerState<KakaoLoginButton> {
   @override
   Widget build(BuildContext context) {
+    final dio = Dio();
+
     return Column(
       children: [
         InkWell(
           onTap: () async {
+            OAuthToken token;
             if (await isKakaoTalkInstalled()) {
               // 카카오가 설치됐을때
               try {
-                print(await KakaoSdk.origin);
-                OAuthToken token = await UserApi.instance.loginWithKakaoTalk();
-                print('로그인 성공');
-                print("엑세스토큰 ${token.accessToken}");
-                print("리프레시토큰 ${token.refreshToken}");
+                token = await UserApi.instance.loginWithKakaoTalk();
 
-                final refreshToken = token.accessToken;
-                final accessToken = token.refreshToken;
-
-                final storage = ref.read(secureStorageProvider);
-
-                await storage.write(
-                    key: REFRESH_TOKEN_KEY, value: refreshToken);
-                await storage.write(key: ACCESS_TOKEN_KEY, value: accessToken);
-
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => RootTab(),
-                  ),
-                );
               } catch (error) {
                 print('로그인 실패 $error');
                 if (error is PlatformException && error.code == 'CANCELED') {
                   return;
                 }
                 try {
-                  print(await KakaoSdk.origin);
-                  OAuthToken token =
-                      await UserApi.instance.loginWithKakaoAccount();
-                  print('로그인 성공 ${token.accessToken}');
+                  token =
+                  await UserApi.instance.loginWithKakaoAccount();
                 } catch (error) {
                   throw Error();
                 }
@@ -61,21 +46,54 @@ class _KakaoLoginButtonState extends ConsumerState<KakaoLoginButton> {
             } else {
               // 카카오가 설치 안됐을때
               try {
-                print(await KakaoSdk.origin);
-                OAuthToken token =
-                    await UserApi.instance.loginWithKakaoAccount();
-                print('로그인 성공 ${token.accessToken}');
+                token = await UserApi.instance.loginWithKakaoAccount();
               } catch (error) {
                 throw Error();
               }
             }
+try{
+  final repository = ref.watch(kakaoLoginRepositoryProvider);
+
+  final resp = repository.loginKakao(data: {
+    "accessToken": token.accessToken, // accessToken
+    "refreshToken": token.refreshToken, // refreshToken
+  });
+
+  print("전송후");
+  print(resp);
+}
+            catch(e){
+              print("안됨");
+            }
+            // print("리프레시 보내기 전");
+            // final repository = ref.watch(kakaoLoginRepositoryProvider);
+            // final resp = repository.refreshKakao();
+            // print("리프레시 보낸 후");
+            // print(resp['header']);
+
+
+            final accessToken = token.accessToken;
+            final refreshToken = token.refreshToken;
+
+
+            final storage = ref.read(secureStorageProvider);
+
+
+            await storage.write(key: REFRESH_TOKEN_KEY, value: refreshToken);
+            await storage.write(key: ACCESS_TOKEN_KEY, value: accessToken);
+
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => RootTab(),
+              ),
+            );
           },
 //thing to do
 
           child: Card(
             margin: const EdgeInsets.fromLTRB(20, 20, 20, 0),
             shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
             elevation: 2,
             child: Container(
               height: 50,
@@ -84,59 +102,18 @@ class _KakaoLoginButtonState extends ConsumerState<KakaoLoginButton> {
                 borderRadius: BorderRadius.circular(7),
               ), // BoxDecoration
               child:
-                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 Image.asset(
                   'asset/img/logo/kakao_login_medium_wide.png',
                   height: 30,
                   width: MediaQuery.of(context).size.width * 0.7,
                 ),
+
               ]), // Row
             ), //
           ),
         ),
       ],
     );
-  }
-}
-
-Future<void> signInWithKakao(Ref ref) async {
-  if (await isKakaoTalkInstalled()) {
-    // 카카오가 설치됐을때
-    try {
-      print(await KakaoSdk.origin);
-      OAuthToken token = await UserApi.instance.loginWithKakaoTalk();
-      print('로그인 성공');
-      print("엑세스토큰 ${token.accessToken}");
-      print("리프레시토큰 ${token.refreshToken}");
-
-      final refreshToken = token.accessToken;
-      final accessToken = token.refreshToken;
-
-      final storage = ref.read(secureStorageProvider);
-
-      await storage.write(key: REFRESH_TOKEN_KEY, value: refreshToken);
-      await storage.write(key: ACCESS_TOKEN_KEY, value: accessToken);
-    } catch (error) {
-      print('로그인 실패 $error');
-      if (error is PlatformException && error.code == 'CANCELED') {
-        return;
-      }
-      try {
-        print(await KakaoSdk.origin);
-        OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
-        print('로그인 성공 ${token.accessToken}');
-      } catch (error) {
-        throw Error();
-      }
-    }
-  } else {
-    // 카카오가 설치 안됐을때
-    try {
-      print(await KakaoSdk.origin);
-      OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
-      print('로그인 성공 ${token.accessToken}');
-    } catch (error) {
-      throw Error();
-    }
   }
 }
