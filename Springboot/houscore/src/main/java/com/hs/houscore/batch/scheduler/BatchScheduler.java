@@ -38,15 +38,15 @@ public class BatchScheduler {
     private final RepositoryItemWriter<BuildingEntity> writer;
     private final PlatformTransactionManager transactionManager;
 
-    @Bean
-    public JobRegistryBeanPostProcessor jobRegistryBeanPostProcessor(){
-        //배치 처리 상태를 데이터 저장소에 보관
-        JobRegistryBeanPostProcessor jobProcessor = new JobRegistryBeanPostProcessor();
-        jobProcessor.setJobRegistry(jobRegistry);
-        return jobProcessor;
-    }
+//    @Bean
+//    public JobRegistryBeanPostProcessor jobRegistryBeanPostProcessor(){
+//        //배치 처리 상태를 데이터 저장소에 보관
+//        JobRegistryBeanPostProcessor jobProcessor = new JobRegistryBeanPostProcessor();
+//        jobProcessor.setJobRegistry(jobRegistry);
+//        return jobProcessor;
+//    }
 
-    @Scheduled(fixedRate = 600000)
+    @Scheduled(fixedRate = 60000)
     public void runJob() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
         JobParameters jobParameters = new JobParameters();
         log.info("10분 스캐줄러 작동중");

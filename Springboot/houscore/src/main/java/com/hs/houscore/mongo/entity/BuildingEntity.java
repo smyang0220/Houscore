@@ -22,6 +22,10 @@ public class BuildingEntity {
     private Double lng;
     private String platPlc;
     private String newPlatPlc;
+    private String sigunguCd;
+    private String bjdongCd;
+    private String bldNm;
+    private String pnuCode;
     private String batchYn;
     private Information information;
 
@@ -35,6 +39,7 @@ public class BuildingEntity {
         private InfraInfo infraInfo;
         private SecurityInfo securityInfo;
         private TrafficInfo trafficInfo;
+        private PriceInfo priceInfo;
     }
 
     @Data
@@ -43,28 +48,17 @@ public class BuildingEntity {
     @Getter
     @Builder
     public static class BuildingInfo {
-        private String mgmBldrgstPk;
-        private String etcPurps;
-        private String mainPurpsCdNm;
-        private String mainAtchGbCdNm;
-        private Integer hhldCnt;
-        private Double heit;
-        private Integer grndFlrCnt;
-        private Integer ugrndFlrCnt;
-        private Integer rideUseElvtCnt;
-        private Integer parkingCnt;
-        private String pmsDay;
-        private String stcnsDay;
-        private String useAprDay;
-        private String bldNm;
-        private String dongNm;
-        private Double platArea;
-        private Double archArea;
-        private Double totArea;
-        private Double bcRat;
-        private Double vlRat;
-        private String strctCdNm;
-        private Integer rserthqkDsgnApplyYn;
+        private Double platArea;        //대지면적
+        private Double archArea;        //건축면적
+        private Double totArea;         //연면적
+        private Double bcRat;           //건폐율
+        private Double vlRat;           //용적률
+        private String mainPurpsCdNm;   //주용도코드명
+        private Integer regstrKindCd;   //대장종류코드
+        private String regstrKindCdNm;  //대장종류코드명
+        private Integer hhldCnt;        //세대수
+        private Integer mainBldCnt;     //주건축물수
+        private Integer totPkngCnt;     //총주차수
     }
 
     @Data
@@ -90,5 +84,15 @@ public class BuildingEntity {
     public static class TrafficInfo {
         private Integer bus;
         private Integer subway;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class PriceInfo {
+        private Double leaseAvg;        //평균 전세가격
+        private String rentAvg;         //평균 월세가격
+        private Double saleAvg;         //평균 매매가
     }
 }
