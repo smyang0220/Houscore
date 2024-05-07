@@ -16,7 +16,7 @@ public interface BuildingRepository extends MongoRepository<BuildingEntity, Stri
 
     Optional<BuildingEntity> findById(@Param("id")Integer Id);
 
-    Optional<BuildingEntity> findByNewPlatPlc(@Param("newPlatPlc")String newPlatPlc);
+    Optional<BuildingEntity> findByNewPlatPlcOrPlatPlc(@Param("newPlatPlc")String newPlatPlc, @Param("PlatPlc")String PlatPlc);
 
     List<BuildingEntity> findTop5ByNewPlatPlcContaining(@Param("newPlatPlc") String sigungu);
 

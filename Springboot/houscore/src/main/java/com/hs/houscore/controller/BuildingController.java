@@ -1,5 +1,6 @@
 package com.hs.houscore.controller;
 
+import com.hs.houscore.dto.BuildingDetailDTO;
 import com.hs.houscore.dto.RecommendAiDTO;
 import com.hs.houscore.mongo.entity.BuildingEntity;
 import com.hs.houscore.mongo.service.BuildingService;
@@ -27,14 +28,16 @@ public class BuildingController {
 
     @GetMapping("/detail")
     @Operation(summary = "건물 상세 검색", description = "주소 기반으로 건물 상세 정보 검색")
-    public BuildingEntity getBuildingDetail(@RequestParam String address){
-        return buildingService.getBuildingByAddress(address);
+    public BuildingDetailDTO getBuildingDetail(@RequestParam String address,
+                                               @RequestParam Double lat, @RequestParam Double lng){
+        return buildingService.getBuildingByAddress(address,lat,lng);
     }
 
     @GetMapping("/detail/indicator")
     @Operation(summary = "건물 상세 지표 검색", description = "주소 기반으로 건물 상세 지표 검색")
-    public BuildingEntity getBuildingIndicator(@RequestParam String address){
-        return buildingService.getBuildingByAddress(address);
+    public BuildingDetailDTO getBuildingIndicator(@RequestParam String address,
+                                                  @RequestParam Double lat, @RequestParam Double lng){
+        return null;
     }
 
     @GetMapping("/review")

@@ -1,10 +1,9 @@
 package com.hs.houscore.mongo.entity;
 
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "building")
@@ -14,8 +13,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Builder
 @Data
 public class BuildingEntity {
+    @Transient
+    public static final String SEQUENCE_NAME = "bulding_sequence";
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Double score;
     private Double lat;
