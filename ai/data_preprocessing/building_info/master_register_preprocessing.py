@@ -127,9 +127,6 @@ df = pd.read_csv(file_path, delimiter='|', encoding='cp949', names=headers,
 # 'address' 열에서 '번지' 문자열 제거
 df['대지위치'] = df['대지위치'].str.replace('번지', '', regex=False)
 
-# 단독주택, 공동주택만 추리기
-df = df[df['주용도코드명'].isin(['공동주택', '다중주택', '단독주택', '다세대주택', '다가구주택', '연립주택', '아파트'])]
-
 # pnu 코드 생성 전에 NaN 값이 있는 행을 제거
 df.dropna(subset=['시군구코드', '법정동코드', '대지구분코드', '번', '지'], inplace=True)
 
