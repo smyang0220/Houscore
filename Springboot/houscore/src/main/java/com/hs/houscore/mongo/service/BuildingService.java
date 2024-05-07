@@ -1,5 +1,6 @@
 package com.hs.houscore.mongo.service;
 
+import com.hs.houscore.dto.BuildingDetailDTO;
 import com.hs.houscore.dto.RecommendAiDTO;
 import com.hs.houscore.dto.RecommendDTO;
 import com.hs.houscore.mongo.entity.BuildingEntity;
@@ -29,9 +30,63 @@ public class BuildingService {
         buildingRepository.save(buildingEntity);
     }
 
-    public BuildingEntity getBuildingByAddress(String address){
-        return buildingRepository.findByNewPlatPlc(address)
-                .orElseThrow(() -> new IllegalArgumentException(address + " 해당 주소의 건물 정보가 존재하지 않습니다."));
+    public BuildingDetailDTO getBuildingByAddress(String address, Double lat, Double lng){
+        BuildingEntity buildingEntity = buildingRepository.findByNewPlatPlcOrPlatPlc(address, address)
+                .orElse(null);
+        if(buildingEntity != null){
+            return buildingDetailDTOMapper(buildingEntity);
+        }
+        return setBuildingInfo(address, lat, lng);
+    }
+
+    @Transactional
+    public BuildingDetailDTO setBuildingInfo(String address, Double lat, Double lng) {
+        BuildingEntity buildingEntity = BuildingEntity.builder()
+                .platPlc(address)
+                .newPlatPlc("")
+                .batchYn("n")
+                .lat(lat)
+                .lng(lng)
+                .information(null)
+                .build();
+
+        save(buildingEntity);
+        buildingEntity = buildingRepository.findByNewPlatPlcOrPlatPlc(address, address)
+                .orElseThrow(() -> new IllegalArgumentException("건물 정보가 존재하지 않습니다."));
+        return BuildingDetailDTO.builder()
+                .id(buildingEntity.getId())
+                .score(buildingEntity.getScore())
+                .lat(buildingEntity.getLat())
+                .lng(buildingEntity.getLng())
+                .platPlc(buildingEntity.getPlatPlc())
+                .newPlatPlc(buildingEntity.getNewPlatPlc())
+                .buildingInfo(null)
+                .build();
+    }
+
+    private BuildingDetailDTO buildingDetailDTOMapper(BuildingEntity buildingEntity) {
+        BuildingEntity.BuildingInfo buildingInfo = buildingEntity.getInformation().getBuildingInfo();
+        return BuildingDetailDTO.builder()
+                .id(buildingEntity.getId())
+                .score(buildingEntity.getScore())
+                .lat(buildingEntity.getLat())
+                .lng(buildingEntity.getLng())
+                .platPlc(buildingEntity.getPlatPlc())
+                .newPlatPlc(buildingEntity.getNewPlatPlc())
+                .buildingInfo(BuildingDetailDTO.BuildingInfo.builder()
+                        .platArea(buildingInfo.getPlatArea())
+                        .archArea(buildingInfo.getArchArea())
+                        .totArea(buildingInfo.getTotArea())
+                        .bcRat(buildingInfo.getBcRat())
+                        .vlRat(buildingInfo.getVlRat())
+                        .mainPurpsCdNm(buildingInfo.getMainPurpsCdNm())
+                        .regstrKindCd(buildingInfo.getRegstrKindCd())
+                        .regstrKindCdNm(buildingInfo.getRegstrKindCdNm())
+                        .hhldCnt(buildingInfo.getHhldCnt())
+                        .mainBldCnt(buildingInfo.getMainBldCnt())
+                        .totPkngCnt(buildingInfo.getTotPkngCnt())
+                        .build())
+                .build();
     }
 
     public List<ReviewEntity> getBuildingReviewList(String address){
