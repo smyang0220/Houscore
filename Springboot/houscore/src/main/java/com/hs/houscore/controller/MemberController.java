@@ -98,7 +98,7 @@ public class MemberController {
             if (memberService.validateRefreshToken(memberEmail, refreshToken)) {
                 String newAccessToken = jwtService.createAccessToken(memberEmail, memberService.getMemberNameByEmail(memberEmail), memberService.getProviderByEmail(memberEmail));
                 HttpHeaders responseHeaders = new HttpHeaders();
-                responseHeaders.add("Set-Cookie", "access_token=" + newAccessToken + "; Max-Age=3600; HttpOnly");
+                responseHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer " + newAccessToken);
                 return ResponseEntity.ok().headers(responseHeaders).body("Access token refreshed successfully");
             }
         }
