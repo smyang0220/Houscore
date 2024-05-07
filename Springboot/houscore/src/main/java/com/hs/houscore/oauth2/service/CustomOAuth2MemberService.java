@@ -3,6 +3,9 @@ package com.hs.houscore.oauth2.service;
 import com.hs.houscore.oauth2.exception.OAuth2AuthenticationProcessingException;
 import com.hs.houscore.oauth2.member.OAuth2MemberInfo;
 import com.hs.houscore.oauth2.member.OAuth2MemberInfoFactory;
+import com.hs.houscore.postgre.entity.MemberEntity;
+import com.hs.houscore.postgre.repository.MemberRepository;
+import com.hs.houscore.postgre.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
@@ -13,9 +16,13 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @Service
 public class CustomOAuth2MemberService extends DefaultOAuth2UserService {
+
+    private final MemberService memberService;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) throws OAuth2AuthenticationException {
@@ -33,20 +40,16 @@ public class CustomOAuth2MemberService extends DefaultOAuth2UserService {
     }
 
     private OAuth2User processOAuth2User(OAuth2UserRequest userRequest, OAuth2User oAuth2User) {
-
-        String registrationId = userRequest.getClientRegistration()
-                .getRegistrationId();
-
-        String accessToken = userRequest.getAccessToken().getTokenValue();
-
-        OAuth2MemberInfo oAuth2UserInfo = OAuth2MemberInfoFactory.getOAuth2MemberInfo(registrationId,
-                accessToken,
+        OAuth2MemberInfo oAuth2UserInfo = OAuth2MemberInfoFactory.getOAuth2MemberInfo(
+                userRequest.getClientRegistration().getRegistrationId(),
+                userRequest.getAccessToken().getTokenValue(),
                 oAuth2User.getAttributes());
 
-        // OAuth2UserInfo field value validation
         if (!StringUtils.hasText(oAuth2UserInfo.getEmail())) {
             throw new OAuth2AuthenticationProcessingException("Email not found from OAuth2 provider");
         }
+
+        MemberEntity member = memberService.createMember(oAuth2UserInfo);
 
         return new OAuth2MemberPrincipal(oAuth2UserInfo);
     }

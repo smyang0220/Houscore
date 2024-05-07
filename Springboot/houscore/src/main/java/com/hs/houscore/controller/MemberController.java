@@ -82,7 +82,7 @@ public class MemberController {
             HttpHeaders headers = new HttpHeaders();
             headers.add("Access-Token", accessToken);
             headers.add("Refresh-Token", refreshToken);
-
+            System.out.println("됐는데?");
             return ResponseEntity.ok().headers(headers).body("Login successful with Kakao");
         } catch (AuthenticationException ex) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication failed with Kakao token: " + ex.getMessage());

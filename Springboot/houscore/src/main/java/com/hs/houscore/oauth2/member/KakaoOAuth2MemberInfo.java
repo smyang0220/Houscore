@@ -8,7 +8,6 @@ public class KakaoOAuth2MemberInfo implements OAuth2MemberInfo {
 
     private final Map<String, Object> attributes;
     private final String accessToken;
-    private final String id;
     private final MemberEntity.Role role;
     private final String email;
     private final String memberName;
@@ -21,14 +20,13 @@ public class KakaoOAuth2MemberInfo implements OAuth2MemberInfo {
         Map<String, Object> kakaoProfile = (Map<String, Object>) kakaoAccount.get("profile");
         this.attributes = kakaoProfile;
 
-        this.id = ((Long) attributes.get("id")).toString();
+
         this.email = (String) kakaoAccount.get("email");
         this.role = MemberEntity.Role.MEMBER;
         this.memberName = (String) kakaoProfile.get("nickname");
 
         this.profileImageUrl = (String) kakaoProfile.get("profile_image_url");
 
-        this.attributes.put("id", id);
         this.attributes.put("email", this.email);
     }
 
@@ -38,7 +36,7 @@ public class KakaoOAuth2MemberInfo implements OAuth2MemberInfo {
     }
 
     @Override
-    public String getAccessToken() {
+    public String getRefreshToken() {
         return accessToken;
     }
 
@@ -49,7 +47,7 @@ public class KakaoOAuth2MemberInfo implements OAuth2MemberInfo {
 
     @Override
     public String getId() {
-        return id;
+        return null;
     }
 
     @Override
