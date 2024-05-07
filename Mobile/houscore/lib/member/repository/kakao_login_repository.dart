@@ -13,7 +13,7 @@ final kakaoLoginRepositoryProvider = Provider<KakaoLoginRepository>(
       (ref) {
     final dio = ref.watch(dioProvider);
     final repository =
-    KakaoLoginRepository(dio, baseUrl: 'http://$ip');
+    KakaoLoginRepository(dio, baseUrl: 'http://$ip/api/member');
 
     return repository;
   },
@@ -24,7 +24,7 @@ abstract class KakaoLoginRepository {
   factory KakaoLoginRepository(Dio dio, {String baseUrl}) =
   _KakaoLoginRepository;
 
-  @POST("/api/member/login/kakao")
+  @POST("/login/kakao")
   @Headers({
     'accessToken': 'false',
   })
