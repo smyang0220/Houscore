@@ -128,7 +128,7 @@ df = pd.read_csv(file_path, delimiter='|', encoding='cp949', names=headers,
 df['대지위치'] = df['대지위치'].str.replace('번지', '', regex=False)
 
 # pnu 코드 생성 전에 NaN 값이 있는 행을 제거
-df.dropna(subset=['시군구코드', '법정동코드', '대지구분코드', '번', '지'], inplace=True)
+df.dropna(subset=['시군구코드', '법정동코드', '대지구분코드', '번', '지','주용도코드명'], inplace=True)
 
 # 새로운 pnu 코드 컬럼 추가
 df['pnu_code'] = df.apply(create_pnu, axis=1)
