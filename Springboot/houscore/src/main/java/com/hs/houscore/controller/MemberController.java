@@ -67,8 +67,9 @@ public class MemberController {
         String kakaoAccessToken = tokenData.get("accessToken");
         System.out.println(kakaoAccessToken);
         try {
+            System.out.println("야야야발발발");
             OAuth2MemberInfo kakaoMemberInfo = memberService.getMemberInfo("kakao", kakaoAccessToken);
-
+            System.out.println("야이후");
             // 여기에서는 사용자 이메일이 필요하므로 Email 검증을 추가
             if (!StringUtils.hasText(kakaoMemberInfo.getEmail())) {
                 throw new OAuth2AuthenticationProcessingException("Email not found from Kakao data");
