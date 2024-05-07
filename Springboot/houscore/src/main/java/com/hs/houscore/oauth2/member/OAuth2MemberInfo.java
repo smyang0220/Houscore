@@ -8,7 +8,7 @@ public interface OAuth2MemberInfo {
 
     OAuth2Provider getProvider();
 
-    String getAccessToken();
+    String getRefreshToken();
 
     Map<String, Object> getAttributes();
 

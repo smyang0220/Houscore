@@ -7,10 +7,11 @@ public class OAuth2MemberInfoFactory {
     public static OAuth2MemberInfo getOAuth2MemberInfo(String registrationId,
                                                      String accessToken,
                                                      Map<String, Object> attributes) {
-       if (OAuth2Provider.KAKAO.getRegistrationId().equals(registrationId)) {
-            return new KakaoOAuth2MemberInfo(accessToken, attributes);
-        } else {
-            throw new OAuth2AuthenticationProcessingException("Login with " + registrationId + " is not supported");
-        }
+        return switch (registrationId) {
+            case "kakao" -> new KakaoOAuth2MemberInfo(accessToken, attributes);
+            case "google" -> null;
+            default ->
+                    throw new OAuth2AuthenticationProcessingException("Login with " + registrationId + " is not supported");
+        };
     }
 }

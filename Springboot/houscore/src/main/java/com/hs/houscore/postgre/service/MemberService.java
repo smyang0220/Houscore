@@ -1,6 +1,7 @@
 package com.hs.houscore.postgre.service;
 
 import com.hs.houscore.dto.MemberDTO;
+import com.hs.houscore.oauth2.exception.OAuth2AuthenticationProcessingException;
 import com.hs.houscore.oauth2.member.KakaoOAuth2MemberInfo;
 import com.hs.houscore.postgre.entity.MemberEntity;
 import com.hs.houscore.postgre.repository.MemberRepository;
@@ -30,16 +31,31 @@ public class MemberService {
     private final RestTemplate restTemplate;
 
     public MemberEntity createMember(OAuth2MemberInfo memberInfo) {
-        MemberEntity member = memberRepository.findByMemberEmail(memberInfo.getEmail())
-                .orElse(MemberEntity.builder()
-                        .memberEmail(memberInfo.getEmail())
-                        .memberName(memberInfo.getMemberName())
-                        .profileImage(memberInfo.getProfileImageUrl())
-                        .role(memberInfo.getRole())
-                        .provider(memberInfo.getProvider())
-                        .refreshToken(memberInfo.getAccessToken())
-                        .build());
+        // First, check if member already exists
+        Optional<MemberEntity> existingMember = memberRepository.findByMemberEmail(memberInfo.getEmail());
+        if (existingMember.isPresent()) {
+            // If member exists, update existing member
+            return updateMember(existingMember.get(), memberInfo);
+        } else {
+            // If not, create a new member
+            MemberEntity newMember = MemberEntity.builder()
+                    .memberEmail(memberInfo.getEmail())
+                    .memberName(memberInfo.getMemberName())
+                    .profileImage(memberInfo.getProfileImageUrl())
+                    .role(memberInfo.getRole())
+                    .provider(memberInfo.getProvider())
+                    .refreshToken(memberInfo.getRefreshToken())
+                    .build();
+            return memberRepository.save(newMember);
+        }
+    }
 
+    public MemberEntity updateMember(MemberEntity member, OAuth2MemberInfo memberInfo) {
+        member.setMemberName(memberInfo.getMemberName());
+        member.setProfileImage(memberInfo.getProfileImageUrl());
+        member.setRole(memberInfo.getRole());
+        member.setProvider(memberInfo.getProvider());
+        member.setRefreshToken(memberInfo.getRefreshToken());
         return memberRepository.save(member);
     }
 
@@ -71,10 +87,8 @@ public class MemberService {
     }
 
     private OAuth2MemberInfo parseKakaoUserInfo(String accessToken, Map<String, Object> kakaoData) {
-        // Ensure all data exists as expected, handling potential null or missing values.
         Map<String, Object> kakaoAccount = (Map<String, Object>) Optional.ofNullable(kakaoData.get("kakao_account"))
                 .orElseThrow(() -> new OAuth2AuthenticationException("Missing account details"));
-        // Use the entire kakaoData which includes 'id', 'kakao_account', etc., as the attributes
         return new KakaoOAuth2MemberInfo(accessToken, kakaoData);
     }
 
