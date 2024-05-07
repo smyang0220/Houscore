@@ -97,7 +97,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         } else if ("unlink".equalsIgnoreCase(mode)) { // 회원 탈퇴
 
-            String accessToken = principal.getUserInfo().getAccessToken();
+            String accessToken = principal.getUserInfo().getRefreshToken();
             OAuth2Provider provider = principal.getUserInfo().getProvider();
 
             // DB 삭제

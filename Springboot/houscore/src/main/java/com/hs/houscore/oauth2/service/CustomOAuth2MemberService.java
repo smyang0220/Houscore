@@ -4,7 +4,6 @@ import com.hs.houscore.oauth2.exception.OAuth2AuthenticationProcessingException;
 import com.hs.houscore.oauth2.member.OAuth2MemberInfo;
 import com.hs.houscore.oauth2.member.OAuth2MemberInfoFactory;
 import com.hs.houscore.postgre.entity.MemberEntity;
-import com.hs.houscore.postgre.repository.MemberRepository;
 import com.hs.houscore.postgre.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
@@ -15,8 +14,6 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
