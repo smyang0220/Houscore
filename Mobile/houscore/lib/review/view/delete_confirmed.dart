@@ -61,17 +61,19 @@ class _DeleteConfirmedState extends State<DeleteConfirmed> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.8,
                     child: Center(
-                      child: Column(children: [
-                        SizedBox(height: 40),
-                        Text(
-                          "리뷰 삭제가 성공적으로 완료되었습니다!\n",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
+                      child: Column(
+                        children: [
+                          SizedBox(height: 40),
+                          Text(
+                            "리뷰 삭제가 성공적으로 완료되었습니다!\n",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
                           ),
-                        ),
-                      ]),
+                        ],
+                      ),
                     ),
                   ),
                   const SizedBox(
@@ -92,7 +94,10 @@ class _DeleteConfirmedState extends State<DeleteConfirmed> {
                     style: OutlinedButton.styleFrom(
                       foregroundColor: Colors.black,
                       backgroundColor: Colors.white,
-                      side: BorderSide(color: Colors.black, width: 2,),
+                      side: BorderSide(
+                        color: Colors.black,
+                        width: 2,
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5.0),
                       ),
@@ -102,13 +107,17 @@ class _DeleteConfirmedState extends State<DeleteConfirmed> {
                   OutlinedButton(
                     onPressed: () {
                       Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => MyReviewList()),
-                    );},
+                        context,
+                        MaterialPageRoute(builder: (context) => MyReviewList()),
+                      );
+                    },
                     style: OutlinedButton.styleFrom(
                       foregroundColor: Colors.white,
                       backgroundColor: Colors.blue,
-                      side: BorderSide(color: Colors.blue, width: 2,),
+                      side: BorderSide(
+                        color: Colors.blue,
+                        width: 2,
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5.0),
                       ),

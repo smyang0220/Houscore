@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:houscore/review/view/create_review.dart';
 import 'package:houscore/review/view/delete_confirmed.dart';
-import 'package:houscore/review/view/update_review.dart';
 
 class MyReviewCard extends StatelessWidget {
   final String address;
@@ -84,7 +84,7 @@ class MyReviewCard extends StatelessWidget {
                         text: TextSpan(
                           children: [
                             TextSpan(
-                              text: '별로에요 : ',
+                              text: '별로예요 : ',
                               style: TextStyle(fontSize: 13, color: Colors.red),
                             ),
                             TextSpan(
@@ -113,7 +113,8 @@ class MyReviewCard extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => UpdateReview()),
+                              builder: (context) => CreateReview()),
+                          //TODO upodate로 바꾸기
                         );
                       },
                       child: Text('수정'),

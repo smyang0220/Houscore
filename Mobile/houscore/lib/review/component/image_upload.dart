@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 
@@ -27,75 +28,97 @@ class ImageUploadState extends State<ImageUpload> {
   Widget build(BuildContext context) {
     return
      Column(
+       crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
             height: 5,
           ),
           Row(
             children: [
-              //카메라로 촬영하기
-              Container(
-                margin: EdgeInsets.all(10),
-                padding: EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(5),
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.black.withOpacity(1),
-                        spreadRadius: 2,)
-                  ],
+              Text(
+                '사진 첨부',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black),
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              Text('최대 10장'),
+            ],
+          ),
+          SizedBox(
+            height: 5,
+          ),
+          Visibility(
+            visible: images.length < 10,
+            child: Row(
+              children: [
+                //카메라로 촬영하기
+                Container(
+                  margin: EdgeInsets.all(10),
+                  padding: EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(5),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.black.withOpacity(1),
+                          spreadRadius: 2,)
+                    ],
+                  ),
+                  child: IconButton(
+                    onPressed: () async {
+                      image = await picker.pickImage(source: ImageSource.camera);
+                      //카메라로 촬영하지 않고 뒤로가기 버튼을 누를 경우, null값이 저장되므로 if문을 통해 null이 아닐 경우에만 images변수로 저장하도록 합니다
+                      if (image != null) {
+                        setState(
+                          () {
+                            images.add(image);
+                          },
+                        );
+                      }
+                    },
+                    icon: Icon(
+                      Icons.add_a_photo,
+                      size: 30,
+                      color: Colors.black,
+                    ),
+                  ),
                 ),
-                child: IconButton(
-                  onPressed: () async {
-                    image = await picker.pickImage(source: ImageSource.camera);
-                    //카메라로 촬영하지 않고 뒤로가기 버튼을 누를 경우, null값이 저장되므로 if문을 통해 null이 아닐 경우에만 images변수로 저장하도록 합니다
-                    if (image != null) {
+                //갤러리에서 가져오기
+                Container(
+                  margin: EdgeInsets.all(10),
+                  padding: EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(5),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.black.withOpacity(1),
+                          spreadRadius: 2,)
+                    ],
+                  ),
+                  child: IconButton(
+                    onPressed: () async {
+                      multiImage = await picker.pickMultiImage();
                       setState(
                         () {
-                          images.add(image);
+                          //갤러리에서 가지고 온 사진들은 리스트 변수에 저장되므로 addAll()을 사용해서 images와 multiImage 리스트를 합쳐줍니다.
+                          images.addAll(multiImage);
                         },
                       );
-                    }
-                  },
-                  icon: Icon(
-                    Icons.add_a_photo,
-                    size: 30,
-                    color: Colors.black,
+                    },
+                    icon: Icon(
+                      Icons.add_photo_alternate_outlined,
+                      size: 30,
+                      color: Colors.black,
+                    ),
                   ),
                 ),
-              ),
-              //갤러리에서 가져오기
-              Container(
-                margin: EdgeInsets.all(10),
-                padding: EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(5),
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.black.withOpacity(1),
-                        spreadRadius: 2,)
-                  ],
-                ),
-                child: IconButton(
-                  onPressed: () async {
-                    multiImage = await picker.pickMultiImage();
-                    setState(
-                      () {
-                        //갤러리에서 가지고 온 사진들은 리스트 변수에 저장되므로 addAll()을 사용해서 images와 multiImage 리스트를 합쳐줍니다.
-                        images.addAll(multiImage);
-                      },
-                    );
-                  },
-                  icon: Icon(
-                    Icons.add_photo_alternate_outlined,
-                    size: 30,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
           Container(
             margin: EdgeInsets.all(10),
