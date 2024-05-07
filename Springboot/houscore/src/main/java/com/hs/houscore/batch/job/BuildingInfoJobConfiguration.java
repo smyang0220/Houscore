@@ -2,6 +2,7 @@ package com.hs.houscore.batch.job;
 
 import com.hs.houscore.batch.processor.BuildingItemProcessor;
 import com.hs.houscore.batch.repository.MasterRegisterRepository;
+import com.hs.houscore.batch.repository.RealTransactionPriceRepository;
 import com.hs.houscore.mongo.entity.BuildingEntity;
 import com.hs.houscore.mongo.repository.BuildingRepository;
 import lombok.RequiredArgsConstructor;
@@ -49,8 +50,9 @@ public class BuildingInfoJobConfiguration {
     }
     //processor
     @Bean
-    public BuildingItemProcessor buildingItemProcessor(MasterRegisterRepository masterRegisterRepository) {
-        return new BuildingItemProcessor(masterRegisterRepository);
+    public BuildingItemProcessor buildingItemProcessor(MasterRegisterRepository masterRegisterRepository,
+                                                       RealTransactionPriceRepository realTransactionPriceRepository) {
+        return new BuildingItemProcessor(masterRegisterRepository, realTransactionPriceRepository);
     }
 //    public ItemProcessor<BuildingEntity, BuildingEntity> buildingEntityProcessor(){
 //        log.info("빌딩 정보 등록 로직 처리 구현");
