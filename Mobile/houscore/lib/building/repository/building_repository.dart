@@ -13,7 +13,7 @@ final buildingRepositoryProvider = Provider<BuildingRepository>(
       (ref) {
     final dio = ref.watch(dioProvider);
     final repository =
-    BuildingRepository(dio, baseUrl: 'http://$ip/api/building');
+    BuildingRepository(dio, baseUrl: 'http://$ip/api/residence');
 
     return repository;
   },
