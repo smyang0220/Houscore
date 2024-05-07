@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:houscore/common/layout/default_layout.dart';
-import 'package:houscore/common/const/design.dart';
 import 'package:houscore/review/component/my_review_card.dart';
 
 class MyReviewList extends StatefulWidget {
@@ -13,7 +12,6 @@ class MyReviewList extends StatefulWidget {
 }
 
 class _MyReviewListState extends State<MyReviewList> {
-
   // 더비 리뷰 데이터
   final List<Map<String, dynamic>> reviews = [
     {
@@ -94,14 +92,16 @@ class _MyReviewListState extends State<MyReviewList> {
               SizedBox(height: 15),
               Column(
                 children: reviewsWithImages
-                    .map((review) => MyReviewCard(
-                  address: review['address'],
-                  userRating: review['userRating'],
-                  aiRating: review['aiRating'],
-                  like: review['like'],
-                  dislike: review['dislike'],
-                  imageUrl: review['imageUrl'],
-                ))
+                    .map(
+                      (review) => MyReviewCard(
+                        address: review['address'],
+                        userRating: review['userRating'],
+                        aiRating: review['aiRating'],
+                        like: review['like'],
+                        dislike: review['dislike'],
+                        imageUrl: review['imageUrl'],
+                      ),
+                    )
                     .toList(),
               ),
               // 최근 등록 리뷰

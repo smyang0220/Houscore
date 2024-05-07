@@ -58,27 +58,17 @@ class _CreateReviewState extends State<CreateReview> {
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 2),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          '리뷰 작성하기 (1/2)',
-                          style: TextStyle(
-                            fontFamily: 'NotoSans',
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                child:
+                Text(
+                  '리뷰 작성하기 (1/2)',
+                  style: TextStyle(
+                    fontFamily: 'NotoSans',
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
                 ),
               ),
-              SizedBox(height: 30),
               Padding(
                 padding: const EdgeInsets.all(3.0),
                 child: DropdownType(
@@ -86,7 +76,6 @@ class _CreateReviewState extends State<CreateReview> {
                   onChanged: _updateTypeValue,
                 ),
               ),
-              SizedBox(height: 12),
               Padding(
                 padding: const EdgeInsets.all(3.0),
                 child: DropdownYear(
@@ -94,7 +83,6 @@ class _CreateReviewState extends State<CreateReview> {
                   onChanged: _updateYearValue,
                 ),
               ),
-              SizedBox(height: 12),
               Padding(
                 padding: const EdgeInsets.all(3.0),
                 child: DropdownFloor(
@@ -128,7 +116,7 @@ class _CreateReviewState extends State<CreateReview> {
                         ? () => Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => CreateReviewdetail()))
+                                builder: (context) => CreateReviewDetail()))
                         : null,
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.resolveWith<Color>(

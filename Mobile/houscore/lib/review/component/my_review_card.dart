@@ -84,7 +84,7 @@ class MyReviewCard extends StatelessWidget {
                         text: TextSpan(
                           children: [
                             TextSpan(
-                              text: '별로에요 : ',
+                              text: '별로예요 : ',
                               style: TextStyle(fontSize: 13, color: Colors.red),
                             ),
                             TextSpan(
