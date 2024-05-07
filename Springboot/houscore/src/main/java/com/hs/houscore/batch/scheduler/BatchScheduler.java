@@ -50,7 +50,7 @@ public class BatchScheduler {
     public void runJob() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
         JobParameters jobParameters = new JobParameters();
         log.info("10분 스캐줄러 작동중");
-        jobLauncher.    run(buildingInfoJobConfiguration
+        jobLauncher.run(buildingInfoJobConfiguration
                         .buildingJob(jobRepository, buildingInfoJobConfiguration.buildingStep(jobRepository,transactionManager, reader, processor, writer)),
                 new JobParametersBuilder().addDate("date", new Date()).toJobParameters());
     }
