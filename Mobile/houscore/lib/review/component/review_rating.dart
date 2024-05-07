@@ -43,8 +43,8 @@ class _RatingWidgetState extends State<RatingWidget> {
       children: [
         ...List.generate(5, (index) => IconButton(
           icon: Icon(
-            index < _currentRating ? Icons.star : Icons.star_border,
-            color: index < _currentRating ? Colors.amber : Colors.grey,
+            index < _currentRating ? Icons.star_rounded : Icons.star_border_rounded,
+            color: index < _currentRating ? Colors.amber : Colors.amber,
           ),
           onPressed: () {
             setState(() {
@@ -55,7 +55,7 @@ class _RatingWidgetState extends State<RatingWidget> {
           iconSize: 30,
         )),
         SizedBox(width: 3),
-        Text('$_currentRating / 5', style: TextStyle(fontSize: 16)) // 폰트 크기도 조금 줄임
+        Text('$_currentRating / 5', style: TextStyle(fontSize: 16))
       ],
     );
   }

@@ -60,24 +60,26 @@ class _CreateConfirmedState extends State<CreateConfirmed> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.8,
                     child: Center(
-                      child: Column(children: [
-                        SizedBox(height: 40),
-                        Text(
-                          "리뷰 등록이 성공적으로 완료되었습니다!\n",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
+                      child: Column(
+                        children: [
+                          SizedBox(height: 40),
+                          Text(
+                            "리뷰 등록이 성공적으로 완료되었습니다!\n",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
                           ),
-                        ),
-                        Text(
-                          "리뷰는 심사 후 등록될 예정입니다",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 15,
+                          Text(
+                            "리뷰는 심사 후 등록될 예정입니다",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 15,
+                            ),
                           ),
-                        ),
-                      ]),
+                        ],
+                      ),
                     ),
                   ),
                   const SizedBox(
@@ -98,7 +100,10 @@ class _CreateConfirmedState extends State<CreateConfirmed> {
                     style: OutlinedButton.styleFrom(
                       foregroundColor: Colors.black,
                       backgroundColor: Colors.white,
-                      side: BorderSide(color: Colors.black, width: 2,),
+                      side: BorderSide(
+                        color: Colors.black,
+                        width: 2,
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5.0),
                       ),
@@ -110,7 +115,10 @@ class _CreateConfirmedState extends State<CreateConfirmed> {
                     style: OutlinedButton.styleFrom(
                       foregroundColor: Colors.white,
                       backgroundColor: Colors.blue,
-                      side: BorderSide(color: Colors.blue, width: 2,),
+                      side: BorderSide(
+                        color: Colors.blue,
+                        width: 2,
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5.0),
                       ),
