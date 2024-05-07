@@ -10,25 +10,24 @@ class CreateReviewDetail extends StatefulWidget {
   _CreateReviewDetailState createState() => _CreateReviewDetailState();
 }
 
-class _CreateReviewDetailState extends State<CreateReviewDetail> {
-  final TextEditingController _recommendController = TextEditingController();
-  final TextEditingController _dislikeController = TextEditingController();
-  final TextEditingController _maintenanceController = TextEditingController();
+      class _CreateReviewDetailState extends State<CreateReviewDetail> {
+      final TextEditingController _recommendController = TextEditingController();
+      final TextEditingController _dislikeController = TextEditingController();
+      final TextEditingController _maintenanceController = TextEditingController();
 
-  bool _isRecommendRequired = true;
-  bool _isDislikeRequired = true;
-  bool _isMaintenanceRequired = true;
+      bool _isRecommendRequired = true;
+      bool _isDislikeRequired = true;
+      bool _isMaintenanceRequired = true;
+      bool _isButtonEnabled = false;
 
-  bool _isButtonEnabled = false;
-
-  void _updateButtonState() {
-    setState(() {
+      void _updateButtonState() {
+      setState(() {
       _isRecommendRequired = _recommendController.text.length < 100;
       _isDislikeRequired = _dislikeController.text.length < 100;
       _isMaintenanceRequired = _maintenanceController.text.length < 10;
 
       _isButtonEnabled = _recommendController.text.length >= 100 &&
-          _dislikeController.text.length >= 100 &&
+      _dislikeController.text.length >= 100 &&
           _maintenanceController.text.length >= 10;
     });
   }

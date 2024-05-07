@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:houscore/common/layout/default_layout.dart';
+import 'package:houscore/review/component/residence_name_input.dart';
 import 'create_reviewdetail.dart';
 import 'package:houscore/review/component/review_rating.dart';
 import 'package:houscore/review/component/dropdown.dart';
@@ -11,17 +12,25 @@ class CreateReview extends StatefulWidget {
 }
 
 class _CreateReviewState extends State<CreateReview> {
+  String? nameValue;
   String? typeValue;
   String? yearValue;
   String? floorValue;
   Map<String, int> ratings = {};
 
   bool get isButtonEnabled =>
+      nameValue != null &&
       typeValue != null &&
-      yearValue != null &&
-      floorValue != null &&
-      ratings.length == categories.length &&
-      ratings.values.every((rating) => rating != 0);
+          yearValue != null &&
+          floorValue != null &&
+          ratings.length == categories.length &&
+          ratings.values.every((rating) => rating != 0);
+
+  void _updateNameValue(String? newValue) {
+    setState(() {
+      nameValue = newValue;
+    });
+  }
 
   void _updateTypeValue(String? newValue) {
     setState(() {
@@ -71,6 +80,13 @@ class _CreateReviewState extends State<CreateReview> {
               ),
               Padding(
                 padding: const EdgeInsets.all(3.0),
+                child: ResidenceNameInput(
+                  value: nameValue,
+                  onChanged: _updateNameValue,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(3.0),
                 child: DropdownType(
                   value: typeValue,
                   onChanged: _updateTypeValue,
@@ -114,20 +130,20 @@ class _CreateReviewState extends State<CreateReview> {
                   ElevatedButton(
                     onPressed: isButtonEnabled
                         ? () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => CreateReviewDetail()))
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CreateReviewDetail()))
                         : null,
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                        (Set<MaterialState> states) {
+                            (Set<MaterialState> states) {
                           if (states.contains(MaterialState.disabled))
                             return Colors.grey;
                           return Colors.blue; // Default enabled color
                         },
                       ),
                       foregroundColor:
-                          MaterialStateProperty.all<Color>(Colors.white),
+                      MaterialStateProperty.all<Color>(Colors.white),
                     ),
                     child: Text('다음'),
                   ),
