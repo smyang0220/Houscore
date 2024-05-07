@@ -49,7 +49,7 @@ class ResidencePriceSafety extends StatelessWidget {
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text("행정안전부에서 재난, 사고, 질병관리 등 여러 분야에서의 지역의 안전 등급을 부여한 것으로 \n 1등급일수록 안전하다는 의미입니다."),
+                Text("행정안전부에서 재난, 사고, 질병관리 등 여러 분야에서의 지역의 안전 등급을 부여한 것으로 1등급일수록 안전하다는 의미입니다."),
               ],
             ),
           ),
