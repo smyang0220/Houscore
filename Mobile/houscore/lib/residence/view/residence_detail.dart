@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:houscore/common/layout/default_layout.dart';
 import 'package:houscore/common/const/color.dart';
 import 'package:houscore/residence/view/nearyby_indicators.dart';
+import 'package:houscore/residence/view/score_and_review.dart';
 
 class ResidenceDetail extends StatefulWidget {
   final String address;
@@ -104,7 +105,7 @@ class _ResidenceDetailState extends State<ResidenceDetail>
                 // 첫 번째 탭 '상세 정보'의 내용
                 NearbyIndicators(),
                 // 두 번째 탭 '주변 시설'의 내용
-                Text('점수/리뷰'),
+                ScoreAndReview(),
               ],
             ),
           ),

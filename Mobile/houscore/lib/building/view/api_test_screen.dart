@@ -40,7 +40,6 @@ class _ApiTestScreenState extends ConsumerState<ApiTestScreen> {
     // 5. buildingProvider가 넘겨주는 데이터에 따라서 UI를 빌드
     // 여기서의 buildingProvider는 building_detatil_provider.dart에 정의되어 있음
     final data = ref.watch(buildingProvider);
-    print("야호");
 
     // 완전 처음 로딩일때
     if (data is CursorPaginationLoading) {
