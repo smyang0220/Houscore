@@ -1,10 +1,14 @@
 package com.hs.houscore.mongo.entity;
 
 
+import com.hs.houscore.dto.BuildingInfraDTO;
 import lombok.*;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.Map;
 
 @Document(collection = "building")
 @Getter
@@ -13,11 +17,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Builder
 @Data
 public class BuildingEntity {
-    @Transient
-    public static final String SEQUENCE_NAME = "bulding_sequence";
+//    @Transient
+//    public static final String SEQUENCE_NAME = "bulding_sequence";
 
     @Id
-    private Long id;
+    private ObjectId id;
     private Double score;
     private Double lat;
     private Double lng;
@@ -65,14 +69,20 @@ public class BuildingEntity {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
+    @Getter
     @Builder
     public static class InfraInfo {
-        private Integer parkCnt;
+        private Map<String, Long> medicalFacilities;
+        private Map<String, Long> parks;
+        private Map<String, Long> schools;
+        private Map<String, Long> Libraries;
+        private Map<String, Long> supermarkets;
     }
 
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
+    @Getter
     @Builder
     public static class SecurityInfo {
         private Integer safetyGrade;
@@ -81,15 +91,17 @@ public class BuildingEntity {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
+    @Getter
     @Builder
     public static class TrafficInfo {
-        private Integer bus;
-        private Integer subway;
+        private Map<String, Long> bus;
+        private Map<String, Long> subway;
     }
 
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
+    @Getter
     @Builder
     public static class PriceInfo {
         private Double leaseAvg;        //평균 전세가격

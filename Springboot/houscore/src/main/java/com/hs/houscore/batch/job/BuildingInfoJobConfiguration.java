@@ -54,13 +54,6 @@ public class BuildingInfoJobConfiguration {
                                                        RealTransactionPriceRepository realTransactionPriceRepository) {
         return new BuildingItemProcessor(masterRegisterRepository, realTransactionPriceRepository);
     }
-//    public ItemProcessor<BuildingEntity, BuildingEntity> buildingEntityProcessor(){
-//        log.info("빌딩 정보 등록 로직 처리 구현");
-//        return BuildingEntity -> {
-//            BuildingEntity.setBatchYn("y");
-//            return BuildingEntity;
-//        };
-//    }
 
     //writer
     @Bean
