@@ -2,8 +2,7 @@ package com.hs.houscore.config;
 
 import com.hs.houscore.jwt.filter.JwtAuthenticationFilter;
 import com.hs.houscore.jwt.service.JwtService;
-import com.hs.houscore.postgre.service.MemberService;
-import com.hs.houscore.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
+import com.hs.houscore.oauth2.HttpOAuth2AuthorizationRequestRepository;
 import com.hs.houscore.oauth2.handler.OAuth2AuthenticationFailureHandler;
 import com.hs.houscore.oauth2.handler.OAuth2AuthenticationSuccessHandler;
 import com.hs.houscore.oauth2.service.CustomOAuth2MemberService;
@@ -12,7 +11,6 @@ import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -33,20 +31,19 @@ public class SecurityConfig {
     private final CustomOAuth2MemberService customOAuth2MemberService;
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
     private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
-    private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
+    private final HttpOAuth2AuthorizationRequestRepository httpOAuth2AuthorizationRequestRepository;
     private final JwtService jwtService;
 
     public SecurityConfig( // 순환문제 때문에 lazy 사용해서 생성자 만들기
                            CustomOAuth2MemberService customOAuth2MemberService,
                            OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler,
                            OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler,
-                           HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository,
-                           JwtService jwtService,
-                           @Lazy MemberService memberService) {
+                           HttpOAuth2AuthorizationRequestRepository httpOAuth2AuthorizationRequestRepository,
+                           JwtService jwtService) {
         this.customOAuth2MemberService = customOAuth2MemberService;
         this.oAuth2AuthenticationSuccessHandler = oAuth2AuthenticationSuccessHandler;
         this.oAuth2AuthenticationFailureHandler = oAuth2AuthenticationFailureHandler;
-        this.httpCookieOAuth2AuthorizationRequestRepository = httpCookieOAuth2AuthorizationRequestRepository;
+        this.httpOAuth2AuthorizationRequestRepository = httpOAuth2AuthorizationRequestRepository;
         this.jwtService = jwtService;
     }
 
@@ -70,7 +67,7 @@ public class SecurityConfig {
                 )
                 .sessionManagement(sessions -> sessions.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2Login(configure ->
-                        configure.authorizationEndpoint(config -> config.authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository))
+                        configure.authorizationEndpoint(config -> config.authorizationRequestRepository(httpOAuth2AuthorizationRequestRepository))
                                 .userInfoEndpoint(config -> config.userService(customOAuth2MemberService))
                                 .successHandler(oAuth2AuthenticationSuccessHandler)
                                 .failureHandler(oAuth2AuthenticationFailureHandler)
