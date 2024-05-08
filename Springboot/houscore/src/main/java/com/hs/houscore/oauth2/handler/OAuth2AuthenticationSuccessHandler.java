@@ -35,7 +35,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             return;
         }
         // 액세스 토큰, 리프레시 토큰 발급
-        MemberEntity member = memberService.createMember(principal.getUserInfo());
+        MemberEntity member = memberService.createMember(principal.getUserInfo(), null);
         String accessToken = jwtService.createAccessToken(member.getMemberEmail(), member.getMemberName(), member.getProvider().toString());
         String refreshToken = jwtService.createRefreshToken(member.getMemberEmail(), member.getProvider().toString());
 

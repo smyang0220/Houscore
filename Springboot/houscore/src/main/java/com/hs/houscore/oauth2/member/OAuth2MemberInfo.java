@@ -7,7 +7,7 @@ import java.util.Map;
 public interface OAuth2MemberInfo {
 
     OAuth2Provider getProvider();
-
+    
     String getRefreshToken();
 
     Map<String, Object> getAttributes();

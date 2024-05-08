@@ -46,7 +46,7 @@ public class CustomOAuth2MemberService extends DefaultOAuth2UserService {
             throw new OAuth2AuthenticationProcessingException("Email not found from OAuth2 provider");
         }
 
-        MemberEntity member = memberService.createMember(oAuth2UserInfo);
+        MemberEntity member = memberService.createMember(oAuth2UserInfo, null);
 
         return new OAuth2MemberPrincipal(oAuth2UserInfo);
     }
