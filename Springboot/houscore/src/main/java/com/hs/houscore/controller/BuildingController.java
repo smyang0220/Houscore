@@ -3,16 +3,19 @@ package com.hs.houscore.controller;
 import com.hs.houscore.dto.BuildingDetailDTO;
 import com.hs.houscore.dto.BuildingInfraDTO;
 import com.hs.houscore.dto.RecommendAiDTO;
+import com.hs.houscore.dto.RecommendDTO;
 import com.hs.houscore.mongo.service.BuildingService;
 import com.hs.houscore.postgre.entity.ReviewEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -53,7 +56,7 @@ public class BuildingController {
 
     @GetMapping("/recommend/nearby")
     @Operation(summary = "근처 거주지 최근 리뷰 조회 ", description = "가장 가까운 거주지 중 리뷰가 있는 2개의 거주지에서 가장 최근의 리뷰 하나씩 총 2개")
-    public List<RecommendAiDTO> getRecommendNearby(@RequestParam Double lat, @RequestParam Double lng){
-        return null;
+    public List<RecommendDTO> getRecommendNearby(@RequestParam Double lat, @RequestParam Double lng){
+        return buildingService.getRecommendNearby(lat,lng);
     }
 }
