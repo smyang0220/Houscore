@@ -44,10 +44,10 @@ class CustomInterceptor extends Interceptor {
       options.headers.remove('accessToken');
 
       final token = await storage.read(key: ACCESS_TOKEN_KEY);
-
+      print("저장된 엑세스 토큰값 : $token");
       // 실제 토큰으로 대체한 authorization 헤더 추가
       options.headers.addAll({
-        'access_token': token,
+        'accessToken': token,
       });
     }
 
@@ -56,9 +56,10 @@ class CustomInterceptor extends Interceptor {
       options.headers.remove('refreshToken');
 
       final token = await storage.read(key: REFRESH_TOKEN_KEY);
+      print("저장된 리프레시 토큰값 : $token");
 
       options.headers.addAll({
-        'refresh_token': token,
+        'refreshToken': token,
       });
     }
 
@@ -86,7 +87,7 @@ class CustomInterceptor extends Interceptor {
     print('[ERR] [${err.requestOptions.method}] ${err.requestOptions.uri}');
 
     final refreshToken = await storage.read(key: REFRESH_TOKEN_KEY);
-
+    print("에러떴을때의 리프레시 토큰값 : $refreshToken");
     // refreshToken 아예 없으면 당연히 에러를 던진다
     if(refreshToken == null){
       // 에러를 던질때는 handler.reject를 사용한다.
@@ -98,25 +99,26 @@ class CustomInterceptor extends Interceptor {
     // final isPathRefresh = err.requestOptions.path == '/auth/token';
 
     if(isStatus401){
-      final dio = Dio();
 
+      final dio = Dio();
       try{
-        final resp = await dio.post(
+        final resp = await dio.get(
           'http://$ip/api/member/refresh',
           options: Options(
             headers: {
-              'refresh_token': refreshToken,
+              'refreshToken': refreshToken,
             },
           ),
         );
 
         final accessToken = resp.data['accessToken'];
 
+        print("에러떴을때 발급받은 엑세스 토큰값 : $accessToken");
         final options = err.requestOptions;
 
         // 토큰 변경하기
         options.headers.addAll({
-          'access_token': 'Bearer $accessToken',
+          'accessToken': accessToken,
         });
 
         await storage.write(key: ACCESS_TOKEN_KEY, value: accessToken);

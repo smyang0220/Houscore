@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../repository/residence_detail_indicators_repository.dart';
+import '../repository/residence_repository.dart';
 import '../model/residence_detail_indicators_model.dart';
 
 // StateNotifierProvider 설정
@@ -14,7 +14,7 @@ import '../model/residence_detail_indicators_model.dart';
 
 final residenceDetailIndicatorProvider = StateNotifierProvider<
     ResidenceDetailIndicatorNotifier, ResidenceDetailIndicatorsState>((ref) {
-  final repository = ref.watch(residenceDetailIndicatorsRepositoryProvider);
+  final repository = ref.watch(residenceRepositoryProvider);
 
   final notifier = ResidenceDetailIndicatorNotifier(repository: repository);
   return notifier;
@@ -55,7 +55,7 @@ class ResidenceDetailIndicatorNotifier
     extends StateNotifier<ResidenceDetailIndicatorsState> {
   // 실제 데이터를 받아오는 retrofit 객체
   // API 호출 및 JsonSerializable를 활용한 모델 연동까지 자동화 + 오류처리
-  final ResidenceDetailIndicatorsRepository repository;
+  final ResidenceRepository repository;
 
   ResidenceDetailIndicatorNotifier({required this.repository})
       : super(ResidenceDetailIndicatorsState.loading()) {
