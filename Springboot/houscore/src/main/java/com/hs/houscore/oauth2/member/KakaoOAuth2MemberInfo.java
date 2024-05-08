@@ -1,12 +1,15 @@
 package com.hs.houscore.oauth2.member;
 
 import com.hs.houscore.postgre.entity.MemberEntity;
+import lombok.Getter;
 
+import java.beans.ConstructorProperties;
 import java.util.Map;
 
 public class KakaoOAuth2MemberInfo implements OAuth2MemberInfo {
 
     private final Map<String, Object> attributes;
+    @Getter
     private final String accessToken;
     private final MemberEntity.Role role;
     private final String email;

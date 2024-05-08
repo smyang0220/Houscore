@@ -30,12 +30,12 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final RestTemplate restTemplate;
 
-    public MemberEntity createMember(OAuth2MemberInfo memberInfo) {
+    public MemberEntity createMember(OAuth2MemberInfo memberInfo, String refreshToken) {
         // First, check if member already exists
         Optional<MemberEntity> existingMember = memberRepository.findByMemberEmail(memberInfo.getEmail());
         if (existingMember.isPresent()) {
-            // If member exists, update existing member
-            return updateMember(existingMember.get(), memberInfo);
+            updateRefreshToken(memberInfo.getEmail(), refreshToken);
+            return updateMember(existingMember.get(), memberInfo, refreshToken);
         } else {
             // If not, create a new member
             MemberEntity newMember = MemberEntity.builder()
@@ -44,18 +44,18 @@ public class MemberService {
                     .profileImage(memberInfo.getProfileImageUrl())
                     .role(memberInfo.getRole())
                     .provider(memberInfo.getProvider())
-                    .refreshToken(memberInfo.getRefreshToken())
+                    .refreshToken(refreshToken)
                     .build();
             return memberRepository.save(newMember);
         }
     }
 
-    public MemberEntity updateMember(MemberEntity member, OAuth2MemberInfo memberInfo) {
+    public MemberEntity updateMember(MemberEntity member, OAuth2MemberInfo memberInfo, String refreshToken) {
         member.setMemberName(memberInfo.getMemberName());
         member.setProfileImage(memberInfo.getProfileImageUrl());
         member.setRole(memberInfo.getRole());
         member.setProvider(memberInfo.getProvider());
-        member.setRefreshToken(memberInfo.getRefreshToken());
+        member.setRefreshToken(refreshToken);
         return memberRepository.save(member);
     }
 
@@ -64,14 +64,14 @@ public class MemberService {
         return member.map(MemberEntity::getMemberName).orElse(null); // 사용자가 존재하지 않는 경우 null 반환
     }
 
-    public OAuth2MemberInfo getMemberInfo(String provider, String accessToken) throws OAuth2AuthenticationException {
+    public OAuth2MemberInfo getMemberInfo(String provider, String accessToken, String refreshToken) throws OAuth2AuthenticationException {
         if (!provider.equals("kakao")) {
             throw new OAuth2AuthenticationException("Unsupported provider: " + provider);
         }
-        return fetchKakaoUserInfo(accessToken);
+        return fetchKakaoUserInfo(accessToken, refreshToken);
     }
 
-    private OAuth2MemberInfo fetchKakaoUserInfo(String accessToken) {
+    private OAuth2MemberInfo fetchKakaoUserInfo(String accessToken, String refreshToken) {
         String url = "https://kapi.kakao.com/v2/user/me";
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(accessToken);
@@ -80,13 +80,13 @@ public class MemberService {
 
         ResponseEntity<Map<String, Object>> response = restTemplate.exchange(url, HttpMethod.GET, entity, new ParameterizedTypeReference<Map<String, Object>>() {});
         if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
-            return parseKakaoUserInfo(accessToken, response.getBody());
+            return parseKakaoUserInfo(accessToken, refreshToken, response.getBody());
         } else {
             throw new OAuth2AuthenticationException("Failed to fetch user info from Kakao");
         }
     }
 
-    private OAuth2MemberInfo parseKakaoUserInfo(String accessToken, Map<String, Object> kakaoData) {
+    private OAuth2MemberInfo parseKakaoUserInfo(String accessToken, String refreshToken, Map<String, Object> kakaoData) {
         Map<String, Object> kakaoAccount = (Map<String, Object>) Optional.ofNullable(kakaoData.get("kakao_account"))
                 .orElseThrow(() -> new OAuth2AuthenticationException("Missing account details"));
         return new KakaoOAuth2MemberInfo(accessToken, kakaoData);

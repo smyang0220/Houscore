@@ -67,10 +67,11 @@ public class MemberController {
     public ResponseEntity<?> loginWithKakaoToken(@RequestBody Map<String, String> tokenData) {
         System.out.println("야발3");
         String kakaoAccessToken = tokenData.get("accessToken");
+        String kakaoRefreshToken = tokenData.get("refreshToken");
         System.out.println(kakaoAccessToken);
         try {
             System.out.println("야야야발발발");
-            OAuth2MemberInfo kakaoMemberInfo = memberService.getMemberInfo("kakao", kakaoAccessToken);
+            OAuth2MemberInfo kakaoMemberInfo = memberService.getMemberInfo("kakao", kakaoAccessToken, kakaoRefreshToken);
             System.out.println("야이후");
             // 여기에서는 사용자 이메일이 필요하므로 Email 검증을 추가
             if (!StringUtils.hasText(kakaoMemberInfo.getEmail())) {
@@ -78,7 +79,7 @@ public class MemberController {
             }
 
             // 시스템에 사용자를 등록하거나 업데이트하고, 토큰을 발급
-            MemberEntity member = memberService.createMember(kakaoMemberInfo);
+            MemberEntity member = memberService.createMember(kakaoMemberInfo, kakaoRefreshToken);
             String accessToken = jwtService.createAccessToken(member.getMemberEmail(), member.getMemberName(), member.getProvider().toString());
             String refreshToken = jwtService.createRefreshToken(member.getMemberEmail(), member.getProvider().toString());
 
@@ -96,8 +97,8 @@ public class MemberController {
 
     @GetMapping("/refresh")
     @Operation(summary = "액세스 토큰 재발급", description = "리프레시 토큰으로 액세스 토큰 재발급")
-    public ResponseEntity<?> refreshAccessToken(HttpServletRequest request) {
-        String refreshToken = request.getHeader("Authorization-refresh");
+    public ResponseEntity<?> refreshAccessToken(@RequestBody Map<String, String> tokenData) {
+        String refreshToken = tokenData.get("refreshToken");
         if (refreshToken != null && jwtService.validateToken(refreshToken)) {
             String memberEmail = jwtService.getMemberEmailFromToken(refreshToken);
             if (memberService.validateRefreshToken(memberEmail, refreshToken)) {
