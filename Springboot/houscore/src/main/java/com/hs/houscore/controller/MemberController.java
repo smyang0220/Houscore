@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -65,14 +66,11 @@ public class MemberController {
     @PostMapping("/login/kakao")
     @Operation(summary = "카카오 토큰으로 로그인", description = "카카오 토큰을 검증하고 사용자 정보를 바탕으로 자체 토큰을 발급")
     public ResponseEntity<?> loginWithKakaoToken(@RequestBody Map<String, String> tokenData) {
-        System.out.println("야발3");
         String kakaoAccessToken = tokenData.get("accessToken");
         String kakaoRefreshToken = tokenData.get("refreshToken");
         System.out.println(kakaoAccessToken);
         try {
-            System.out.println("야야야발발발");
             OAuth2MemberInfo kakaoMemberInfo = memberService.getMemberInfo("kakao", kakaoAccessToken, kakaoRefreshToken);
-            System.out.println("야이후");
             // 여기에서는 사용자 이메일이 필요하므로 Email 검증을 추가
             if (!StringUtils.hasText(kakaoMemberInfo.getEmail())) {
                 throw new OAuth2AuthenticationProcessingException("Email not found from Kakao data");
@@ -86,7 +84,7 @@ public class MemberController {
             // JSON 형태로 토큰을 반환
             Map<String, String> tokens = new HashMap<>();
             tokens.put("accessToken", accessToken);
-            tokens.put("refreshToken", refreshToken);  // 이 부분은 필요에 따라 새로운 리프레시 토큰을 생성하여 반환할 수도 있습니다.
+            tokens.put("refreshToken", refreshToken);
 
             System.out.println("됐는데?");
             return ResponseEntity.ok(tokens);
@@ -97,15 +95,15 @@ public class MemberController {
 
     @GetMapping("/refresh")
     @Operation(summary = "액세스 토큰 재발급", description = "리프레시 토큰으로 액세스 토큰 재발급")
-    public ResponseEntity<?> refreshAccessToken(@RequestBody Map<String, String> tokenData) {
-        String refreshToken = tokenData.get("refreshToken");
+    public ResponseEntity<?> refreshAccessToken(HttpServletRequest request) {
+        String refreshToken = request.getHeader("refreshToken");
         if (refreshToken != null && jwtService.validateToken(refreshToken)) {
             String memberEmail = jwtService.getMemberEmailFromToken(refreshToken);
             if (memberService.validateRefreshToken(memberEmail, refreshToken)) {
                 String newAccessToken = jwtService.createAccessToken(memberEmail, memberService.getMemberNameByEmail(memberEmail), memberService.getProviderByEmail(memberEmail));
                 // JSON 형태로 토큰을 반환
                 Map<String, String> tokens = new HashMap<>();
-                tokens.put("accessToken", newAccessToken);
+                tokens.put("refreshToken", newAccessToken);
                 return ResponseEntity.ok(tokens);
             }
         }
