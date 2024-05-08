@@ -6,14 +6,15 @@ import com.hs.houscore.dto.RecommendAiDTO;
 import com.hs.houscore.dto.RecommendDTO;
 import com.hs.houscore.mongo.entity.BuildingEntity;
 import com.hs.houscore.mongo.repository.BuildingRepository;
+import com.hs.houscore.mongo.repository.BuildingRepositoryCustom;
 import com.hs.houscore.postgre.entity.ReviewEntity;
 import com.hs.houscore.postgre.repository.ReviewRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -23,6 +24,7 @@ public class BuildingService {
 
     private final BuildingRepository buildingRepository;
     private final ReviewRepository reviewRepository;
+    private final BuildingRepositoryCustom buildingRepositoryCustom;
 
     public List<BuildingEntity> getBuildingList(){
         return buildingRepository.findAll();
@@ -48,8 +50,7 @@ public class BuildingService {
                 .platPlc(address)
                 .newPlatPlc("")
                 .batchYn("n")
-                .lat(lat)
-                .lng(lng)
+                .location(new GeoJsonPoint(lng, lat))
                 .sigunguCd("")
                 .bjdongCd("")
                 .bldNm("")
@@ -69,8 +70,8 @@ public class BuildingService {
         return BuildingDetailDTO.builder()
                 .id(buildingEntity.getId())
                 .score(buildingEntity.getScore())
-                .lat(buildingEntity.getLat())
-                .lng(buildingEntity.getLng())
+                .lat(buildingEntity.getLocation().getY())
+                .lng(buildingEntity.getLocation().getX())
                 .platPlc(buildingEntity.getPlatPlc())
                 .newPlatPlc(buildingEntity.getNewPlatPlc())
                 .buildingInfo(null)
@@ -82,8 +83,8 @@ public class BuildingService {
         return BuildingDetailDTO.builder()
                 .id(buildingEntity.getId())
                 .score(buildingEntity.getScore())
-                .lat(buildingEntity.getLat())
-                .lng(buildingEntity.getLng())
+                .lat(buildingEntity.getLocation().getY())
+                .lng(buildingEntity.getLocation().getX())
                 .platPlc(buildingEntity.getPlatPlc())
                 .newPlatPlc(buildingEntity.getNewPlatPlc())
                 .buildingInfo(BuildingDetailDTO.BuildingInfo.builder()
@@ -194,7 +195,21 @@ public class BuildingService {
 
     public List<RecommendDTO> getRecommendNearby(Double lat, Double lng){
         // 가장 가까운 거주지 중 리뷰가 있는 2개의 거주지에서 가장 최근의 리뷰 하나씩 총 2개
-
+        List<BuildingEntity> buildingEntities = buildingRepositoryCustom.findBuildingsWithin1Km(new GeoJsonPoint(lng,lat));
+        List<RecommendDTO> recommendDTOS = new ArrayList<>();
+        for(BuildingEntity buildingEntity : buildingEntities){
+            System.out.println(buildingEntity.getPlatPlc());
+            List<ReviewEntity> reviewEntity = reviewRepository.findByAddress(buildingEntity.getPlatPlc());
+            recommendDTOS.add(RecommendDTO.builder()
+                    .address(buildingEntity.getNewPlatPlc())
+                    .buildingName(buildingEntity.getBldNm())
+                    .aiScore(buildingEntity.getScore())
+                    .reviewScore(0.0)
+                    .cons("")
+                    .pros("")
+                    .imageUrl("")
+                    .build());
+        }
 
         return null;
     }

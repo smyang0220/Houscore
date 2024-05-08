@@ -1,11 +1,11 @@
 package com.hs.houscore.mongo.entity;
 
 
-import com.hs.houscore.dto.BuildingInfraDTO;
 import lombok.*;
 import org.bson.types.ObjectId;
+import org.hibernate.annotations.Type;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Map;
@@ -23,8 +23,9 @@ public class BuildingEntity {
     @Id
     private ObjectId id;
     private Double score;
-    private Double lat;
-    private Double lng;
+    private GeoJsonPoint location;
+//    private Double lat;
+//    private Double lng;
     private String platPlc;
     private String newPlatPlc;
     private String sigunguCd;
