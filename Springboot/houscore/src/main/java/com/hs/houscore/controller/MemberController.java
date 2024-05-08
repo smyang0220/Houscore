@@ -9,6 +9,8 @@ import com.hs.houscore.postgre.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -80,11 +82,13 @@ public class MemberController {
             String accessToken = jwtService.createAccessToken(member.getMemberEmail(), member.getMemberName(), member.getProvider().toString());
             String refreshToken = jwtService.createRefreshToken(member.getMemberEmail(), member.getProvider().toString());
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Access-Token", accessToken);
-            headers.add("Refresh-Token", refreshToken);
+            // JSON 형태로 토큰을 반환
+            Map<String, String> tokens = new HashMap<>();
+            tokens.put("accessToken", accessToken);
+            tokens.put("refreshToken", refreshToken);  // 이 부분은 필요에 따라 새로운 리프레시 토큰을 생성하여 반환할 수도 있습니다.
+
             System.out.println("됐는데?");
-            return ResponseEntity.ok().headers(headers).body("Login successful with Kakao");
+            return ResponseEntity.ok(tokens);
         } catch (AuthenticationException ex) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication failed with Kakao token: " + ex.getMessage());
         }
@@ -98,9 +102,10 @@ public class MemberController {
             String memberEmail = jwtService.getMemberEmailFromToken(refreshToken);
             if (memberService.validateRefreshToken(memberEmail, refreshToken)) {
                 String newAccessToken = jwtService.createAccessToken(memberEmail, memberService.getMemberNameByEmail(memberEmail), memberService.getProviderByEmail(memberEmail));
-                HttpHeaders responseHeaders = new HttpHeaders();
-                responseHeaders.add("Set-Cookie", "access_token=" + newAccessToken + "; Max-Age=3600; HttpOnly");
-                return ResponseEntity.ok().headers(responseHeaders).body("Access token refreshed successfully");
+                // JSON 형태로 토큰을 반환
+                Map<String, String> tokens = new HashMap<>();
+                tokens.put("accessToken", newAccessToken);
+                return ResponseEntity.ok(tokens);
             }
         }
         SecurityContextHolder.clearContext();
