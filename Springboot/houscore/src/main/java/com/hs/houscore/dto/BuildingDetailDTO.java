@@ -2,11 +2,12 @@ package com.hs.houscore.dto;
 
 
 import lombok.*;
+import org.bson.types.ObjectId;
 
 @Data
 @Builder
 public class BuildingDetailDTO {
-    private Long id;
+    private ObjectId id;
     private Double score;
     private Double lat;
     private Double lng;

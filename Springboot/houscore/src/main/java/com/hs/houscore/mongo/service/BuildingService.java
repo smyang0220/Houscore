@@ -1,6 +1,7 @@
 package com.hs.houscore.mongo.service;
 
 import com.hs.houscore.dto.BuildingDetailDTO;
+import com.hs.houscore.dto.BuildingInfraDTO;
 import com.hs.houscore.dto.RecommendAiDTO;
 import com.hs.houscore.dto.RecommendDTO;
 import com.hs.houscore.mongo.entity.BuildingEntity;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -42,12 +44,23 @@ public class BuildingService {
     @Transactional
     public BuildingDetailDTO setBuildingInfo(String address, Double lat, Double lng) {
         BuildingEntity buildingEntity = BuildingEntity.builder()
+                .score(0.0)
                 .platPlc(address)
                 .newPlatPlc("")
                 .batchYn("n")
                 .lat(lat)
                 .lng(lng)
-                .information(null)
+                .sigunguCd("")
+                .bjdongCd("")
+                .bldNm("")
+                .pnuCode("")
+                .information(BuildingEntity.Information.builder()
+                        .buildingInfo(new BuildingEntity.BuildingInfo())
+                        .priceInfo(new BuildingEntity.PriceInfo())
+                        .infraInfo(new BuildingEntity.InfraInfo())
+                        .securityInfo(new BuildingEntity.SecurityInfo())
+                        .trafficInfo(new BuildingEntity.TrafficInfo())
+                        .build())
                 .build();
 
         save(buildingEntity);
@@ -89,6 +102,53 @@ public class BuildingService {
                 .build();
     }
 
+    public BuildingInfraDTO getBuildingInfra(String address){
+        BuildingEntity buildingEntity = buildingRepository.findByNewPlatPlcOrPlatPlc(address, address)
+                .orElse(null);
+        if(buildingEntity != null){
+            return setBuildingInfra(buildingEntity);
+        }
+
+        return null;
+    }
+
+    private BuildingInfraDTO setBuildingInfra(BuildingEntity building) {
+
+        BuildingInfraDTO.Infras infra = BuildingInfraDTO.Infras.builder()
+                .medicalFacilities(building.getInformation().getInfraInfo().getMedicalFacilities())
+                .parks(building.getInformation().getInfraInfo().getParks())
+                .schools(building.getInformation().getInfraInfo().getSchools())
+                .libraries(building.getInformation().getInfraInfo().getLibraries())
+                .supermarkets(building.getInformation().getInfraInfo().getSupermarkets())
+                .build();
+
+        BuildingInfraDTO.PublicTransport publicTransport = BuildingInfraDTO.PublicTransport.builder()
+                .bus(building.getInformation().getTrafficInfo().getBus())
+                .subways(building.getInformation().getTrafficInfo().getSubway())
+                .build();
+
+        BuildingInfraDTO.RealCost realCost = BuildingInfraDTO.RealCost.builder()
+                .buy(building.getInformation().getPriceInfo().getSaleAvg())
+                .longterm(building.getInformation().getPriceInfo().getLeaseAvg())
+                .monthly(building.getInformation().getPriceInfo().getRentAvg())
+                .build();
+
+        Integer safetyGrade = building.getInformation().getSecurityInfo().getSafetyGrade();
+        if (safetyGrade == null) {
+            safetyGrade = 0;
+        }
+        Double realPrice = building.getInformation().getPriceInfo().getSaleAvg();
+        Double archArea = building.getInformation().getBuildingInfo().getArchArea();
+
+        return BuildingInfraDTO.builder()
+                .infras(infra)
+                .publicTransport(publicTransport)
+                .realCost(realCost)
+                .pricePerPyeong(realPrice != null && archArea != null ? setPricePerPyeong(realPrice, archArea) : 0)
+                .safetyGrade(safetyGrade)
+                .build();
+    }
+
     public List<ReviewEntity> getBuildingReviewList(String address){
         return reviewRepository.findByAddress(address);
     }
@@ -100,12 +160,14 @@ public class BuildingService {
         for(BuildingEntity buildingEntity : buildingEntities){
             BuildingEntity.BuildingInfo buildingInfo = buildingEntity.getInformation().getBuildingInfo();
             Long reviewCnt = reviewRepository.countByAddressStartingWith(buildingEntity.getNewPlatPlc());
+            Double realPrice = buildingEntity.getInformation().getPriceInfo().getSaleAvg();
+            Double archArea = buildingEntity.getInformation().getBuildingInfo().getArchArea();
             recommendAiDTOS.add(RecommendAiDTO.builder()
                             .address(buildingEntity.getNewPlatPlc())
                             .aiScore(buildingEntity.getScore())
-                            .pricePerRegion(setPricePerRegion(sigungu, 1000))
-                            .pricePerPyeong(setPricePerPyeong(1000, buildingInfo.getArchArea()))
-                            .realPrice(buildingInfo.getArchArea())
+                            .pricePerRegion(sigungu != null && realPrice != null ? setPricePerRegion(sigungu, realPrice) : 0.0)
+                            .pricePerPyeong(realPrice != null && archArea != null ? setPricePerPyeong(realPrice, archArea) : 0)
+                            .realPrice(realPrice)
                             .reviewCnt(reviewCnt)
                     .build());
         }
@@ -114,7 +176,7 @@ public class BuildingService {
     }
 
     //지역대비가격 (%)
-    private Double setPricePerRegion(String sigungu, Integer realPrice){
+    private Double setPricePerRegion(String sigungu, Double realPrice){
         //시군구로 같은 지역에 있는 데이터 지역 평균 가격 대비 현재 집의 백분율
         Double avgPriceByAllRegion = 3000D;
         Double pricePerRegion = (realPrice / avgPriceByAllRegion) * 100;
@@ -122,10 +184,10 @@ public class BuildingService {
         return pricePerRegion;
     }
     //평당 가격
-    private Double setPricePerPyeong(Integer realPrice, Double archArea){
+    private Integer setPricePerPyeong(Double realPrice, Double archArea){
         //1평 = 3.30579
         Double pyeongArea = archArea / 3.30579 ;
-        Double pricePerPyeong = realPrice / pyeongArea;
+        Integer pricePerPyeong = (int) (realPrice / pyeongArea);
 
         return pricePerPyeong;
     }
@@ -136,4 +198,5 @@ public class BuildingService {
 
         return null;
     }
+
 }
