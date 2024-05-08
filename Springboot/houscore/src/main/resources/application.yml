@@ -74,7 +74,7 @@ spring:
 
 jwt: # base64로 인코딩된 512비트(64바이트) 이상의 키
   access:
-    expiration: 3600000 # 1시간
+    expiration: 36000 # 1초
     header: Authorization
   refresh:
     expiration: 86400000 # 1일

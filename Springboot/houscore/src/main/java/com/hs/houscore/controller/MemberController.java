@@ -107,7 +107,7 @@ public class MemberController {
                 return ResponseEntity.ok(tokens);
             }
         }
-        //SecurityContextHolder.clearContext();
+        SecurityContextHolder.clearContext();
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid refresh token");
     }
 }
