@@ -3,32 +3,33 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:houscore/building/model/building_detail_model.dart';
 import 'package:houscore/common/model/cursor_pagination_model.dart';
 import 'package:retrofit/retrofit.dart';
-
 import '../../common/const/data.dart';
 import '../../common/dio/dio.dart';
+import '../model/kakao_login_token_model.dart';
+import '../model/member_search_model.dart';
 
-part 'kakao_login_repository.g.dart';
+part 'member_repository.g.dart';
 
-final kakaoLoginRepositoryProvider = Provider<KakaoLoginRepository>(
+final MemberRepositroyProvider = Provider<MemberRepository>(
       (ref) {
     final dio = ref.watch(dioProvider);
     final repository =
-    KakaoLoginRepository(dio, baseUrl: 'http://$ip/api/member');
+    MemberRepository(dio, baseUrl: 'http://$ip/api/member');
 
     return repository;
   },
 );
 
 @RestApi()
-abstract class KakaoLoginRepository {
-  factory KakaoLoginRepository(Dio dio, {String baseUrl}) =
-  _KakaoLoginRepository;
+abstract class MemberRepository {
+  factory MemberRepository(Dio dio, {String baseUrl}) =
+  _MemberRepository;
 
   @POST("/login/kakao")
   @Headers({
     'accessToken': 'false',
   })
-  Future<void> loginKakao({
+  Future<KakaoLoginTokenModel> loginKakao({
     @Body() required Map<String, dynamic> data,
   });
 
@@ -37,5 +38,13 @@ abstract class KakaoLoginRepository {
     'refreshToken': 'true',
   })
   Future<void> refreshKakao();
+
+  @GET("/search")
+  @Headers({
+    'accessToken': 'true',
+  })
+  Future<MemberSearchModel> searchMember(
+  @Query("memberEmail") String memberEmail,
+  );
 
 }

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'kakao_login_repository.dart';
+part of 'member_repository.dart';
 
 // **************************************************************************
 // RetrofitGenerator
@@ -8,8 +8,8 @@ part of 'kakao_login_repository.dart';
 
 // ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers
 
-class _KakaoLoginRepository implements KakaoLoginRepository {
-  _KakaoLoginRepository(
+class _MemberRepository implements MemberRepository {
+  _MemberRepository(
     this._dio, {
     this.baseUrl,
   });
@@ -19,29 +19,33 @@ class _KakaoLoginRepository implements KakaoLoginRepository {
   String? baseUrl;
 
   @override
-  Future<void> loginKakao({required Map<String, dynamic> data}) async {
+  Future<KakaoLoginTokenModel> loginKakao(
+      {required Map<String, dynamic> data}) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{r'accessToken': 'false'};
     _headers.removeWhere((k, v) => v == null);
     final _data = <String, dynamic>{};
     _data.addAll(data);
-    await _dio.fetch<void>(_setStreamType<void>(Options(
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<KakaoLoginTokenModel>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
     )
-        .compose(
-          _dio.options,
-          '/api/member/login/kakao',
-          queryParameters: queryParameters,
-          data: _data,
-        )
-        .copyWith(
-            baseUrl: _combineBaseUrls(
-          _dio.options.baseUrl,
-          baseUrl,
-        ))));
+            .compose(
+              _dio.options,
+              '/login/kakao',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = KakaoLoginTokenModel.fromJson(_result.data!);
+    return value;
   }
 
   @override
@@ -67,6 +71,34 @@ class _KakaoLoginRepository implements KakaoLoginRepository {
           _dio.options.baseUrl,
           baseUrl,
         ))));
+  }
+
+  @override
+  Future<MemberSearchModel> searchMember(String memberEmail) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'memberEmail': memberEmail};
+    final _headers = <String, dynamic>{r'accessToken': 'true'};
+    _headers.removeWhere((k, v) => v == null);
+    const Map<String, dynamic>? _data = null;
+    final _result = await _dio
+        .fetch<Map<String, dynamic>>(_setStreamType<MemberSearchModel>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/search',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = MemberSearchModel.fromJson(_result.data!);
+    return value;
   }
 
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {

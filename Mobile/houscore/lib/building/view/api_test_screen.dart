@@ -40,33 +40,33 @@ class _ApiTestScreenState extends ConsumerState<ApiTestScreen> {
     // 5. buildingProvider가 넘겨주는 데이터에 따라서 UI를 빌드
     // 여기서의 buildingProvider는 building_detatil_provider.dart에 정의되어 있음
     final data = ref.watch(buildingProvider);
-
-    // 완전 처음 로딩일때
-    if (data is CursorPaginationLoading) {
-      return Center(
-        child: CircularProgressIndicator(),
-      );
-    }
-
-    if (data is CursorPaginationRefetching) {
-      return Center(
-        child: CircularProgressIndicator(),
-      );
-    }
-
-    // 에러
-    if (data is CursorPaginationError) {
-      return Center(
-        child: Text(data.message),
-      );
-    }
-
-    // CursorPagination
-    // CursorPaginationFetchingMore
-    // CursorPaginationRefetching
-
-    final cp = data as CursorPagination;
-    print('${cp.data.length} 길이');
+    //
+    // // 완전 처음 로딩일때
+    // if (data is CursorPaginationLoading) {
+    //   return Center(
+    //     child: CircularProgressIndicator(),
+    //   );
+    // }
+    //
+    // if (data is CursorPaginationRefetching) {
+    //   return Center(
+    //     child: CircularProgressIndicator(),
+    //   );
+    // }
+    //
+    // // 에러
+    // if (data is CursorPaginationError) {
+    //   return Center(
+    //     child: Text(data.message),
+    //   );
+    // }
+    //
+    // // CursorPagination
+    // // CursorPaginationFetchingMore
+    // // CursorPaginationRefetching
+    //
+    // final cp = data as CursorPagination;
+    // print('${cp.data.length} 길이');
     return Center(
       child: Text("정상통신"),
     );
