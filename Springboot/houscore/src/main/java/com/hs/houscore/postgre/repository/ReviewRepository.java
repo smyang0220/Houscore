@@ -15,4 +15,5 @@ public interface ReviewRepository extends JpaRepository<ReviewEntity, Long> {
     Optional<ReviewEntity> findByIdAndMemberId(Long id, String memberId);
     void deleteById(Long id);
     Long countByAddressStartingWith(String address);
+
 }
