@@ -9,7 +9,7 @@ public class RecommendAiDTO {
     private String address;
     private Double aiScore;
     private Double realPrice;   //만원 단위
-    private Double pricePerPyeong;
+    private Integer pricePerPyeong;
     private Double pricePerRegion ; //지역대비가격 %
     private Long reviewCnt;
 }

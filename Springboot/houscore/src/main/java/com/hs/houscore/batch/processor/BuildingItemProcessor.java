@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemProcessor;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Slf4j
@@ -21,11 +22,10 @@ public class BuildingItemProcessor implements ItemProcessor<BuildingEntity, Buil
     @Override
     public BuildingEntity process(BuildingEntity building) throws Exception {
         //배치를 처리할 로직이 들어가는 부분
-//        building.setInformation(setBuildingInfo(building));
-//        building.setBatchYn("y");
+
         return BuildingEntity.builder()
                 .id(building.getId())
-                .score(0.0)
+                .score(building.getScore())
                 .lat(building.getLat())
                 .lng(building.getLng())
                 .platPlc(building.getPlatPlc())
@@ -36,8 +36,11 @@ public class BuildingItemProcessor implements ItemProcessor<BuildingEntity, Buil
                 .pnuCode("")
                 .batchYn("y")
                 .information(BuildingEntity.Information.builder()
-                        .buildingInfo(setBuildingInfo(building) != null? setBuildingInfo(building) : null)
-                        .priceInfo(setPriceInfo(building) != null? setPriceInfo(building) : null)
+                        .buildingInfo(setBuildingInfo(building))
+                        .priceInfo(setPriceInfo(building))
+                        .infraInfo(setInfraInfo(building))
+                        .securityInfo(setSecurityInfo(building))
+                        .trafficInfo(setTrafficInfo(building))
                         .build())
                 .build();
     }
@@ -48,7 +51,19 @@ public class BuildingItemProcessor implements ItemProcessor<BuildingEntity, Buil
         MasterRegisterEntity masterRegisterEntity = masterRegisterRepository.findByNewPlatPlcOrPlatPlc(building.getNewPlatPlc(), building.getPlatPlc())
                 .orElse(null);
         if(masterRegisterEntity == null){
-            return BuildingEntity.BuildingInfo.builder().build();
+            return BuildingEntity.BuildingInfo.builder()
+                    .platArea(0.0)
+                    .archArea(0.0)
+                    .totArea(0.0)
+                    .bcRat(0.0)
+                    .vlRat(0.0)
+                    .mainPurpsCdNm("")
+                    .regstrKindCd(0)
+                    .regstrKindCdNm("")
+                    .hhldCnt(0)
+                    .mainBldCnt(0)
+                    .totPkngCnt(0)
+                    .build();
         }
         return BuildingEntity.BuildingInfo.builder()
                 .platArea(masterRegisterEntity.getPlatArea())
@@ -64,7 +79,7 @@ public class BuildingItemProcessor implements ItemProcessor<BuildingEntity, Buil
                 .totPkngCnt(masterRegisterEntity.getTotPkngCnt())
                 .build();
     }
-
+    //실거래가 데이터
     private BuildingEntity.PriceInfo setPriceInfo(BuildingEntity building){
         //전세
         List<RealTransactionPriceEntity> leaseList = realTransactionPriceRepository.findByPlatPlcAndTradeType(building.getPlatPlc(),"전세");
@@ -106,6 +121,31 @@ public class BuildingItemProcessor implements ItemProcessor<BuildingEntity, Buil
                 .leaseAvg(leaseAvg)
                 .rentAvg(depositAvg + "/" + rentAvg)
                 .saleAvg(saleAvg)
+                .build();
+    }
+    private BuildingEntity.TrafficInfo setTrafficInfo(BuildingEntity building) {
+//        return new BuildingEntity.TrafficInfo();
+        return BuildingEntity.TrafficInfo.builder()
+                .bus(new HashMap<String, Long>())
+                .subway(new HashMap<String, Long>())
+                .build();
+    }
+
+    private BuildingEntity.SecurityInfo setSecurityInfo(BuildingEntity building) {
+//        return new BuildingEntity.SecurityInfo();
+        return BuildingEntity.SecurityInfo.builder()
+                .safetyGrade(0)
+                .build();
+    }
+
+    private BuildingEntity.InfraInfo setInfraInfo(BuildingEntity building) {
+//        return new BuildingEntity.InfraInfo();
+        return BuildingEntity.InfraInfo.builder()
+                .parks(new HashMap<String, Long>())
+                .Libraries(new HashMap<String, Long>())
+                .medicalFacilities(new HashMap<String, Long>())
+                .schools(new HashMap<String, Long>())
+                .supermarkets(new HashMap<String, Long>())
                 .build();
     }
 }
