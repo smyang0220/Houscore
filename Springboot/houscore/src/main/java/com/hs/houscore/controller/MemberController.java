@@ -96,7 +96,7 @@ public class MemberController {
     @GetMapping("/refresh")
     @Operation(summary = "액세스 토큰 재발급", description = "리프레시 토큰으로 액세스 토큰 재발급")
     public ResponseEntity<?> refreshAccessToken(HttpServletRequest request) {
-        String refreshToken = request.getHeader("refreshToken");
+        String refreshToken = request.getHeader("accessToken");
         if (refreshToken != null && jwtService.validateToken(refreshToken)) {
             String memberEmail = jwtService.getMemberEmailFromToken(refreshToken);
             if (memberService.validateRefreshToken(memberEmail, refreshToken)) {
