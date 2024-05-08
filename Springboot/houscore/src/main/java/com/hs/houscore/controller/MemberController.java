@@ -96,18 +96,18 @@ public class MemberController {
     @GetMapping("/refresh")
     @Operation(summary = "액세스 토큰 재발급", description = "리프레시 토큰으로 액세스 토큰 재발급")
     public ResponseEntity<?> refreshAccessToken(HttpServletRequest request) {
-        String refreshToken = request.getHeader("accessToken");
+        String refreshToken = request.getHeader("refreshToken");
         if (refreshToken != null && jwtService.validateToken(refreshToken)) {
             String memberEmail = jwtService.getMemberEmailFromToken(refreshToken);
             if (memberService.validateRefreshToken(memberEmail, refreshToken)) {
                 String newAccessToken = jwtService.createAccessToken(memberEmail, memberService.getMemberNameByEmail(memberEmail), memberService.getProviderByEmail(memberEmail));
                 // JSON 형태로 토큰을 반환
                 Map<String, String> tokens = new HashMap<>();
-                tokens.put("refreshToken", newAccessToken);
+                tokens.put("accessToken", newAccessToken);
                 return ResponseEntity.ok(tokens);
             }
         }
-        SecurityContextHolder.clearContext();
+        //SecurityContextHolder.clearContext();
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid refresh token");
     }
 }
