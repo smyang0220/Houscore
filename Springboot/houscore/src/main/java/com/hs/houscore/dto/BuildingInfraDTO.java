@@ -15,6 +15,8 @@ public class BuildingInfraDTO {
 
     @Data
     @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Infras {
         private Map<String, Long> medicalFacilities;
         private Map<String, Long> parks;
@@ -24,12 +26,16 @@ public class BuildingInfraDTO {
     }
     @Data
     @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class PublicTransport {
         private Map<String, Long> bus;
         private Map<String, Long> subways;
     }
     @Data
     @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class RealCost{
         private Double buy;
         private Double longterm;

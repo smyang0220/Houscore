@@ -53,6 +53,8 @@ dependencies {
 	//배치 관련 의존성
 	implementation 'org.springframework.boot:spring-boot-starter-batch'
 
+	// hibernate-spatial
+	implementation 'org.hibernate:hibernate-spatial:6.4.4.Final'
 
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
