@@ -168,8 +168,8 @@ public class BuildingService {
                 .build();
     }
 
-    public List<ReviewEntity> getBuildingReviewList(String address){
-        return reviewRepository.findByAddress(address);
+    public List<ReviewEntity> getBuildingReviewList(String address, Pageable pageable){
+        return reviewRepository.findByAddress(address, pageable).getContent();
     }
 
     public List<RecommendAiDTO> getRecommendAiScoreTop5(String sigungu){
@@ -212,10 +212,24 @@ public class BuildingService {
     }
 
     public List<RecommendDTO> getRecommendNearby(Double lat, Double lng){
-        // 가장 가까운 거주지 중 리뷰가 있는 2개의 거주지에서 가장 최근의 리뷰 하나씩 총 2개
-
+        List<BuildingEntity> buildingEntities = buildingRepositoryCustom.findBuildingsWithin1Km(new GeoJsonPoint(lng,lat));
+        List<RecommendDTO> recommendDTOS = new ArrayList<>();
+        for(BuildingEntity buildingEntity : buildingEntities){
+            System.out.println(buildingEntity.getPlatPlc());
+            List<ReviewEntity> reviewEntity = reviewRepository.findByAddress(buildingEntity.getPlatPlc());
+            recommendDTOS.add(RecommendDTO.builder()
+                    .address(buildingEntity.getNewPlatPlc())
+                    .buildingName(buildingEntity.getInformation().getBuildingInfo().getBldNm())
+                    .aiScore(buildingEntity.getScore())
+                    .reviewScore(0.0)
+                    .cons("")
+                    .pros("")
+                    .imageUrl("")
+                    .build());
+        }
 
         return null;
+
     }
 
 }
