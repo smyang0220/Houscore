@@ -1,5 +1,7 @@
 package com.hs.houscore.mongo.service;
 
+import com.hs.houscore.batch.entity.BusEntity;
+import com.hs.houscore.batch.repository.BusRepository;
 import com.hs.houscore.dto.BuildingDetailDTO;
 import com.hs.houscore.dto.BuildingInfraDTO;
 import com.hs.houscore.dto.RecommendAiDTO;
@@ -19,6 +21,7 @@ import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -28,6 +31,7 @@ public class BuildingService {
 
     private final BuildingRepository buildingRepository;
     private final ReviewRepository reviewRepository;
+    private final BusRepository busRepository;
     private final BuildingRepositoryCustom buildingRepositoryCustom;
     private final int PAGE_SIZE = 5;
 
@@ -40,6 +44,10 @@ public class BuildingService {
     }
 
     public BuildingDetailDTO getBuildingByAddress(String address, Double lat, Double lng){
+        List<BusEntity> bus = busRepository.findBusByDistance(lat,lng,500);
+        for(BusEntity busEntity : bus){
+            System.out.println(busEntity.toString());
+        }
         BuildingEntity buildingEntity = buildingRepository.findByNewPlatPlcOrPlatPlc(address, address)
                 .orElse(null);
         if(buildingEntity != null){
@@ -56,10 +64,6 @@ public class BuildingService {
                 .newPlatPlc("")
                 .batchYn("n")
                 .location(new GeoJsonPoint(lng, lat))
-                .sigunguCd("")
-                .bjdongCd("")
-                .bldNm("")
-                .pnuCode("")
                 .information(BuildingEntity.Information.builder()
                         .buildingInfo(new BuildingEntity.BuildingInfo())
                         .priceInfo(new BuildingEntity.PriceInfo())
@@ -104,6 +108,10 @@ public class BuildingService {
                         .hhldCnt(buildingInfo.getHhldCnt())
                         .mainBldCnt(buildingInfo.getMainBldCnt())
                         .totPkngCnt(buildingInfo.getTotPkngCnt())
+                        .sigunguCd(buildingInfo.getSigunguCd())
+                        .bjdongCd(buildingInfo.getBjdongCd())
+                        .bldNm(buildingInfo.getBldNm())
+                        .pnuCode(buildingInfo.getPnuCode())
                         .build())
                 .build();
     }
@@ -119,30 +127,35 @@ public class BuildingService {
     }
 
     private BuildingInfraDTO setBuildingInfra(BuildingEntity building) {
-
-        BuildingInfraDTO.Infras infra = BuildingInfraDTO.Infras.builder()
-                .medicalFacilities(building.getInformation().getInfraInfo().getMedicalFacilities())
-                .parks(building.getInformation().getInfraInfo().getParks())
-                .schools(building.getInformation().getInfraInfo().getSchools())
-                .libraries(building.getInformation().getInfraInfo().getLibraries())
-                .supermarkets(building.getInformation().getInfraInfo().getSupermarkets())
-                .build();
-
-        BuildingInfraDTO.PublicTransport publicTransport = BuildingInfraDTO.PublicTransport.builder()
-                .bus(building.getInformation().getTrafficInfo().getBus())
-                .subways(building.getInformation().getTrafficInfo().getSubway())
-                .build();
-
-        BuildingInfraDTO.RealCost realCost = BuildingInfraDTO.RealCost.builder()
-                .buy(building.getInformation().getPriceInfo().getSaleAvg())
-                .longterm(building.getInformation().getPriceInfo().getLeaseAvg())
-                .monthly(building.getInformation().getPriceInfo().getRentAvg())
-                .build();
-
-        Integer safetyGrade = building.getInformation().getSecurityInfo().getSafetyGrade();
-        if (safetyGrade == null) {
-            safetyGrade = 0;
+        if(building.getInformation() == null) return BuildingInfraDTO.builder().build();
+        BuildingInfraDTO.Infras infra = new BuildingInfraDTO.Infras();
+        if(building.getInformation().getBuildingInfo() != null) {
+            infra = BuildingInfraDTO.Infras.builder()
+                    .medicalFacilities(building.getInformation().getInfraInfo().getMedicalFacilities())
+                    .parks(building.getInformation().getInfraInfo().getParks())
+                    .schools(building.getInformation().getInfraInfo().getSchools())
+                    .libraries(building.getInformation().getInfraInfo().getLibraries())
+                    .supermarkets(building.getInformation().getInfraInfo().getSupermarkets())
+                    .build();
         }
+        BuildingInfraDTO.PublicTransport publicTransport = new BuildingInfraDTO.PublicTransport();
+        if(building.getInformation().getTrafficInfo() != null){
+            publicTransport = BuildingInfraDTO.PublicTransport.builder()
+                    .bus(building.getInformation().getTrafficInfo().getBus())
+                    .subways(building.getInformation().getTrafficInfo().getSubway())
+                    .build();
+        }
+        BuildingInfraDTO.RealCost realCost = new BuildingInfraDTO.RealCost();
+        if(building.getInformation().getPriceInfo() != null){
+            realCost = BuildingInfraDTO.RealCost.builder()
+                    .buy(building.getInformation().getPriceInfo().getSaleAvg())
+                    .longterm(building.getInformation().getPriceInfo().getLeaseAvg())
+                    .monthly(building.getInformation().getPriceInfo().getRentAvg())
+                    .build();
+        }
+
+        Integer safetyGrade = building.getInformation().getSecurityInfo().getSafetyGrade() == null ? 0 : building.getInformation().getSecurityInfo().getSafetyGrade();
+
         Double realPrice = building.getInformation().getPriceInfo().getSaleAvg();
         Double archArea = building.getInformation().getBuildingInfo().getArchArea();
 
@@ -155,9 +168,8 @@ public class BuildingService {
                 .build();
     }
 
-    public List<ReviewEntity> getBuildingReviewList(String address, Pageable pageable){
-        Page<ReviewEntity> page = reviewRepository.findByAddress(address, pageable);
-        return page.getContent();
+    public List<ReviewEntity> getBuildingReviewList(String address){
+        return reviewRepository.findByAddress(address);
     }
 
     public List<RecommendAiDTO> getRecommendAiScoreTop5(String sigungu){
@@ -201,21 +213,7 @@ public class BuildingService {
 
     public List<RecommendDTO> getRecommendNearby(Double lat, Double lng){
         // 가장 가까운 거주지 중 리뷰가 있는 2개의 거주지에서 가장 최근의 리뷰 하나씩 총 2개
-        List<BuildingEntity> buildingEntities = buildingRepositoryCustom.findBuildingsWithin1Km(new GeoJsonPoint(lng,lat));
-        List<RecommendDTO> recommendDTOS = new ArrayList<>();
-        for(BuildingEntity buildingEntity : buildingEntities){
-            System.out.println(buildingEntity.getPlatPlc());
-            List<ReviewEntity> reviewEntity = reviewRepository.findByAddress(buildingEntity.getPlatPlc());
-            recommendDTOS.add(RecommendDTO.builder()
-                    .address(buildingEntity.getNewPlatPlc())
-                    .buildingName(buildingEntity.getBldNm())
-                    .aiScore(buildingEntity.getScore())
-                    .reviewScore(0.0)
-                    .cons("")
-                    .pros("")
-                    .imageUrl("")
-                    .build());
-        }
+
 
         return null;
     }
