@@ -11,7 +11,7 @@ class ReviewRating extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: categories.map((category) => ListTile(
-        title: Expanded(
+        title: Container(
           child: Center(
             child: Text(category, textAlign: TextAlign.center),
           ),

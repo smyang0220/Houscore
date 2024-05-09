@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:houscore/common/const/color.dart';
 import 'package:houscore/common/layout/default_layout.dart';
 import 'package:houscore/review/component/image_upload.dart';
 import 'package:houscore/review/view/create_confirmed.dart';
@@ -144,17 +145,17 @@ class CreateReviewDetail extends StatefulWidget {
               controller: controller,
               decoration: InputDecoration(
                 filled: true,
-                fillColor: const Color(0xffECECEC),
+                fillColor: INPUT_BORDER_COLOR,
                 border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Color(0xffECECEC)), // 테두리 색상
+                  borderSide: BorderSide(color: INPUT_BORDER_COLOR), // 테두리 색상
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Color(0xffECECEC)), // 테두리 색상을 유지
+                  borderSide: BorderSide(color: INPUT_BORDER_COLOR), // 테두리 색상을 유지
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Color(0xffECECEC)), // 포커스 받았을 때의 색상
+                  borderSide: BorderSide(color: INPUT_BORDER_COLOR), // 포커스 받았을 때의 색상
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 hintText: '작성하신 리뷰는 승인 단계를 거쳐 다른 사용자들을 위해 노출되며,\n'

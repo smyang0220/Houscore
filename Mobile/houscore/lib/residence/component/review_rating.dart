@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:houscore/common/const/color.dart';
 
 final List<String> categories = ['교통', '건물', '내부', '인프라', '치안'];
 final Map<String, int> ratings = {
@@ -14,7 +15,7 @@ class ReviewRating extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: categories.map((category) => ListTile(
-        title: Expanded(
+        title: Container(
           child: Center(
             child: Text(category, textAlign: TextAlign.center),
           ),
@@ -39,7 +40,7 @@ class StaticRatingWidget extends StatelessWidget {
       children: [
         ...List.generate(5, (index) => Icon(
           index < rating ? Icons.star_rounded : Icons.star_rounded,
-          color: index < rating ? Colors.amber : Colors.grey,
+          color: index < rating ? Colors.amber : INPUT_BORDER_COLOR,
           size: 20,
         )),
         SizedBox(width: 3),
