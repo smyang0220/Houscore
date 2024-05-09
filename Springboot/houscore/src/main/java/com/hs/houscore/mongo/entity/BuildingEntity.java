@@ -27,10 +27,7 @@ public class BuildingEntity {
     private Double lng;
     private String platPlc;
     private String newPlatPlc;
-    private String sigunguCd;
-    private String bjdongCd;
-    private String bldNm;
-    private String pnuCode;
+
     private String batchYn;
     private Information information;
 
@@ -64,6 +61,10 @@ public class BuildingEntity {
         private Integer hhldCnt;        //세대수
         private Integer mainBldCnt;     //주건축물수
         private Integer totPkngCnt;     //총주차수
+        private String sigunguCd;
+        private String bjdongCd;
+        private String bldNm;
+        private String pnuCode;
     }
 
     @Data
