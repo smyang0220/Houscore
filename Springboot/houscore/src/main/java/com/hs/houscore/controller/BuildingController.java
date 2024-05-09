@@ -9,6 +9,7 @@ import com.hs.houscore.postgre.entity.ReviewEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,8 +45,9 @@ public class BuildingController {
 
     @GetMapping("/review")
     @Operation(summary = "건물 리뷰 정보", description = "건물 리뷰 정보 검색")
-    public List<ReviewEntity> getBuildingReview(@RequestParam String address){
-        return buildingService.getBuildingReviewList(address);
+    public List<ReviewEntity> getBuildingReview(@RequestParam String address
+            , Pageable pageable){
+        return buildingService.getBuildingReviewList(address, pageable);
     }
 
     @GetMapping("/recommend/ai")
