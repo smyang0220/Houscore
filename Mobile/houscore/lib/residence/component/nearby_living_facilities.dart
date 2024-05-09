@@ -233,7 +233,7 @@ class _NearbyLivingFacilitiesState extends State<NearbyLivingFacilities> {
   // 빌딩 숲 배경
   ui.Image? backgroundImg;
 
-  // assets에서 가져옴
+  // asset에서 가져옴
   Future<ui.Image> loadImage(String imagePath) async {
     ByteData data = await rootBundle.load(imagePath);
     Uint8List bytes = data.buffer.asUint8List();

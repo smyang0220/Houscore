@@ -53,7 +53,7 @@ class _KakaoLoginButtonState extends ConsumerState<KakaoLoginButton> {
               }
             }
             try {
-              final repository = ref.watch(MemberRepositroyProvider);
+              final repository = ref.watch(MemberRepositoryProvider);
 
               print("엑세스 ${token.accessToken}");
               print("리프레시 ${token.refreshToken}");
