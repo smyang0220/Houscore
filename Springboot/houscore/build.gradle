@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.2.4'
 	id 'io.spring.dependency-management' version '1.1.4'
+	id "org.sonarqube" version "4.4.1.3373"
 }
 
 group = 'com.hs'
@@ -14,6 +15,12 @@ java {
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
+	}
+}
+
+sonarqube {
+	properties {
+		property 'sonar.gradle.skipCompile', 'true'
 	}
 }
 
