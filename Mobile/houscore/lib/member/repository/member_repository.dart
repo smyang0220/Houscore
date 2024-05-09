@@ -10,7 +10,7 @@ import '../model/member_search_model.dart';
 
 part 'member_repository.g.dart';
 
-final MemberRepositoryProvider = Provider<MemberRepository>(
+final memberRepositoryProvider = Provider<MemberRepository>(
       (ref) {
     final dio = ref.watch(dioProvider);
     final repository =
