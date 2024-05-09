@@ -103,7 +103,7 @@ class _ResidenceDetailState extends State<ResidenceDetail>
               physics: NeverScrollableScrollPhysics(), // 스크롤 하다가 가로로 스크롤 되서 탭 바뀌는 거 방지!
               children: [
                 // 첫 번째 탭 '상세 정보'의 내용
-                NearbyIndicators(),
+                // NearbyIndicators(),
                 // 두 번째 탭 '주변 시설'의 내용
                 ScoreAndReview(),
               ],

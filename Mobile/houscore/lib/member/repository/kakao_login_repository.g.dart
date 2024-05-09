@@ -33,7 +33,7 @@ class _KakaoLoginRepository implements KakaoLoginRepository {
     )
         .compose(
           _dio.options,
-          '/api/member/login/kakao',
+          '/login/kakao',
           queryParameters: queryParameters,
           data: _data,
         )

@@ -14,6 +14,7 @@ class CursorPaginationError extends CursorPaginationBase {
 
 class CursorPaginationLoading extends CursorPaginationBase {}
 
+// genericArgumentFactories옵션 : 제네릭 타입을 포함하는 복잡한 객체 구조에서 타입 정보를 유지하면서 JSON 변환을 처리
 @JsonSerializable(
   genericArgumentFactories: true,
 )
@@ -24,6 +25,7 @@ class CursorPagination<T> extends CursorPaginationBase {
     required this.data,
   });
 
+  // 객체의 불변성 유지를 위한 부분
   CursorPagination copyWith({
     List<T>? data,
   }) {

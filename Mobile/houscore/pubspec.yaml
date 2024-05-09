@@ -51,6 +51,8 @@ dependencies:
   kpostal: ^0.5.1
   geolocator: ^11.0.0
   flutter_naver_map: ^1.1.1
+  yaml: ^3.1.2
+  envied: ^0.5.4+1
 
 dev_dependencies:
   flutter_test:
@@ -65,6 +67,7 @@ dev_dependencies:
   build_runner: ^2.0.0
   json_serializable: ^6.2.0
   retrofit_generator: ^8.1.0
+  envied_generator: ^0.5.4+1
 
 
 # For information on the generic Dart part of this file, see the
@@ -83,6 +86,7 @@ flutter:
     - asset/img/food/
     - asset/icon/
     - asset/img/logo/
+    - asset/img/building/
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
