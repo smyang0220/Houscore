@@ -32,5 +32,9 @@ public class BuildingDetailDTO {
         private Integer hhldCnt;        //세대수
         private Integer mainBldCnt;     //주건축물수
         private Integer totPkngCnt;     //총주차수
+        private String sigunguCd;
+        private String bjdongCd;
+        private String bldNm;
+        private String pnuCode;
     }
 }

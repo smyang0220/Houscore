@@ -30,10 +30,6 @@ public class BuildingItemProcessor implements ItemProcessor<BuildingEntity, Buil
                 .lng(building.getLng())
                 .platPlc(building.getPlatPlc())
                 .newPlatPlc(building.getNewPlatPlc())
-                .sigunguCd("")
-                .bjdongCd("")
-                .bldNm("")
-                .pnuCode("")
                 .batchYn("y")
                 .information(BuildingEntity.Information.builder()
                         .buildingInfo(setBuildingInfo(building))
@@ -63,6 +59,10 @@ public class BuildingItemProcessor implements ItemProcessor<BuildingEntity, Buil
                     .hhldCnt(0)
                     .mainBldCnt(0)
                     .totPkngCnt(0)
+                    .sigunguCd("")
+                    .bjdongCd("")
+                    .bldNm("")
+                    .pnuCode("")
                     .build();
         }
         return BuildingEntity.BuildingInfo.builder()
@@ -77,6 +77,10 @@ public class BuildingItemProcessor implements ItemProcessor<BuildingEntity, Buil
                 .hhldCnt(masterRegisterEntity.getHhldCnt())
                 .mainBldCnt(masterRegisterEntity.getMainBldCnt())
                 .totPkngCnt(masterRegisterEntity.getTotPkngCnt())
+                .sigunguCd(masterRegisterEntity.getSigunguCd())
+                .bjdongCd(masterRegisterEntity.getBjdongCd())
+                .bldNm(masterRegisterEntity.getBldNm())
+                .pnuCode(masterRegisterEntity.getPnuCode())
                 .build();
     }
     //실거래가 데이터
