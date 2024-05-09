@@ -10,14 +10,16 @@ import java.util.List;
 
 @Repository
 public interface BusRepository extends JpaRepository<BusEntity, Long> {
-    @Query(
-            value =
-                    "select * from bus b where"
-                            + " ST_DWithin(CAST(ST_SetSRID(ST_Point(:latitude, :longitude), 4326) AS"
-                            + " geography), CAST(ST_SetSRID(ST_Point(b.latitude, b.longitude), 4326) AS"
-                            + " geography), :distance)",
+    @Query(value = "SELECT b.*, " +
+            "ST_Distance(CAST(ST_SetSRID(ST_Point(:latitude, :longitude), 4326) AS geography), " +
+            "CAST(ST_SetSRID(ST_Point(b.latitude, b.longitude), 4326) AS geography)) AS distance " +
+            "FROM bus b " +
+            "WHERE ST_DWithin(CAST(ST_SetSRID(ST_Point(:latitude, :longitude), 4326) AS geography), " +
+            "CAST(ST_SetSRID(ST_Point(b.latitude, b.longitude), 4326) AS geography), :distance) " +
+            "AND b.id IN (" +
+            "SELECT MIN(b2.id) FROM bus b2 WHERE b2.bus_stop_name = b.bus_stop_name GROUP BY b2.bus_stop_name)",
             nativeQuery = true)
-    List<BusEntity> findBusByDistance(
+    List<Object[]> findBusByDistance(
             @Param("latitude") Double userLatitude,
             @Param("longitude") Double userLongitude,
             @Param("distance") Integer distance);

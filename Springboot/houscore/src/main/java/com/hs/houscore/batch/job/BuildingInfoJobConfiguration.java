@@ -1,6 +1,7 @@
 package com.hs.houscore.batch.job;
 
 import com.hs.houscore.batch.processor.BuildingItemProcessor;
+import com.hs.houscore.batch.repository.BusRepository;
 import com.hs.houscore.batch.repository.MasterRegisterRepository;
 import com.hs.houscore.batch.repository.RealTransactionPriceRepository;
 import com.hs.houscore.mongo.entity.BuildingEntity;
@@ -51,8 +52,10 @@ public class BuildingInfoJobConfiguration {
     //processor
     @Bean
     public BuildingItemProcessor buildingItemProcessor(MasterRegisterRepository masterRegisterRepository,
-                                                       RealTransactionPriceRepository realTransactionPriceRepository) {
-        return new BuildingItemProcessor(masterRegisterRepository, realTransactionPriceRepository);
+                                                       RealTransactionPriceRepository realTransactionPriceRepository,
+                                                       BusRepository busRepository) {
+        return new BuildingItemProcessor(masterRegisterRepository, realTransactionPriceRepository,
+                busRepository);
     }
 
     //writer
