@@ -2,6 +2,7 @@ package com.hs.houscore.batch.processor;
 
 import com.hs.houscore.batch.entity.MasterRegisterEntity;
 import com.hs.houscore.batch.entity.RealTransactionPriceEntity;
+import com.hs.houscore.batch.repository.BusRepository;
 import com.hs.houscore.batch.repository.MasterRegisterRepository;
 import com.hs.houscore.batch.repository.RealTransactionPriceRepository;
 import com.hs.houscore.mongo.entity.BuildingEntity;
@@ -11,6 +12,7 @@ import org.springframework.batch.item.ItemProcessor;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -18,6 +20,7 @@ public class BuildingItemProcessor implements ItemProcessor<BuildingEntity, Buil
 
     private final MasterRegisterRepository masterRegisterRepository;
     private final RealTransactionPriceRepository realTransactionPriceRepository;
+    private final BusRepository busRepository;
 
     @Override
     public BuildingEntity process(BuildingEntity building) throws Exception {
@@ -127,9 +130,16 @@ public class BuildingItemProcessor implements ItemProcessor<BuildingEntity, Buil
                 .build();
     }
     private BuildingEntity.TrafficInfo setTrafficInfo(BuildingEntity building) {
+        List<Object[]> bus = busRepository.findBusByDistance(building.getLocation().getY(),building.getLocation().getX(),1000);
+        Map<String, Long> busMap = new HashMap<>();
+        for (Object[] data : bus) {
+            String busStopName = (String) data[0];
+            Double distance = (Double) data[4];
+            busMap.put(busStopName.replace(".", "_"), distance.longValue());
+        }
 //        return new BuildingEntity.TrafficInfo();
         return BuildingEntity.TrafficInfo.builder()
-                .bus(new HashMap<String, Long>())
+                .bus(busMap)
                 .subway(new HashMap<String, Long>())
                 .build();
     }
