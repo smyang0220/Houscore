@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:houscore/residence/component/real_review_list.dart';
+import 'package:houscore/residence/component/score_by_ai.dart';
 import 'package:houscore/residence/component/score_by_review.dart';
 
 class ScoreAndReview extends StatefulWidget {
@@ -19,8 +21,9 @@ class _ScoreAndReviewState extends State<ScoreAndReview> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             ScoreByReview(),
+            ScoreByAi(),
+            RealReviewList(),
           ],
         ),
       ),

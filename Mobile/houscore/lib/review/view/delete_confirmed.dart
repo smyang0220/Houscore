@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:confirmation_success/confirmation_success.dart';
+import 'package:houscore/common/view/root_tab.dart';
 import 'package:houscore/review/view/my_review_list.dart';
 
 class DeleteConfirmed extends StatefulWidget {
@@ -90,7 +91,11 @@ class _DeleteConfirmedState extends State<DeleteConfirmed> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   OutlinedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => RootTab()),
+                      );
+                    },
                     style: OutlinedButton.styleFrom(
                       foregroundColor: Colors.black,
                       backgroundColor: Colors.white,
@@ -106,10 +111,7 @@ class _DeleteConfirmedState extends State<DeleteConfirmed> {
                   ),
                   OutlinedButton(
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => MyReviewList()),
-                      );
+                      Navigator.pop(context);
                     },
                     style: OutlinedButton.styleFrom(
                       foregroundColor: Colors.white,
