@@ -45,7 +45,7 @@ def get_coordinates_parcel(address):
         "format": "json",
         "type": "PARCEL",
         "simple": "true",
-        "key": "FB6A2A58-73AC-3B0C-90C2-12161BDAAF96"  # API 키는 적절히 대체해 주세요.
+        "key": API_KEY # API 키는 적절히 대체해 주세요.
     }
     return send_request(apiurl, params)
 
