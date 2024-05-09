@@ -1,9 +1,12 @@
 package com.hs.houscore.postgre.service;
 
 import com.hs.houscore.postgre.entity.MyInterestedAreaEntity;
+import com.hs.houscore.postgre.entity.ReviewEntity;
 import com.hs.houscore.postgre.repository.MyInterestedAreaRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,8 +17,8 @@ import java.util.List;
 public class MyInterestedAreaService {
     private final MyInterestedAreaRepository myInterestedAreaRepository;
 
-    public List<MyInterestedAreaEntity> getMyInterestedAreaList(String memberId){
-        return myInterestedAreaRepository.findByMemberId(memberId);
+    public List<MyInterestedAreaEntity> getMyInterestedAreaList(String memberId, Pageable pageable){
+        return myInterestedAreaRepository.findByMemberId(memberId, pageable).getContent();
     }
 
     public void setMyInterestedArea(MyInterestedAreaEntity myInterestedArea){

@@ -7,6 +7,7 @@ import com.hs.houscore.postgre.service.MyInterestedAreaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,8 +36,8 @@ public class MyInfoController {
 
     @GetMapping("/area")
     @Operation(summary = "관심 지역 리스트", description = "관심 지역 리스트 조회")
-    public List<MyInterestedAreaEntity> getMyInterestedArea(String email) {
-        return myInterestedAreaService.getMyInterestedAreaList(email);
+    public List<MyInterestedAreaEntity> getMyInterestedArea(String email, Pageable pageable) {
+        return myInterestedAreaService.getMyInterestedAreaList(email, pageable);
     }
 
     @PostMapping("/area")

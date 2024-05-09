@@ -11,6 +11,10 @@ import com.hs.houscore.postgre.entity.ReviewEntity;
 import com.hs.houscore.postgre.repository.ReviewRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +29,7 @@ public class BuildingService {
     private final BuildingRepository buildingRepository;
     private final ReviewRepository reviewRepository;
     private final BuildingRepositoryCustom buildingRepositoryCustom;
+    private final int PAGE_SIZE = 5;
 
     public List<BuildingEntity> getBuildingList(){
         return buildingRepository.findAll();
@@ -150,8 +155,9 @@ public class BuildingService {
                 .build();
     }
 
-    public List<ReviewEntity> getBuildingReviewList(String address){
-        return reviewRepository.findByAddress(address);
+    public List<ReviewEntity> getBuildingReviewList(String address, Pageable pageable){
+        Page<ReviewEntity> page = reviewRepository.findByAddress(address, pageable);
+        return page.getContent();
     }
 
     public List<RecommendAiDTO> getRecommendAiScoreTop5(String sigungu){
