@@ -1,6 +1,7 @@
  import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/services.dart'; // SystemChrome을 사용하기 위해 필요
+import 'package:houscore/common/router/router.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'common/view/splash_screen.dart'; // SplashScreen의 경로에 따라 수정해주세요.
 
@@ -28,12 +29,12 @@ class _App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // MaterialApp의 경우
-    return MaterialApp(
+    return MaterialApp.router(
       theme: ThemeData(
         fontFamily: 'NotoSans',
       ),
       debugShowCheckedModeBanner: false, // 우측 상단 '디버그' 배지 제거
-      home: SplashScreen(), // 우선 SplashScreen으로 시작합니다.
+      routerConfig: router, // 우선 SplashScreen으로 시작합니다.
     );
   }
 }

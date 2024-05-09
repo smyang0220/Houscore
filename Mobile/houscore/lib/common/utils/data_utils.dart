@@ -1,10 +1,64 @@
-import 'package:houscore/common/const/data.dart';
+import 'dart:convert';
+
+import '../const/data.dart';
+
 
 class DataUtils{
-  // JSON에서 경로를 받아서 완전한 URL로 변환하는 역할
-  // @JsonKey(fromJson: DataUtils.pathToUrl)에서 쓰임!
-  // 예를 들면 섬네일 같은 경우 value만 가지고 다니고 실제 값으로는 url을 쓰도록!
-  static pathToUrl(String value){
+  static String pathToUrl(String value){
     return 'http://$ip$value';
   }
+
+  static List<String> listPathsToUrls(List paths){
+    return paths.map((e) => pathToUrl(e)).toList();
+  }
+
+  static String plainToBase64(String plain){
+    Codec<String, String> stringToBase64 = utf8.fuse(base64);
+
+    String encoded = stringToBase64.encode(plain);
+
+    return encoded;
+  }
+
+  static String plainFromBase64(String plain){
+    Codec<String, String> stringToBase64 = utf8.fuse(base64);
+
+    String encoded = stringToBase64.decode(plain);
+
+    return encoded;
+  }
+
+  static Map<String, dynamic> parseJwtPayload(String token) {
+    final parts = token.split('.');
+    if (parts.length != 3) {
+      throw Exception('잘못된 JWT 토큰입니다.');
+    }
+
+    final payload = _decodeBase64(parts[1]);
+    final payloadMap = json.decode(payload);
+    if (payloadMap is! Map<String, dynamic>) {
+      throw Exception('잘못된 Payload 데이터입니다.');
+    }
+
+    return payloadMap;
+  }
+
+  static String _decodeBase64(String str) {
+    String output = str.replaceAll('-', '+').replaceAll('_', '/');
+    switch (output.length % 4) {
+      case 0:
+        break;
+      case 2:
+        output += '==';
+        break;
+      case 3:
+        output += '=';
+        break;
+      default:
+        throw Exception('잘못된 Base64 문자열입니다.');
+    }
+
+    return utf8.decode(base64Url.decode(output));
+  }
+
 }
