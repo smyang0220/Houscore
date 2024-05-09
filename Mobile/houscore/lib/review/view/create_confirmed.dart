@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:confirmation_success/confirmation_success.dart';
+import 'package:houscore/common/view/root_tab.dart';
 
 class CreateConfirmed extends StatefulWidget {
   @override
@@ -111,7 +112,9 @@ class _CreateConfirmedState extends State<CreateConfirmed> {
                     child: Text('건물정보'),
                   ),
                   OutlinedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      //TODO 내가 쓴 리뷰 페이지로 다시 이동. 그냥 pop할 경우 alert 표시됨
+                    },
                     style: OutlinedButton.styleFrom(
                       foregroundColor: Colors.white,
                       backgroundColor: Colors.blue,

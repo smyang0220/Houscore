@@ -1,24 +1,16 @@
-import 'package:blurry/blurry.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:houscore/review/view/create_review.dart';
-import 'package:houscore/review/view/delete_confirmed.dart';
 
-class MyReviewCard extends StatelessWidget {
-  final String address;
+class RealReviewCard extends StatelessWidget {
   final double userRating;
-  final double aiRating;
   final String like;
   final String dislike;
   final String imageUrl;
 
-  const MyReviewCard({
+  const RealReviewCard({
     Key? key,
-    required this.address,
     required this.userRating,
-    required this.aiRating,
     required this.like,
     required this.dislike,
     required this.imageUrl,
@@ -31,35 +23,20 @@ class MyReviewCard extends StatelessWidget {
         margin: const EdgeInsets.symmetric(vertical: 4.0),
         padding: const EdgeInsets.all(16.0),
         width: MediaQuery.of(context).size.width * 0.8,
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey, width: 1),
-          borderRadius: BorderRadius.circular(8.0),
-        ),
         child: Column(
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  child: Text(
-                    address,
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
                 SizedBox(width: 10),
                 // 평점 관련 부분
-                _buildRatingSection(userRating, aiRating),
+                _buildRatingSection(userRating),
               ],
             ),
             SizedBox(height: 10),
             Row(
               children: [
-                Image.asset(
-                  'asset/img/logo/main_logo.png',
-                  width: MediaQuery.of(context).size.width * 0.2,
-                ),
                 SizedBox(width: 15),
                 Flexible(
                   child: Column(
@@ -105,59 +82,18 @@ class MyReviewCard extends StatelessWidget {
             SizedBox(
               height: 5,
             ),
-            Divider(),
-            Row(
-              children: [
-                Container(
-                  child: Expanded(
-                    flex: 1,
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CreateReview()),
-                          //TODO update로 바꾸기
-                        );
-                      },
-                      child: Text('수정'),
-                    ),
-                  ),
-                ),
-                VerticalDivider(),
-                Container(
-                  child: Expanded(
-                    flex: 1,
-                    child: TextButton(
-                      onPressed: () {
-                        Blurry.info(
-                          title: '건물 이름 또는 주소',
-                          cancelButtonText: '취소',
-                          description:
-                          '리뷰를 삭제하시겠습니까?',
-                          confirmButtonText: '삭제',
-                          onConfirmButtonPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => DeleteConfirmed()),
-                          );
-                        },
-                        ).show(context);
-                      },
-                      child: Text('삭제'),
-                    ),
-                  ),
-                ),
-              ],
-            )
+            Image.asset(
+              //TODO 그리드뷰, 모든 사진 가져오도록 변경
+              'asset/img/logo/main_logo.png',
+              width: MediaQuery.of(context).size.width * 0.2,
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildRatingSection(double userRating, double aiRating) {
+  Widget _buildRatingSection(double userRating) {
     return Row(
       children: [
         Icon(

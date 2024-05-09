@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:houscore/common/const/color.dart';
 
 class DropdownType extends StatefulWidget {
   final String? value;
@@ -98,17 +99,17 @@ Widget dropdownWidget({
         child: InputDecorator(
           decoration: InputDecoration(
             filled: true,
-            fillColor: const Color(0xffECECEC),
+            fillColor: INPUT_BORDER_COLOR,
             border: OutlineInputBorder(
-              borderSide: BorderSide(color: Color(0xffECECEC)), // 테두리 색상
+              borderSide: BorderSide(color: INPUT_BORDER_COLOR), // 테두리 색상
               borderRadius: BorderRadius.circular(8.0),
             ),
             enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Color(0xffECECEC)), // 테두리 색상을 유지
+              borderSide: BorderSide(color: INPUT_BORDER_COLOR), // 테두리 색상을 유지
               borderRadius: BorderRadius.circular(8.0),
             ),
             focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Color(0xffECECEC)), // 포커스 받았을 때의 색상
+              borderSide: BorderSide(color: INPUT_BORDER_COLOR), // 포커스 받았을 때의 색상
               borderRadius: BorderRadius.circular(8.0),
             ),
           ),

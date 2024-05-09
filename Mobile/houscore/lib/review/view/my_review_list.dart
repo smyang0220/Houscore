@@ -70,21 +70,15 @@ class _MyReviewListState extends State<MyReviewList> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 2),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Row(
-                      children: [
-                        Text(
-                          '내가 쓴 리뷰',
-                          style: TextStyle(
-                            fontFamily: 'NotoSans',
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ],
+                    Text(
+                      '내가 쓴 리뷰',
+                      style: TextStyle(
+                        fontFamily: 'NotoSans',
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
                     ),
                   ],
                 ),
@@ -104,7 +98,6 @@ class _MyReviewListState extends State<MyReviewList> {
                     )
                     .toList(),
               ),
-              // 최근 등록 리뷰
             ],
           ),
         ),
