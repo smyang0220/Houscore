@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:houscore/common/const/color.dart';
 
 class ResidenceNameInput extends StatefulWidget {
   final String? value;
@@ -46,18 +47,18 @@ class _ResidenceNameInputState extends State<ResidenceNameInput> {
             onChanged: widget.onChanged,
             decoration: InputDecoration(
               filled: true,
-              fillColor: Color(0xffECECEC),
-              hintText: '건물 이름을 입력하세요',
+              fillColor: INPUT_BORDER_COLOR,
+              hintText: '건물 이름을 입력해주세요',
               border: OutlineInputBorder(
-                borderSide: BorderSide(color: Color(0xffECECEC)),
+                borderSide: BorderSide(color: INPUT_BORDER_COLOR),
                 borderRadius: BorderRadius.circular(8.0),
               ),
               enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Color(0xffECECEC)),
+                borderSide: BorderSide(color: INPUT_BORDER_COLOR),
                 borderRadius: BorderRadius.circular(8.0),
               ),
               focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Color(0xffECECEC)),
+                borderSide: BorderSide(color: INPUT_BORDER_COLOR),
                 borderRadius: BorderRadius.circular(8.0),
               ),
             ),

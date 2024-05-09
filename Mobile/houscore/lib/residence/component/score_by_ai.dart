@@ -1,31 +1,43 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:houscore/residence/component/review_rating.dart';
+import 'package:houscore/common/const/color.dart';
 
-class ScoreByReview extends StatefulWidget {
-
+class ScoreByAi extends StatefulWidget {
   @override
-  _ScoreByReviewState createState() =>
-      _ScoreByReviewState();
+  _ScoreByAiState createState() => _ScoreByAiState();
 }
 
-class _ScoreByReviewState
-    extends State<ScoreByReview> {
-
+class _ScoreByAiState extends State<ScoreByAi> {
   @override
   Widget build(BuildContext context) {
-
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          '리뷰 기반 점수',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-        ),
-        Column(
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'AI 기반 점수',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  '공공데이터 기반 AI 점수',
+                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                ),
+              ],
+            ),
+            Text(
+              '3.9',
+              style: TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                  color: PRIMARY_COLOR),
+            ),
           ],
-        )
+        ),
+        Divider(),
       ],
     );
   }

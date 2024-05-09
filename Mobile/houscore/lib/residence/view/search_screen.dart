@@ -1,71 +1,58 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:houscore/common/layout/default_layout.dart';
-import 'package:remedi_kopo/remedi_kopo.dart';
-
-class SearchScreen extends StatefulWidget {
-  const SearchScreen({Key? key,}) : super(key: key);
-
-  @override
-  State<SearchScreen> createState() => _SearchScreenState();
-}
-
-class _SearchScreenState extends State<SearchScreen> {
-  TextEditingController _AddressController = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    return DefaultLayout(
-      child: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.only(left: 15, right: 15),
-          child: ListView(
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(padding: const EdgeInsets.only(top: 10)),
-                  AddressText(),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget AddressText() {
-    return GestureDetector(
-      onTap: () {
-        HapticFeedback.mediumImpact();
-        _addressAPI(); // 카카오 주소 API
-      },
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          TextFormField(
-            enabled: false,
-            decoration: InputDecoration(
-              isDense: false,
-            ),
-            controller: _AddressController,
-            style: TextStyle(fontSize: 20),
-          ),
-        ],
-      ),
-    );
-  }
-
-  _addressAPI() async {
-    KopoModel model = await Navigator.push(
-      context,
-      CupertinoPageRoute(
-        builder: (context) => RemediKopo(),
-      ),
-    );
-    _AddressController.text =
-    '${model.zonecode!} ${model.address!} ${model.buildingName!}';
-  }
-}
+// import 'package:flutter/cupertino.dart';
+// import 'package:flutter/material.dart';
+// import 'package:remedi_kopo/remedi_kopo.dart';
+//
+// void main() => runApp(MyApp());
+//
+// class MyApp extends StatelessWidget {
+//   // This widget is the root of your application.
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       title: 'Kopo Demo',
+//       home: RootPage(),
+//     );
+//   }
+// }
+//
+// class RootPage extends StatefulWidget {
+//   @override
+//   _RootPageState createState() => _RootPageState();
+// }
+//
+// class _RootPageState extends State<RootPage> {
+//   String addressJSON = '';
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text('Remedi Kopo Demo'),
+//       ),
+//       body: Column(
+//         mainAxisAlignment: MainAxisAlignment.center,
+//         crossAxisAlignment: CrossAxisAlignment.center,
+//         children: <Widget>[
+//           Center(
+//               child: ElevatedButton(
+//                 child: Text('Find Korean Postal Address'),
+//                 onPressed: () async {
+//                   KopoModel model = await Navigator.push(
+//                     context,
+//                     CupertinoPageRoute(
+//                       builder: (context) => RemediKopo(),
+//                     ),
+//                   );
+//                   print(model.toJson());
+//                   setState(() {
+//                     addressJSON =
+//                     '${model.address} ${model.buildingName}${model.apartment == 'Y' ? '아파트' : ''} ${model.zonecode} ';
+//                   });
+//                 },
+//               )),
+//           Text('$addressJSON'),
+//         ],
+//       ),
+//     );
+//   }
+// }
