@@ -4,6 +4,7 @@ import 'package:houscore/common/const/color.dart';
 import '../../building/view/api_test_screen.dart';
 import 'package:houscore/review/view/create_review.dart';
 import 'package:houscore/review/view/my_review_list.dart';
+import '../../member/view/my_page.dart';
 import 'home_screen.dart';
 
 class RootTab extends StatefulWidget {
@@ -45,7 +46,7 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
         children: [
           HomeScreen(),
           CreateReview(),
-          MyReviewList(),
+          MyPage(),
           ApiTestScreen(),
         ],
       ),
@@ -65,7 +66,7 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
           BottomNavigationBarItem(icon: Icon(Icons.rate_review_rounded), label: '리뷰'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: '마이'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'My'),
           BottomNavigationBarItem(icon: Icon(Icons.telegram_sharp), label: '통신테스트')
         ],
       ),

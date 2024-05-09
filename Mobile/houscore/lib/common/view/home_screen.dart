@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:houscore/review/component/photo_reviews.dart';
 import 'package:houscore/common/component/search_residences.dart';
 import 'package:houscore/common/const/color.dart';
@@ -10,7 +9,6 @@ import 'package:houscore/common/const/design.dart';
 import '../../residence/component/ai_recommendation.dart';
 import '../component/main_logo_app_name.dart';
 import '../../review/component/nearby_recent_reviews.dart';
-import '../../review/component/recent_reviews.dart';
 import '../layout/default_layout.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -98,7 +96,8 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
         backgroundColor: PRIMARY_COLOR,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(50))),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(50))),
         child: Icon(Icons.create_rounded),
       ),
       child: SafeArea(
