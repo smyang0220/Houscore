@@ -9,7 +9,7 @@ part of 'residence_detail_model.dart';
 ResidenceDetailModel _$ResidenceDetailModelFromJson(
         Map<String, dynamic> json) =>
     ResidenceDetailModel(
-      id: (json['id'] as num).toInt(),
+      id: Id.fromJson(json['id'] as Map<String, dynamic>),
       score: (json['score'] as num).toDouble(),
       lat: (json['lat'] as num).toDouble(),
       lng: (json['lng'] as num).toDouble(),
@@ -58,4 +58,14 @@ Map<String, dynamic> _$BuildingInfoToJson(BuildingInfo instance) =>
       'hhldCnt': instance.hhldCnt,
       'mainBldCnt': instance.mainBldCnt,
       'totPkngCnt': instance.totPkngCnt,
+    };
+
+Id _$IdFromJson(Map<String, dynamic> json) => Id(
+      timestamp: (json['timestamp'] as num).toInt(),
+      date: json['date'] as String,
+    );
+
+Map<String, dynamic> _$IdToJson(Id instance) => <String, dynamic>{
+      'timestamp': instance.timestamp,
+      'date': instance.date,
     };

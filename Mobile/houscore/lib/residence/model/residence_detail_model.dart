@@ -4,7 +4,7 @@ part 'residence_detail_model.g.dart';
 
 @JsonSerializable()
 class ResidenceDetailModel {
-  final int id;
+  final Id id;
   final double score;
   final double lat;
   final double lng;
@@ -56,4 +56,18 @@ class BuildingInfo {
 
   factory BuildingInfo.fromJson(Map<String, dynamic> json) => _$BuildingInfoFromJson(json);
   Map<String, dynamic> toJson() => _$BuildingInfoToJson(this);
+}
+
+@JsonSerializable()
+class Id {
+  final int timestamp;
+  final String date;
+
+  Id({
+    required this.timestamp,
+    required this.date,
+  });
+
+  factory Id.fromJson(Map<String, dynamic> json) => _$IdFromJson(json);
+  Map<String, dynamic> toJson() => _$IdToJson(this);
 }

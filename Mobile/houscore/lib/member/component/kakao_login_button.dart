@@ -74,43 +74,21 @@ class _KakaoLoginButtonState extends ConsumerState<KakaoLoginButton> {
 
               await storage.write(key: REFRESH_TOKEN_KEY, value: refreshToken);
               await storage.write(key: ACCESS_TOKEN_KEY, value: accessToken);
-
-
-              print("저장완료");
-              final rf = await storage.read(key: REFRESH_TOKEN_KEY);
-              final ac = await storage.read(key: ACCESS_TOKEN_KEY);
-              print("엑세스 저장값 ${ac}");
-              print("리프레시 저장값 ${rf}");
-
-              final dio = Dio();
-              print("리프레시 전송");
-              try {
-                final resp = await dio.get(
-                  'http://$ip/api/member/refresh',
-                  options: Options(
-                    headers: {
-                      'refreshToken': refreshToken,
-                    },
-                  ),
-                );
-                print("리프레시 종료");
-                print(resp);
-              } catch (e) {
-                print("리프레시 안돼용 $e");
-              }
-
               print("건물 검색 도과자");
               final repository2 = ref.watch(residenceRepositoryProvider);
-              final result2 =
-              await repository2.getResidenceDetail(address: "서울특별시 강남구 개포동 12번지", lat: 37.49456430167525, lng: 127.07536876387186);
+              print("레포지토리 선언 완료");
+              final result2 = await repository2.getResidenceDetail(address: "서울특별시 강남구 개포동 12번지", lat: 37.49456430167525, lng: 127.07536876387186);
               print("건물 검색 완료");
+              print(result2.newPlatPlc);
+
+
 
 
               final result =
-                  await repository.searchMember("smyang0220@naver.com");
+                  await repository.searchMember("cnhug3@naver.com");
 
               print("검색완료");
-              print(result);
+              print(result[0].memberName);
 
 
             } catch (e) {

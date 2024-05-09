@@ -74,14 +74,14 @@ class _MemberRepository implements MemberRepository {
   }
 
   @override
-  Future<MemberSearchModel> searchMember(String memberEmail) async {
+  Future<List<MemberSearchModel>> searchMember(String memberEmail) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{r'memberEmail': memberEmail};
     final _headers = <String, dynamic>{r'accessToken': 'true'};
     _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
     final _result = await _dio
-        .fetch<Map<String, dynamic>>(_setStreamType<MemberSearchModel>(Options(
+        .fetch<List<dynamic>>(_setStreamType<List<MemberSearchModel>>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
@@ -97,7 +97,10 @@ class _MemberRepository implements MemberRepository {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    final value = MemberSearchModel.fromJson(_result.data!);
+    var value = _result.data!
+        .map((dynamic i) =>
+            MemberSearchModel.fromJson(i as Map<String, dynamic>))
+        .toList();
     return value;
   }
 

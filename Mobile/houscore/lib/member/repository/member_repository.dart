@@ -43,7 +43,7 @@ abstract class MemberRepository {
   @Headers({
     'accessToken': 'true',
   })
-  Future<MemberSearchModel> searchMember(
+  Future<List<MemberSearchModel>> searchMember(
   @Query("memberEmail") String memberEmail,
   );
 

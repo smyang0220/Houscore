@@ -42,7 +42,7 @@ abstract class ResidenceRepository {
     @Query('address') required String address,
   });
 
-  @GET('/detail/indicator')
+  @GET('/detail')
   // 헤더 설정
   @Headers({
     'accessToken': 'true',

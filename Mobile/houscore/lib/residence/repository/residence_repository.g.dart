@@ -70,7 +70,7 @@ class _ResidenceRepository implements ResidenceRepository {
     )
             .compose(
               _dio.options,
-              '/detail/indicator',
+              '/detail',
               queryParameters: queryParameters,
               data: _data,
             )
