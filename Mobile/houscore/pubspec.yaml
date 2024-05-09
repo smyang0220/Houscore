@@ -54,6 +54,7 @@ dependencies:
   blurry: ^1.4.2
   yaml: ^3.1.2
   envied: ^0.5.4+1
+  go_router: ^7.0.1
 
 dev_dependencies:
   flutter_test:
