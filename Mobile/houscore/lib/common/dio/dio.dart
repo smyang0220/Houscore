@@ -47,7 +47,7 @@ class CustomInterceptor extends Interceptor {
       print("저장된 엑세스 토큰값 : $token");
       // 실제 토큰으로 대체한 authorization 헤더 추가
       options.headers.addAll({
-        'Authorization': "Bearer $token",
+        'accessToken': "Bearer $token",
       });
     }
 
@@ -59,7 +59,7 @@ class CustomInterceptor extends Interceptor {
       print("저장된 리프레시 토큰값 : $token");
 
       options.headers.addAll({
-        'Authorization': "Bearer $token",
+        'refreshToken': "Bearer $token",
       });
     }
 
@@ -107,7 +107,7 @@ class CustomInterceptor extends Interceptor {
           'http://$ip/api/member/refresh',
           options: Options(
             headers: {
-              'Authorization': refreshToken,
+              'refreshToken': refreshToken,
             },
           ),
         );
@@ -120,7 +120,7 @@ class CustomInterceptor extends Interceptor {
 
         // 토큰 변경하기
         options.headers.addAll({
-          'Authorization': "Bearer $accessToken",
+          'accessToken': "Bearer $accessToken",
         });
 
         await storage.write(key: ACCESS_TOKEN_KEY, value: accessToken);
