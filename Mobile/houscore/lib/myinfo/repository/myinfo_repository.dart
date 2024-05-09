@@ -1,18 +1,18 @@
 import 'package:dio/dio.dart' hide Headers;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:retrofit/retrofit.dart';
-import '../../common/const/data.dart';
-import '../../common/dio/dio.dart';
-import '../member/model/interested_area.dart';
-import '../member/model/member_info_model.dart';
+import '../../../common/const/data.dart';
+import '../../../common/dio/dio.dart';
+import '../../member/model/interested_area.dart';
+import '../../member/model/member_info_model.dart';
 
 part 'myinfo_repository.g.dart';
 
-final MyinfoRepositoryProvider = Provider<MyinfoRepository>(
+final myinfoRepositoryProvider = Provider<MyinfoRepository>(
       (ref) {
     final dio = ref.watch(dioProvider);
     final repository =
-    MemberRepository(dio, baseUrl: 'http://$ip/api/member');
+    MyinfoRepository(dio, baseUrl: 'http://$ip/api/myinfo');
 
     return repository;
   },
