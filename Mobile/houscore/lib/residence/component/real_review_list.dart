@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:houscore/common/const/color.dart';
 import 'real_review_card.dart';
 import 'package:tabler_icons/tabler_icons.dart';
 
@@ -64,13 +65,13 @@ class _RealReviewListState extends State<RealReviewList> {
               '실거주 리뷰',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
-            ElevatedButton(
+            TextButton(
               onPressed: () {},
-              //TODO 필터링 구현
+              //TODO 필터링 추가
               child: Row(
                 children: [
-                  Text('filtering'),
-                  Icon(TablerIcons.arrows_sort),
+                  Text('filtering',style: TextStyle(color: Color(0xff8298E3)),),
+                  Icon(TablerIcons.arrows_sort, color: Color(0xff8298E3),),
                 ],
               ),
             )
