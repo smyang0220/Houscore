@@ -13,7 +13,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.stereotype.Service;
 
@@ -122,10 +121,10 @@ public class BuildingService {
         if(building.getInformation().getBuildingInfo() != null) {
             infra = BuildingInfraDTO.Infras.builder()
                     .medicalFacilities(building.getInformation().getInfraInfo().getMedicalFacilities())
-                    .parks(building.getInformation().getInfraInfo().getParks())
-                    .schools(building.getInformation().getInfraInfo().getSchools())
-                    .libraries(building.getInformation().getInfraInfo().getLibraries())
-                    .supermarkets(building.getInformation().getInfraInfo().getSupermarkets())
+                    .park(building.getInformation().getInfraInfo().getParks())
+                    .school(building.getInformation().getInfraInfo().getSchools())
+                    .library(building.getInformation().getInfraInfo().getLibraries())
+                    .supermarket(building.getInformation().getInfraInfo().getSupermarkets())
                     .build();
         }
         BuildingInfraDTO.PublicTransport publicTransport = new BuildingInfraDTO.PublicTransport();

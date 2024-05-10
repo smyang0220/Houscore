@@ -21,10 +21,10 @@ public class BuildingInfraDTO {
     @AllArgsConstructor
     public static class Infras {
         private List<Map<String, Object>> medicalFacilities;
-        private List<Map<String, Object>> parks;
-        private List<Map<String, Object>> schools;
-        private List<Map<String, Object>> libraries;
-        private List<Map<String, Object>> supermarkets;
+        private List<Map<String, Object>> park;
+        private List<Map<String, Object>> school;
+        private List<Map<String, Object>> library;
+        private List<Map<String, Object>> supermarket;
     }
     @Data
     @Builder
