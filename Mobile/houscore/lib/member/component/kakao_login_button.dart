@@ -4,13 +4,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:houscore/common/utils/data_utils.dart';
 import 'package:houscore/common/view/root_tab.dart';
-import 'package:houscore/member/model/kakao_login_token_model.dart';
+import 'package:houscore/common/model/login_response.dart';
 import 'package:houscore/member/repository/member_repository.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 
-import '../../common/const/data.dart';
-import '../../common/secure_storage/secure_storage.dart';
-import '../../residence/repository/residence_repository.dart';
+import '../provider/user_me_provider.dart';
+
 
 class KakaoLoginButton extends ConsumerStatefulWidget {
   const KakaoLoginButton({Key? key}) : super(key: key);
@@ -27,8 +26,7 @@ class _KakaoLoginButtonState extends ConsumerState<KakaoLoginButton> {
         InkWell(
           onTap: () async {
             OAuthToken token;
-            KakaoLoginTokenModel resp;
-
+            LoginResponse resp;
             if (await isKakaoTalkInstalled()) {
               // 카카오가 설치됐을때
               try {
@@ -55,37 +53,23 @@ class _KakaoLoginButtonState extends ConsumerState<KakaoLoginButton> {
             try {
               final repository = ref.watch(memberRepositoryProvider);
 
-              // 카카오토큰 백엔드로 보내 우리만의 토큰으로 변환
-              resp = await repository.loginKakao(data: {
-                "accessToken": token.accessToken, // accessToken
-                "refreshToken": token.refreshToken, // refreshToken
-              });
-              // 응답받은 accessToken에서 payload 받아오기
-              final payload = DataUtils.parseJwtPayload(resp.accessToken);
-
-              final accessToken = resp.accessToken;
-              final refreshToken = resp.refreshToken;
-
-              final storage = ref.read(secureStorageProvider);
-
-              await Future.wait([
-               storage.write(key: REFRESH_TOKEN_KEY, value: refreshToken),
-               storage.write(key: ACCESS_TOKEN_KEY, value: accessToken),
-               storage.write(key: USER_EMAIL_KEY, value: payload['sub']),
-               storage.write(key: USER_NAME_KEY, value: payload['userName']),
-              ]);
+              // 카카오토큰 백엔드로 전송
+              ref.read(userMeProvider.notifier).login(
+                  refreshToken: '${token.refreshToken}',
+                  accessToken: '${token.accessToken}'
+              );
 
               // 엑세스토큰이 제대로된 값인지 만든 임시 로직
-              print("건물 검색 도과자");
-              final repository2 = ref.watch(residenceRepositoryProvider);
-              print("레포지토리 선언 완료");
-              final result2 = await repository2.getResidenceDetail(address: "서울특별시 강남구 개포동 12번지", lat: 37.49456430167525, lng: 127.07536876387186);
-              print("건물 검색 완료");
-              print(result2.newPlatPlc);
-              final result =
-                  await repository.searchMember("cnhug3@naver.com");
-              print("검색완료");
-              print(result[0].memberName);
+              // print("건물 검색 도과자");
+              // final repository2 = ref.watch(residenceRepositoryProvider);
+              // print("레포지토리 선언 완료");
+              // final result2 = await repository2.getResidenceDetail(address: "서울특별시 강남구 개포동 12번지", lat: 37.49456430167525, lng: 127.07536876387186);
+              // print("건물 검색 완료");
+              // print(result2.newPlatPlc);
+              // final result =
+              //     await repository.searchMember("cnhug3@naver.com");
+              // print("검색완료");
+              // print(result[0].memberName);
             } catch (e) {
               print("카카오 로그인 실패 $e");
             }

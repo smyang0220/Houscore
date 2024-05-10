@@ -8,6 +8,7 @@ import '../../myinfo/view/my_page.dart';
 import 'home_screen.dart';
 
 class RootTab extends StatefulWidget {
+  static String get routeName => 'home';
   const RootTab({super.key});
 
   @override

@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:houscore/common/layout/default_layout.dart';
-import '../../common/component/dynamic_list_widget.dart';
-import '../../common/secure_storage/secure_storage.dart';
+import 'package:houscore/member/provider/user_me_provider.dart';
 import '../component/my_info.dart';
-import '../provider/interested_area_list_provider.dart';
-import '../provider/myinfo_provider.dart';
 
 class MyPage extends ConsumerStatefulWidget {
   @override
@@ -24,6 +21,9 @@ class _MyPageState extends ConsumerState<MyPage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               MyInfo(),
+              ElevatedButton(onPressed: (){
+                ref.read(userMeProvider.notifier).logout();
+        }, child: Text("로그아웃"))
             ],
           ),
         ),

@@ -1,16 +1,16 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'kakao_login_token_model.g.dart';
+part 'login_response.g.dart';
 
 @JsonSerializable()
-class KakaoLoginTokenModel {
+class LoginResponse {
   final String accessToken;
   final String refreshToken;
 
-  KakaoLoginTokenModel({
+  LoginResponse({
     required this.accessToken,
     required this.refreshToken,
   });
 
-  factory KakaoLoginTokenModel.fromJson(Map<String, dynamic> json) => _$KakaoLoginTokenModelFromJson(json);
+  factory LoginResponse.fromJson(Map<String, dynamic> json) => _$LoginResponseFromJson(json);
 }
