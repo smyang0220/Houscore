@@ -27,7 +27,7 @@ abstract class ReviewRepository {
    */
   @GET('')
   @Headers({
-    'accessToken': 'false',
+    'accessToken': 'true',
   })
   Future<ReviewModel> reviewDetail({
     @Query("id") required int id,
