@@ -162,10 +162,8 @@ public class BuildingService {
     }
 
     public List<RecommendAiDTO> getMainAiScoreTop5(String sigungu){
-        // sigungu의 앞 4자리를 추출
-        String sigunguPrefix = sigungu.substring(0, 4);
 
-        List<BuildingEntity> buildingEntities = buildingRepository.findByInformationBuildingInfoSigunguCd(sigunguPrefix);
+        List<BuildingEntity> buildingEntities = buildingRepository.findByInformationBuildingInfoSigunguCd(sigungu);
         List<RecommendAiDTO> recommendAiDTOS = new ArrayList<>();
         Double avgCost = calRegionAvg(buildingEntities);
         for(BuildingEntity buildingEntity : buildingEntities){
