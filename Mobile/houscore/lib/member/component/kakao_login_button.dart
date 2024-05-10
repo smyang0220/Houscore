@@ -29,9 +29,6 @@ class _KakaoLoginButtonState extends ConsumerState<KakaoLoginButton> {
             OAuthToken token;
             KakaoLoginTokenModel resp;
 
-            final kaka = await KakaoSdk.origin;
-
-            print('KakaoSdk.origin = ${kaka}');
             if (await isKakaoTalkInstalled()) {
               // 카카오가 설치됐을때
               try {
