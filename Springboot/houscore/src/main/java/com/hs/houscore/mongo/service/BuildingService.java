@@ -43,10 +43,6 @@ public class BuildingService {
     }
 
     public BuildingDetailDTO getBuildingByAddress(String address, Double lat, Double lng){
-        List<BusEntity> bus = busRepository.findBusByDistance(lat,lng,500);
-        for(BusEntity busEntity : bus){
-            System.out.println(busEntity.toString());
-        }
         BuildingEntity buildingEntity = buildingRepository.findByNewPlatPlcOrPlatPlc(address, address)
                 .orElse(null);
         if(buildingEntity != null){
@@ -171,19 +167,18 @@ public class BuildingService {
         return reviewRepository.findByAddress(address, pageable).getContent();
     }
 
-    public List<RecommendAiDTO> getMainAiScoreTop5(String sigungu){
-        List<BuildingEntity> buildingEntities = buildingRepository.findAllBySigungu(sigungu);
+    public List<RecommendAiDTO> getMainAiScoreTop5ForCity(String sigungu){
+        List<BuildingEntity> buildingEntities = buildingRepository.findByInformationBuildingInfoSigunguCd(sigungu);
         List<RecommendAiDTO> recommendAiDTOS = new ArrayList<>();
-
+        Double avgCost = calRegionAvg(buildingEntities);
         for(BuildingEntity buildingEntity : buildingEntities){
-            BuildingEntity.BuildingInfo buildingInfo = buildingEntity.getInformation().getBuildingInfo();
             Long reviewCnt = reviewRepository.countByAddressStartingWith(buildingEntity.getNewPlatPlc());
             Double realPrice = buildingEntity.getInformation().getPriceInfo().getSaleAvg();
             Double archArea = buildingEntity.getInformation().getBuildingInfo().getArchArea();
             recommendAiDTOS.add(RecommendAiDTO.builder()
                             .address(buildingEntity.getPlatPlc())
                             .aiScore(buildingEntity.getScore())
-                            .pricePerRegion(sigungu != null && realPrice != null ? setPricePerRegion(sigungu, realPrice) : 0.0)
+                            .pricePerRegion(sigungu != null && realPrice != null ? (realPrice / avgCost) * 100 : 0.0)
                             .pricePerPyeong(realPrice != null && archArea != null ? setPricePerPyeong(realPrice, archArea) : 0)
                             .realPrice(realPrice)
                             .reviewCnt(reviewCnt)
@@ -193,14 +188,37 @@ public class BuildingService {
         return recommendAiDTOS;
     }
 
-    //지역대비가격 (%)
-    private Double setPricePerRegion(String sigungu, Double realPrice){
-        //시군구로 같은 지역에 있는 데이터 지역 평균 가격 대비 현재 집의 백분율
-        Double avgPriceByAllRegion = 3000D;
-        Double pricePerRegion = (realPrice / avgPriceByAllRegion) * 100;
+    public List<RecommendAiDTO> getMainAiScoreTop5(String si){
+        List<BuildingEntity> buildingEntities = buildingRepository.findByInformationBuildingInfoSigunguCd(si);
+        List<RecommendAiDTO> recommendAiDTOS = new ArrayList<>();
+        Double avgCost = calRegionAvg(buildingEntities);
+        for(BuildingEntity buildingEntity : buildingEntities){
+            Long reviewCnt = reviewRepository.countByAddressStartingWith(buildingEntity.getNewPlatPlc());
+            Double realPrice = buildingEntity.getInformation().getPriceInfo().getSaleAvg();
+            Double archArea = buildingEntity.getInformation().getBuildingInfo().getArchArea();
+            recommendAiDTOS.add(RecommendAiDTO.builder()
+                    .address(buildingEntity.getPlatPlc())
+                    .aiScore(buildingEntity.getScore())
+                    .pricePerRegion(si != null && realPrice != null ? (realPrice / avgCost) * 100 : 0.0)
+                    .pricePerPyeong(realPrice != null && archArea != null ? setPricePerPyeong(realPrice, archArea) : 0)
+                    .realPrice(realPrice)
+                    .reviewCnt(reviewCnt)
+                    .build());
+        }
 
-        return pricePerRegion;
+        return recommendAiDTOS;
     }
+
+    //지역평균가격 계산
+    private Double calRegionAvg(List<BuildingEntity> buildingEntities) {
+        Double avgCostSum = 0.0;
+        for(BuildingEntity buildingEntity : buildingEntities) {
+            avgCostSum += buildingEntity.getInformation().getPriceInfo().getSaleAvg();
+        }
+
+        return avgCostSum / buildingEntities.size();
+    }
+
     //평당 가격
     private Integer setPricePerPyeong(Double realPrice, Double archArea){
         //1평 = 3.30579
@@ -212,19 +230,10 @@ public class BuildingService {
 
     public List<MainPageDTO> getMainNearby(Double lat, Double lng){
         List<BuildingEntity> buildingEntities = buildingRepositoryCustom.findBuildingsWithin1Km(new GeoJsonPoint(lng,lat));
-        List<MainPageDTO> recommendDTOS = new ArrayList<>();
+        List<MainPageDTO> mainPageDTOS = new ArrayList<>();
         for(BuildingEntity buildingEntity : buildingEntities){
-            System.out.println(buildingEntity.getPlatPlc());
-            List<ReviewEntity> reviewEntity = reviewRepository.findByAddress(buildingEntity.getPlatPlc());
-            recommendDTOS.add(MainPageDTO.builder()
-                    .address(buildingEntity.getNewPlatPlc())
-                    .buildingName(buildingEntity.getInformation().getBuildingInfo().getBldNm())
-                    .aiScore(buildingEntity.getScore())
-                    .reviewScore(0.0)
-                    .cons("")
-                    .pros("")
-                    .imageUrl("")
-                    .build());
+            List<ReviewEntity> reviewEntities = reviewRepository.findByAddress(buildingEntity.getPlatPlc());
+
         }
 
         return null;
@@ -244,7 +253,7 @@ public class BuildingService {
                 Optional<BuildingEntity> buildingEntity = buildingRepository.findById(reviewEntity.get().getBuildingId());
 
                 buildingEntity.ifPresent(entity -> mainPageDTOS.add(MainPageDTO.builder()
-                        .address(entity.getNewPlatPlc())
+                        .address(entity.getPlatPlc())
                         .buildingName(entity.getInformation().getBuildingInfo().getBldNm())
                         .aiScore(entity.getScore())
                         .reviewScore(calculateReviewScore(entity.getId()))
