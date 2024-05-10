@@ -128,7 +128,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               SizedBox(height: 30),
               // 검색창
-              SearchResidences(title: null),
+              // SearchResidences(title: null),
+              SearchResidences(),
               SizedBox(height: VERTICAL_GAP),
               AiRecommendation(),
               SizedBox(height: VERTICAL_GAP),
