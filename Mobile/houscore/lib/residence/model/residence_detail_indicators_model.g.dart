@@ -72,7 +72,7 @@ Map<String, dynamic> _$PublicTransportToJson(PublicTransport instance) =>
 RealCost _$RealCostFromJson(Map<String, dynamic> json) => RealCost(
       buy: (json['buy'] as num?)?.toDouble(),
       longterm: (json['longterm'] as num?)?.toDouble(),
-      monthly: (json['monthly'] as num?)?.toDouble(),
+      monthly: json['monthly'] as String?,
     );
 
 Map<String, dynamic> _$RealCostToJson(RealCost instance) => <String, dynamic>{

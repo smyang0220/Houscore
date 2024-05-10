@@ -19,34 +19,6 @@ class _MyinfoRepository implements MyinfoRepository {
   String? baseUrl;
 
   @override
-  Future<MemberInfo> getMemberInfo() async {
-    final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'accessToken': 'true'};
-    _headers.removeWhere((k, v) => v == null);
-    const Map<String, dynamic>? _data = null;
-    final _result = await _dio
-        .fetch<Map<String, dynamic>>(_setStreamType<MemberInfo>(Options(
-      method: 'GET',
-      headers: _headers,
-      extra: _extra,
-    )
-            .compose(
-              _dio.options,
-              '',
-              queryParameters: queryParameters,
-              data: _data,
-            )
-            .copyWith(
-                baseUrl: _combineBaseUrls(
-              _dio.options.baseUrl,
-              baseUrl,
-            ))));
-    final value = MemberInfo.fromJson(_result.data!);
-    return value;
-  }
-
-  @override
   Future<List<InterestedArea>> getInterestedAreaList() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};

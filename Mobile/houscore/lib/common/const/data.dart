@@ -13,6 +13,8 @@ final simulatorIp = '127.0.0.1:3000';
 // final ip = Platform.isIOS ? simulatorIp : emulatorIp;
 final ip = 'k10s206.p.ssafy.io:8084';
 // final ip = '192.168.31.166:8084'; // 희주누나 ip
+// final ip = '70ac0dcc-9306-42b5-9117-1c159e282c00.mock.pstmn.io'; // 상준 Mock 서버
+
 // 사용자 개인 정보나 인증 토큰과 같은 중요한 데이터를 안전하게 보관하는데 사용되는 플러그인
 // iOS : Keychain 활용
 // Android : 안전 저장소(Secure SharedPreferences) 사용
