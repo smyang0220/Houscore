@@ -19,16 +19,15 @@ class _MemberRepository implements MemberRepository {
   String? baseUrl;
 
   @override
-  Future<KakaoLoginTokenModel> loginKakao(
-      {required Map<String, dynamic> data}) async {
+  Future<LoginResponse> loginKakao({required Map<String, dynamic> data}) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{r'accessToken': 'false'};
     _headers.removeWhere((k, v) => v == null);
     final _data = <String, dynamic>{};
     _data.addAll(data);
-    final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<KakaoLoginTokenModel>(Options(
+    final _result = await _dio
+        .fetch<Map<String, dynamic>>(_setStreamType<LoginResponse>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
@@ -44,7 +43,7 @@ class _MemberRepository implements MemberRepository {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    final value = KakaoLoginTokenModel.fromJson(_result.data!);
+    final value = LoginResponse.fromJson(_result.data!);
     return value;
   }
 
