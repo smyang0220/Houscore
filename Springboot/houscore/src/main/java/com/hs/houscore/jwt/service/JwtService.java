@@ -34,10 +34,11 @@ public class JwtService {
                 .compact();
     }
 
-    public String createRefreshToken(String memberEmail, String provider) {
+    public String createRefreshToken(String memberEmail, String memberName, String provider) {
         return Jwts.builder()
                 .setSubject(memberEmail)
                 .setIssuedAt(new Date())
+                .claim("userName", memberName)
                 .claim("provider", provider)
                 .setExpiration(new Date(System.currentTimeMillis() + jwtRefreshExpirationMs))
                 .signWith(key, SignatureAlgorithm.HS512)

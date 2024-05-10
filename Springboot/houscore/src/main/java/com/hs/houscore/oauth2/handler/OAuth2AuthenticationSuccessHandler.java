@@ -37,7 +37,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         // 액세스 토큰, 리프레시 토큰 발급
         MemberEntity member = memberService.createMember(principal.getUserInfo(), null);
         String accessToken = jwtService.createAccessToken(member.getMemberEmail(), member.getMemberName(), member.getProvider().toString());
-        String refreshToken = jwtService.createRefreshToken(member.getMemberEmail(), member.getProvider().toString());
+        String refreshToken = jwtService.createRefreshToken(member.getMemberEmail(), member.getMemberName(), member.getProvider().toString());
 
         // 바디에 토큰 추가 (JSON 형태로 반환)
         Map<String, String> tokens = new HashMap<>();
