@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class RecommendDTO {
+public class MainPageDTO {
     private String buildingName;
     private String address;
     private String pros;
