@@ -4,6 +4,8 @@ import 'package:flutter/widgets.dart';
 import 'package:houscore/common/layout/default_layout.dart';
 import 'package:houscore/review/component/my_review_card.dart';
 
+import '../component/review_detail_button.dart';
+
 class MyReviewList extends StatefulWidget {
   const MyReviewList({Key? key}) : super(key: key);
 
@@ -67,6 +69,7 @@ class _MyReviewListState extends State<MyReviewList> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              ReviewDetailButton(),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 2),
                 child: Row(
