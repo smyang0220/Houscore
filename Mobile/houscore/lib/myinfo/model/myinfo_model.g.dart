@@ -1,20 +1,18 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'member_info_model.dart';
+part of 'myinfo_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-MemberInfo _$MemberInfoFromJson(Map<String, dynamic> json) => MemberInfo(
+MyinfoModel _$MyinfoModelFromJson(Map<String, dynamic> json) => MyinfoModel(
       email: json['email'] as String,
-      profileImage: json['profileImage'] as String,
       name: json['name'] as String,
     );
 
-Map<String, dynamic> _$MemberInfoToJson(MemberInfo instance) =>
+Map<String, dynamic> _$MyinfoModelToJson(MyinfoModel instance) =>
     <String, dynamic>{
       'email': instance.email,
-      'profileImage': instance.profileImage,
       'name': instance.name,
     };

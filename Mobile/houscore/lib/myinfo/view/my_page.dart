@@ -5,7 +5,7 @@ import '../../common/component/dynamic_list_widget.dart';
 import '../../common/secure_storage/secure_storage.dart';
 import '../component/my_info.dart';
 import '../provider/interested_area_list_provider.dart';
-import '../provider/member_info_provider.dart';
+import '../provider/myinfo_provider.dart';
 
 class MyPage extends ConsumerStatefulWidget {
   @override
@@ -15,8 +15,6 @@ class MyPage extends ConsumerStatefulWidget {
 class _MyPageState extends ConsumerState<MyPage> {
   @override
   Widget build(BuildContext context) {
-    final memberInfoState = ref.watch(memberInfoProvider);
-    // final interestedAreaListState = ref.watch(interestedAreaListProvider);
 
     return DefaultLayout(
       child: SafeArea(
@@ -25,21 +23,7 @@ class _MyPageState extends ConsumerState<MyPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // if (memberInfoState.isLoading) CircularProgressIndicator(),
-              // if (memberInfoState.errorMessage != null) Text('Error: ${memberInfoState.errorMessage}'),
-              // if (!memberInfoState.isLoading && memberInfoState.detail != null)
-              //   MyInfo(memberInfo: memberInfoState.detail),
-              // DynamicListWidget(
-              //   title: "내 관심지역",
-              //   initialItemCount: 3,
-              //   onAddPressed: () {}, // 적절한 추가 로직 필요
-              //   showMoreText: "더 보기",
-              //   showLessText: "접기",
-              //   showMoreIcon: Icon(Icons.expand_more),
-              //   showLessIcon: Icon(Icons.expand_less),
-              //   itemListProvider: interestedAreaListProvider,
-              //   expandedStateProvider: expandedStateProvider, // 적절한 expandedStateProvider 설정 필요
-              // ),
+              MyInfo(),
             ],
           ),
         ),
