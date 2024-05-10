@@ -28,6 +28,7 @@ class _KakaoLoginButtonState extends ConsumerState<KakaoLoginButton> {
           onTap: () async {
             OAuthToken token;
             KakaoLoginTokenModel resp;
+
             if (await isKakaoTalkInstalled()) {
               // 카카오가 설치됐을때
               try {
