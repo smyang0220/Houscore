@@ -24,11 +24,7 @@ class _NaverMapRepository implements NaverMapRepository {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     queryParameters.addAll(queries);
-    final _headers = <String, dynamic>{
-      r'X-NCP-APIGW-API-KEY-ID': 'xkhnb3razm',
-      r'X-NCP-APIGW-API-KEY': 'TEkdbqAsCpEEF6gfrU1gDVxPRwCpMv3RFj4vBiTJ',
-    };
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _result =
         await _dio.fetch(_setStreamType<HttpResponse<dynamic>>(Options(

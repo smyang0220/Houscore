@@ -18,9 +18,9 @@ class ResidencePriceSafety extends StatelessWidget {
 
   String formatPrice(double? value) {
     if (value == null) return '-';
-    double valueInTenThousand = value / 10000;
+    // double valueInTenThousand = value / 10000;
     final formatter = NumberFormat("#,###", "ko_KR");
-    return "${formatter.format(valueInTenThousand)}만원";
+    return "${formatter.format(value)}만원";
   }
 
   Color getSafetyColor(int? grade) {
@@ -75,7 +75,7 @@ class ResidencePriceSafety extends StatelessWidget {
       children: [
         Text('실거래가 (매매/전세/월세)', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
         SizedBox(height: 5),
-        Text('${formatPrice(realCost?.buy)} / ${formatPrice(realCost?.longterm)} / ${formatPrice(realCost?.monthly)}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+        Text('${formatPrice(realCost?.buy)} / ${formatPrice(realCost?.longterm)} / ${realCost?.monthly}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
         SizedBox(height: 15),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

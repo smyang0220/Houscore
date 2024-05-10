@@ -7,16 +7,28 @@ import 'package:houscore/residence/component/residence_price_safety.dart';
 import 'package:houscore/residence/model/residence_detail_indicators_model.dart';
 import 'package:houscore/residence/provider/residence_detail_indicators_provider.dart';
 
+import '../../common/model/data_state_model.dart';
 import '../component/building_detail.dart';
+import '../repository/residence_repository.dart';
 
 class NearbyIndicators extends ConsumerStatefulWidget {
-  const NearbyIndicators ({Key? key}) : super (key: key);
+  final String address;
+
+  const NearbyIndicators({Key? key, required this.address}) : super(key: key);
 
   @override
   ConsumerState<NearbyIndicators> createState() => _NearbyIndicatorsState();
 }
 
 class _NearbyIndicatorsState extends ConsumerState<NearbyIndicators> {
+
+  @override
+  void initState() {
+    super.initState();
+    print('widget.address is ${widget.address}');
+    final notifier = ref.read(residenceDetailIndicatorProvider(widget.address).notifier);
+    notifier.fetchDetailIndicator();
+  }
 
   // 카테고리별 가장 가까운 곳 찾기
   Infra? findClosestInfra(List<Infra> infras) {
@@ -55,30 +67,31 @@ class _NearbyIndicatorsState extends ConsumerState<NearbyIndicators> {
 
 
   // 특정 유형의 인프라 아이템을 가져옵니다.
-  List<Infra> getInfrasByTypes(List<InfraType> types) {
+  List<Infra> getInfrasByTypes(List<InfraType> types, ResidenceDetailIndicatorsModel data) {
     List<Infra> selectedInfras = [];
     for (InfraType type in types) {
       switch (type) {
         case InfraType.medicalFacilities:
-          selectedInfras.addAll(residenceDetailIndicators.infras.medicalFacilities);
+          // selectedInfras.addAll(residenceDetailIndicators.infras.medicalFacilities);
+          selectedInfras.addAll(data.infras.medicalFacilities);
           break;
         case InfraType.park:
-          selectedInfras.addAll(residenceDetailIndicators.infras.park);
+          selectedInfras.addAll(data.infras.park);
           break;
         case InfraType.school:
-          selectedInfras.addAll(residenceDetailIndicators.infras.school);
+          selectedInfras.addAll(data.infras.school);
           break;
         case InfraType.bus:
-          selectedInfras.addAll(residenceDetailIndicators.publicTransport.bus);
+          selectedInfras.addAll(data.publicTransport.bus);
           break;
         case InfraType.subway:
-          selectedInfras.addAll(residenceDetailIndicators.publicTransport.subway);
+          selectedInfras.addAll(data.publicTransport.subway);
           break;
         case InfraType.library:
-          selectedInfras.addAll(residenceDetailIndicators.infras.library);
+          selectedInfras.addAll(data.infras.library);
           break;
         case InfraType.supermarket:
-          selectedInfras.addAll(residenceDetailIndicators.infras.supermarket);
+          selectedInfras.addAll(data.infras.supermarket);
           break;
       }
     }
@@ -120,9 +133,9 @@ class _NearbyIndicatorsState extends ConsumerState<NearbyIndicators> {
       ],
     ),
     realCost: RealCost(
-      buy: 200000000,
-      longterm: 300000000,
-      monthly: 1000000,
+      buy: 20000,
+      longterm: 17800,
+      monthly: '888/55',
     ),
     pricePerPyeong: 1200000,
     safetyGrade: 5,
@@ -131,27 +144,46 @@ class _NearbyIndicatorsState extends ConsumerState<NearbyIndicators> {
 
   @override
   Widget build(BuildContext context) {
-    final data = ref.watch(residenceDetailIndicatorProvider);
+    // final repository = ref.watch(residenceRepositoryProvider);
+    // final data = await repository.getResidenceDetailIndicator(address: widget.address);
 
-    List<Infra> nearbyInfras = getInfrasByTypes([InfraType.medicalFacilities, InfraType.park, InfraType.school]);
-    List<Infra> nearbyPublicTransportation = getInfrasByTypes([InfraType.bus, InfraType.subway]);
+    final data = ref.watch(residenceDetailIndicatorProvider(widget.address));
+    print(data.toString());
 
-    return Padding(
-      padding: EdgeInsets.all(8),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            NearbyLivingFacilities(closestInfras: getClosestInfras(residenceDetailIndicators)),
-            NearbyInfra(infras: nearbyInfras),
-            NearbyPublicTransportation(transportItems: nearbyPublicTransportation),
-            ResidencePriceSafety(realCost: residenceDetailIndicators.realCost, pricePerPyeong: residenceDetailIndicators.pricePerPyeong, safetyGrade: residenceDetailIndicators.safetyGrade,), // 실거래가, 평당가격, 안전등급
-            BuildingDetail(),
-            // 건물정보
-          ],
+    // 상태에 따른 조건 처리
+    if (data is DataStateLoading) {
+      // 로딩 중 상태
+      return CircularProgressIndicator();
+    } else if (data is DataStateError) {
+      // 에러 상태
+      return Text('데이터를 불러오는데 실패했습니다.: ${data.message}');
+    } else if (data is DataState<ResidenceDetailIndicatorsModel>) {
+      // 성공적으로 데이터를 불러온 상태
+      final residenceData = data.data;
+
+      // 다음 함수들을 호출할 때 residenceData를 사용
+      List<Infra> nearbyInfras = getInfrasByTypes([InfraType.medicalFacilities, InfraType.park, InfraType.school], residenceData);
+      List<Infra> nearbyPublicTransportation = getInfrasByTypes([InfraType.bus, InfraType.subway], residenceData);
+
+      return Padding(
+        padding: EdgeInsets.all(8),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              NearbyLivingFacilities(closestInfras: getClosestInfras(residenceData)),
+              NearbyInfra(infras: nearbyInfras),
+              NearbyPublicTransportation(transportItems: nearbyPublicTransportation),
+              ResidencePriceSafety(realCost: residenceData.realCost, pricePerPyeong: residenceData.pricePerPyeong, safetyGrade: residenceData.safetyGrade),
+              BuildingDetail(),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    } else {
+      // 예상치 못한 상태
+      return Text('Unexpected state');
+    }
   }
 }
