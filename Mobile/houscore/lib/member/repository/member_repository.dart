@@ -10,7 +10,7 @@ import '../model/member_search_model.dart';
 
 part 'member_repository.g.dart';
 
-final MemberRepositroyProvider = Provider<MemberRepository>(
+final memberRepositoryProvider = Provider<MemberRepository>(
       (ref) {
     final dio = ref.watch(dioProvider);
     final repository =
@@ -46,5 +46,4 @@ abstract class MemberRepository {
   Future<List<MemberSearchModel>> searchMember(
   @Query("memberEmail") String memberEmail,
   );
-
 }

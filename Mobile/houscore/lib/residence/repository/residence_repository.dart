@@ -35,6 +35,7 @@ abstract class ResidenceRepository {
   // 헤더 설정
   @Headers({
     'accessToken': 'true',
+    // 'accessToken': 'false', // 비회원 및 Mock 서버로 이용 시
   })
   // get 함수 // 비동기적 통신을 위한 Future 반환
   Future<ResidenceDetailIndicatorsModel> getResidenceDetailIndicator({
@@ -49,7 +50,6 @@ abstract class ResidenceRepository {
   })
   // get 함수 // 비동기적 통신을 위한 Future 반환
   Future<ResidenceDetailModel> getResidenceDetail({
-    // request로 address가 필요!
     @Query('address') required String address,
     @Query('lat') required double lat,
     @Query('lng') required double lng,

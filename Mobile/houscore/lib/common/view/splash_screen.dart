@@ -1,3 +1,4 @@
+import 'package:go_router/go_router.dart';
 import 'package:houscore/common/const/color.dart';
 import 'package:houscore/common/const/data.dart';
 import 'package:houscore/common/layout/default_layout.dart';
@@ -58,10 +59,7 @@ class _SplashScreenState extends State<SplashScreen> {
   // 임시용
   void goToLogin() {
     Future.delayed(Duration(seconds: 3), () {
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => LoginScreen()),
-            (route) => false,
-      );
+      context.go('/login');
     });
   }
 

@@ -108,22 +108,6 @@ class _CreateReviewState extends State<CreateReview> {
                 ),
               ),
               SizedBox(height: 12),
-              Container(
-                alignment: Alignment.centerLeft,
-                padding: EdgeInsets.all(6.0),
-                child: Text(
-                  '만족도 평가',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 30,
-                  ),
-                ),
-              ),
-              Container(
-                child: ReviewRating(
-                  onRatingUpdated: _updateRating,
-                ),
-              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
