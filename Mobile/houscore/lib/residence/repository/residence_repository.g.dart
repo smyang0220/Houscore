@@ -19,6 +19,38 @@ class _ResidenceRepository implements ResidenceRepository {
   String? baseUrl;
 
   @override
+  Future<List<AiRecommendedResidenceModel>> getAiRecommendedResidences(
+      {required String sigungu}) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'sigungu': sigungu};
+    final _headers = <String, dynamic>{r'accessToken': 'true'};
+    _headers.removeWhere((k, v) => v == null);
+    const Map<String, dynamic>? _data = null;
+    final _result = await _dio.fetch<List<dynamic>>(
+        _setStreamType<List<AiRecommendedResidenceModel>>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/main/ai',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    var value = _result.data!
+        .map((dynamic i) =>
+            AiRecommendedResidenceModel.fromJson(i as Map<String, dynamic>))
+        .toList();
+    return value;
+  }
+
+  @override
   Future<ResidenceDetailIndicatorsModel> getResidenceDetailIndicator(
       {required String address}) async {
     final _extra = <String, dynamic>{};

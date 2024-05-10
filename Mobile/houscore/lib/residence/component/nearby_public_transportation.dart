@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:houscore/common/const/color.dart';
 import 'package:houscore/residence/utils/place_utils.dart';
+import '../../common/utils/data_utils.dart';
 import '../model/residence_detail_indicators_model.dart';
 
 class NearbyPublicTransportation extends StatefulWidget {
@@ -66,7 +67,7 @@ class _NearbyPublicTransportationState
                   ),
                 ),
                 Text(
-                  '${time}분 (${transport.distance}km)',
+                  '${time}분 (${DataUtils.convertToKilometers(transport.distance)}km)',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,

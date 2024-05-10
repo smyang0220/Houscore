@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:houscore/residence/utils/place_utils.dart';
+import '../../common/utils/data_utils.dart';
 import '../model/residence_detail_indicators_model.dart';
 
 class NearbyInfra extends StatefulWidget {
@@ -59,7 +60,7 @@ class _NearbyInfraState extends State<NearbyInfra> {
                 ),
               ),
               Text(
-                '${results['minute']}분 (${infra.distance}km)',
+                '${results['minute']}분 (${DataUtils.convertToKilometers(infra.distance)}km)',
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
