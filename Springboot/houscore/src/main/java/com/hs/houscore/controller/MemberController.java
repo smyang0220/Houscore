@@ -46,23 +46,6 @@ public class MemberController {
         return memberService.searchMembersByEmail(memberEmail);
     }
 
-    @PostMapping("/login")
-    @Operation(summary = "사용자 로그인 - 보류", description = "사용자 이메일로 로그인하고 토큰을 발급")
-    public ResponseEntity<?> login(@RequestBody MemberDTO loginData) {
-        if (memberService.validateMember(loginData.getMemberEmail())) {
-            String memberEmail = loginData.getMemberEmail();
-            String accessToken = jwtService.createAccessToken(memberEmail, memberService.getMemberNameByEmail(memberEmail), memberService.getProviderByEmail(memberEmail));
-            String refreshToken = jwtService.createRefreshToken(memberEmail, memberService.getProviderByEmail(memberEmail));
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Access-Token", accessToken);
-            headers.add("Refresh-Token", refreshToken);
-
-            return ResponseEntity.ok().headers(headers).body("Login successful");
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication failed");
-    }
-
     @PostMapping("/login/kakao")
     @Operation(summary = "카카오 토큰으로 로그인", description = "카카오 토큰을 검증하고 사용자 정보를 바탕으로 자체 토큰을 발급")
     public ResponseEntity<?> loginWithKakaoToken(@RequestBody Map<String, String> tokenData) {
@@ -79,7 +62,7 @@ public class MemberController {
             // 시스템에 사용자를 등록하거나 업데이트하고, 토큰을 발급
             MemberEntity member = memberService.createMember(kakaoMemberInfo, kakaoRefreshToken);
             String accessToken = jwtService.createAccessToken(member.getMemberEmail(), member.getMemberName(), member.getProvider().toString());
-            String refreshToken = jwtService.createRefreshToken(member.getMemberEmail(), member.getProvider().toString());
+            String refreshToken = jwtService.createRefreshToken(member.getMemberEmail(), member.getMemberName(), member.getProvider().toString());
 
             // JSON 형태로 토큰을 반환
             Map<String, String> tokens = new HashMap<>();
@@ -94,14 +77,15 @@ public class MemberController {
     }
 
 
-    @GetMapping("/refresh")
+    @PostMapping("/refresh")
     @Operation(summary = "액세스 토큰 재발급", description = "리프레시 토큰으로 액세스 토큰 재발급")
     public ResponseEntity<?> refreshAccessToken(HttpServletRequest request) {
-        String refreshToken = request.getHeader("refreshToken");
-        if (refreshToken != null && jwtService.validateToken(refreshToken)) {
+        String refreshToken = request.getHeader("refreshToken").substring(7);
+        if (jwtService.validateToken(refreshToken)) {
             String memberEmail = jwtService.getMemberEmailFromToken(refreshToken);
             if (memberService.validateRefreshToken(memberEmail, refreshToken)) {
                 String newAccessToken = jwtService.createAccessToken(memberEmail, memberService.getMemberNameByEmail(memberEmail), memberService.getProviderByEmail(memberEmail));
+
                 // JSON 형태로 토큰을 반환
                 Map<String, String> tokens = new HashMap<>();
                 tokens.put("accessToken", newAccessToken);
