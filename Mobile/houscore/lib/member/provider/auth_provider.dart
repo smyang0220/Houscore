@@ -8,6 +8,7 @@ import '../../common/view/splash_screen.dart';
 import '../model/member_search_model.dart';
 import '../view/login_screen.dart';
 
+// push
 final authProvider = ChangeNotifierProvider<AuthProvider>((ref) {
   return AuthProvider(ref: ref);
 });
