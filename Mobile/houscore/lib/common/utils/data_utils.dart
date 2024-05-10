@@ -55,10 +55,14 @@ class DataUtils{
         output += '=';
         break;
       default:
-        throw Exception('잘못된 Base64 문자열입니다.');
+        throw Exception('잘못된 Base64 문자열');
     }
 
     return utf8.decode(base64Url.decode(output));
   }
 
+  static double convertToKilometers(double meters) {
+    double kilometers = meters / 1000;
+    return double.parse(kilometers.toStringAsFixed(2)); // 소수점 2자리까지
+  }
 }

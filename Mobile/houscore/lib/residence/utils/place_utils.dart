@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:houscore/common/utils/data_utils.dart';
 import 'package:houscore/residence/model/residence_detail_indicators_model.dart';
 
 import '../component/place_with_minute.dart';
@@ -41,9 +42,11 @@ class PlaceUtils {
     Icon leadingIcon;
     Color iconColor;
 
+    double kiloDistance = DataUtils.convertToKilometers(distance);
+
     // 1.5 km 까지만 도보로 가정 // 사람이 1시간에 4km를 걷는다고 가정
-    if (distance <= 1.5) {
-      int walkTime = (distance / 4 * 60).round();
+    if (kiloDistance <= 1.5) {
+      int walkTime = (kiloDistance / 4 * 60).round();
       minute = walkTime;
       transportType = '도보';
       iconColor = Colors.green;
@@ -51,7 +54,7 @@ class PlaceUtils {
     }
     // 그 이상은 차량으로 가정 // 차량이 1시간에 60km를 이동한다고 가정
     else {
-      int driveTime = (distance / 60 * 60).round();  // Assuming average speed is 60 km/h
+      int driveTime = (kiloDistance / 60 * 60).round();  // Assuming average speed is 60 km/h
       minute = driveTime;
       transportType = '차량';
       iconColor = Colors.blue;

@@ -2,6 +2,7 @@ import 'package:dio/dio.dart' hide Headers;
 // 다른 라이브러리나 모듈에서 이름 충돌 방지!
 // 이 경우에는 Retrofit과의 충돌 방지!
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:houscore/residence/model/ai_recommended_residence_model.dart';
 import 'package:houscore/residence/model/residence_detail_model.dart';
 import '../model/residence_detail_indicators_model.dart';
 import 'package:houscore/common/model/cursor_pagination_model.dart';
@@ -31,6 +32,17 @@ abstract class ResidenceRepository {
   _ResidenceRepository;
 
   // 요청 url
+  @GET('/main/ai')
+  // 헤더 설정
+  @Headers({
+    'accessToken': 'true',
+  })
+  // get 함수 // 비동기적 통신을 위한 Future 반환
+  Future<List<AiRecommendedResidenceModel>> getAiRecommendedResidences({
+    @Query('sigungu') required String sigungu,
+  });
+
+  // 요청 url
   @GET('/detail/indicator')
   // 헤더 설정
   @Headers({
@@ -54,4 +66,6 @@ abstract class ResidenceRepository {
     @Query('lat') required double lat,
     @Query('lng') required double lng,
   });
+
+
 }

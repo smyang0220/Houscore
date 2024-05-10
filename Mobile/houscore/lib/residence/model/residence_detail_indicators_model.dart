@@ -79,7 +79,7 @@ class PublicTransport {
   factory PublicTransport.fromJson(Map<String, dynamic> json) {
     return PublicTransport(
       bus: (json['bus'] as List).map((e) => Infra.fromJson(e..['type'] = 'bus')).toList(),
-      subway: (json['subway'] as List).map((e) => Infra.fromJson(e..['type'] = 'subway')).toList(),
+      subway: (json['subways'] as List).map((e) => Infra.fromJson(e..['type'] = 'subway')).toList(),
     );
   }
 
