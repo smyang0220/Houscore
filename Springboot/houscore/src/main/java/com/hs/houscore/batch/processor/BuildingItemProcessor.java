@@ -2,9 +2,8 @@ package com.hs.houscore.batch.processor;
 
 import com.hs.houscore.batch.entity.MasterRegisterEntity;
 import com.hs.houscore.batch.entity.RealTransactionPriceEntity;
-import com.hs.houscore.batch.repository.BusRepository;
-import com.hs.houscore.batch.repository.MasterRegisterRepository;
-import com.hs.houscore.batch.repository.RealTransactionPriceRepository;
+import com.hs.houscore.batch.entity.SafeRankEntity;
+import com.hs.houscore.batch.repository.*;
 import com.hs.houscore.mongo.entity.BuildingEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +21,13 @@ public class BuildingItemProcessor implements ItemProcessor<BuildingEntity, Buil
     private final MasterRegisterRepository masterRegisterRepository;
     private final RealTransactionPriceRepository realTransactionPriceRepository;
     private final BusRepository busRepository;
+    private final SubwayRepository subwayRepository;
+    private final HospitalRepository hospitalRepository;
+    private final LibraryRepository libraryRepository;
+    private final ParkRepository parkRepository;
+    private final SchoolRepository schoolRepository;
+    private final StoreRepository storeRepository;
+    private final SafeRankRepository safeRankRepository;
 
     @Override
     public BuildingEntity process(BuildingEntity building) throws Exception {
@@ -132,39 +138,173 @@ public class BuildingItemProcessor implements ItemProcessor<BuildingEntity, Buil
     }
     private BuildingEntity.TrafficInfo setTrafficInfo(BuildingEntity building) {
         List<Object[]> bus = busRepository.findBusByDistance(building.getLocation().getY(),building.getLocation().getX(),1000);
-        List<Map<String, Object>> busMap = new ArrayList<>();
-        for (Object[] data : bus) {
-            String busStopName = (String) data[0];
-            Double distance = (Double) data[4];
+        List<Map<String, Object>> busMap = getBusMap(bus);
 
-            Map<String, Object> entryMap = new HashMap<>();
-            entryMap.put("name", busStopName.replace(".", "_"));
-            entryMap.put("distance", distance.longValue());
+        List<Object[]> subway = subwayRepository.findSubwayByDistance(building.getLocation().getY(),building.getLocation().getX(),1000);
+        List<Map<String, Object>> subwayMap = getSubwayMap(subway);
 
-            busMap.add(entryMap);
-        }
-//        return new BuildingEntity.TrafficInfo();
         return BuildingEntity.TrafficInfo.builder()
                 .bus(busMap)
-                .subway(new ArrayList<>())
+                .subway(subwayMap)
                 .build();
     }
 
     private BuildingEntity.SecurityInfo setSecurityInfo(BuildingEntity building) {
-//        return new BuildingEntity.SecurityInfo();
+        // 두 번째 공백까지의 문자열만 추출
+        String address = building.getPlatPlc();
+        String area = "";
+        int secondSpaceIndex = address.indexOf(" ", address.indexOf(" ") + 1);
+        if (secondSpaceIndex != -1) {
+            area = address.substring(0, secondSpaceIndex);
+        }
+        SafeRankEntity safeRank = safeRankRepository.findByAreaContaining(area);
         return BuildingEntity.SecurityInfo.builder()
-                .safetyGrade(0)
+                .safetyGrade(safeRank != null ? safeRank.getCrimeRank() : 0)
                 .build();
     }
 
     private BuildingEntity.InfraInfo setInfraInfo(BuildingEntity building) {
-//        return new BuildingEntity.InfraInfo();
+        List<Object[]> hospital = hospitalRepository.findHospitalByDistance(building.getLocation().getY(),building.getLocation().getX(),700);
+        List<Map<String, Object>> hospitalMap = getHospitalMap(hospital);
+
+        List<Object[]> library = libraryRepository.findLibraryByDistance(building.getLocation().getY(),building.getLocation().getX(),700);
+        List<Map<String, Object>> libraryMap = getLibraryMap(library);
+
+        List<Object[]> park = parkRepository.findParkByDistance(building.getLocation().getY(),building.getLocation().getX(),700);
+        List<Map<String, Object>> parkMap = getParkMap(park);
+
+        List<Object[]> school = schoolRepository.findSchoolByDistance(building.getLocation().getY(),building.getLocation().getX(),700);
+        List<Map<String, Object>> schoolMap = getSchoolMap(school);
+
+        List<Object[]> store = storeRepository.findStoreByDistance(building.getLocation().getY(),building.getLocation().getX(),700);
+        List<Map<String, Object>> storeMap = getStoreMap(store);
+
         return BuildingEntity.InfraInfo.builder()
-                .parks(new ArrayList<>())
-                .Libraries(new ArrayList<>())
-                .medicalFacilities(new ArrayList<>())
-                .schools(new ArrayList<>())
-                .supermarkets(new ArrayList<>())
+                .parks(parkMap)
+                .Libraries(libraryMap)
+                .medicalFacilities(hospitalMap)
+                .schools(schoolMap)
+                .supermarkets(storeMap)
                 .build();
+    }
+
+    private static List<Map<String, Object>> getBusMap(List<Object[]> bus) {
+        List<Map<String, Object>> busMap = new ArrayList<>();
+        if(bus != null && !bus.isEmpty()){
+            for (Object[] data : bus) {
+                String busStopName = (String) data[0];
+                Double distance = (Double) data[4];
+
+                Map<String, Object> entryMap = new HashMap<>();
+                entryMap.put("name", busStopName);
+                entryMap.put("distance", distance.longValue());
+
+                busMap.add(entryMap);
+            }
+        }
+        return busMap;
+    }
+
+    private static List<Map<String, Object>> getSubwayMap(List<Object[]> subway) {
+        List<Map<String, Object>> subwayMap = new ArrayList<>();
+        if(subway != null && !subway.isEmpty()){
+            for (Object[] data : subway) {
+                String stationName = (String) data[0];
+                String lineName = (String) data[1];
+                Double distance = (Double) data[6];
+
+                Map<String, Object> entryMap = new HashMap<>();
+                entryMap.put("name", stationName + "-"  + lineName);
+                entryMap.put("distance", distance.longValue());
+
+                subwayMap.add(entryMap);
+            }
+        }
+        return subwayMap;
+    }
+
+    private static List<Map<String, Object>> getHospitalMap(List<Object[]> hospital) {
+        List<Map<String, Object>> hospitalMap = new ArrayList<>();
+        if(hospital != null && !hospital.isEmpty()){
+            for (Object[] data : hospital) {
+                String hospitalName = (String) data[0];
+                String typeName = (String) data[1];
+                Double distance = (Double) data[7];
+
+                Map<String, Object> entryMap = new HashMap<>();
+                entryMap.put("name", hospitalName + "-"  + typeName);
+                entryMap.put("distance", distance.longValue());
+
+                hospitalMap.add(entryMap);
+            }
+        }
+        return hospitalMap;
+    }
+
+    private static List<Map<String, Object>> getLibraryMap(List<Object[]> library) {
+        List<Map<String, Object>> libraryMap = new ArrayList<>();
+        if(library != null && !library.isEmpty()){
+            for (Object[] data : library) {
+                String libraryName = (String) data[0];
+                Double distance = (Double) data[5];
+
+                Map<String, Object> entryMap = new HashMap<>();
+                entryMap.put("name", libraryName);
+                entryMap.put("distance", distance.longValue());
+
+                libraryMap.add(entryMap);
+            }
+        }
+        return libraryMap;
+    }
+
+    private static List<Map<String, Object>> getParkMap(List<Object[]> park) {
+        List<Map<String, Object>> parkMap = new ArrayList<>();
+        if(park != null && !park.isEmpty()){
+            for (Object[] data : park) {
+                String parkName = (String) data[0];
+                Double distance = (Double) data[5];
+
+                Map<String, Object> entryMap = new HashMap<>();
+                entryMap.put("name", parkName);
+                entryMap.put("distance", distance.longValue());
+
+                parkMap.add(entryMap);
+            }
+        }
+        return parkMap;
+    }
+    private static List<Map<String, Object>> getSchoolMap(List<Object[]> school) {
+        List<Map<String, Object>> schoolMap = new ArrayList<>();
+        if(school != null && !school.isEmpty()){
+            for (Object[] data : school) {
+                String schoolName = (String) data[0];
+                String typeName = (String) data[1];
+                Double distance = (Double) data[7];
+
+                Map<String, Object> entryMap = new HashMap<>();
+                entryMap.put("name", schoolName + "-"  + typeName);
+                entryMap.put("distance", distance.longValue());
+
+                schoolMap.add(entryMap);
+            }
+        }
+        return schoolMap;
+    }
+    private static List<Map<String, Object>> getStoreMap(List<Object[]> store) {
+        List<Map<String, Object>> storeMap = new ArrayList<>();
+        if(store != null && !store.isEmpty()){
+            for (Object[] data : store) {
+                String storeName = (String) data[2];
+                Double distance = (Double) data[6];
+
+                Map<String, Object> entryMap = new HashMap<>();
+                entryMap.put("name", storeName);
+                entryMap.put("distance", distance.longValue());
+
+                storeMap.add(entryMap);
+            }
+        }
+        return storeMap;
     }
 }

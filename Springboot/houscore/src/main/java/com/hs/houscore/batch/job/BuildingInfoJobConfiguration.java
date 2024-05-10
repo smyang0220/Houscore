@@ -1,9 +1,7 @@
 package com.hs.houscore.batch.job;
 
 import com.hs.houscore.batch.processor.BuildingItemProcessor;
-import com.hs.houscore.batch.repository.BusRepository;
-import com.hs.houscore.batch.repository.MasterRegisterRepository;
-import com.hs.houscore.batch.repository.RealTransactionPriceRepository;
+import com.hs.houscore.batch.repository.*;
 import com.hs.houscore.mongo.entity.BuildingEntity;
 import com.hs.houscore.mongo.repository.BuildingRepository;
 import lombok.RequiredArgsConstructor;
@@ -53,9 +51,17 @@ public class BuildingInfoJobConfiguration {
     @Bean
     public BuildingItemProcessor buildingItemProcessor(MasterRegisterRepository masterRegisterRepository,
                                                        RealTransactionPriceRepository realTransactionPriceRepository,
-                                                       BusRepository busRepository) {
+                                                       BusRepository busRepository,
+                                                       SubwayRepository subwayRepository,
+                                                       HospitalRepository hospitalRepository,
+                                                       LibraryRepository libraryRepository,
+                                                       ParkRepository parkRepository,
+                                                       SchoolRepository schoolRepository,
+                                                       StoreRepository storeRepository,
+                                                       SafeRankRepository safeRankRepository) {
         return new BuildingItemProcessor(masterRegisterRepository, realTransactionPriceRepository,
-                busRepository);
+                busRepository, subwayRepository, hospitalRepository, libraryRepository, parkRepository,
+                schoolRepository, storeRepository, safeRankRepository);
     }
 
     //writer
