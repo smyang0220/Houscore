@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Base64;
 import java.util.List;
 
 @RestController
@@ -47,12 +48,15 @@ public class ReviewController {
     @PostMapping("")
     @Operation(summary = "거주지 리뷰 등록", description = "거주지 리뷰 등록")
     public ResponseEntity<?> addReview(@RequestBody ReviewEntity review,
-                                       @RequestParam @Parameter(description = "imageBase64 : 인코딩된 이미지 ") String imageBase64,
+                                       @RequestParam @Parameter(description = "imageBase64 : 인코딩 되지 않은 이미지 ") String imageBase64,
                                        @RequestParam @Parameter(description = "imageName : 이미지 이름(임의로 지정)") String imageName) {
         try{
+            // 이미지 데이터를 Base64로 인코딩
+            String encodedImageBase64 = Base64.getEncoder().encodeToString(imageBase64.getBytes());
+
             // FileUploadDTO 세팅
             FileUploadDTO fileUploadDTO = new FileUploadDTO();
-            fileUploadDTO.setImageBase64(imageBase64);
+            fileUploadDTO.setImageBase64(encodedImageBase64);
             fileUploadDTO.setImageName(imageName);
 
             // S3 이미지 업로드
