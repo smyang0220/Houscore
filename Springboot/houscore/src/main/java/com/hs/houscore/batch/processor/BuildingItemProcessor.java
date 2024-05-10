@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemProcessor;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -131,16 +132,21 @@ public class BuildingItemProcessor implements ItemProcessor<BuildingEntity, Buil
     }
     private BuildingEntity.TrafficInfo setTrafficInfo(BuildingEntity building) {
         List<Object[]> bus = busRepository.findBusByDistance(building.getLocation().getY(),building.getLocation().getX(),1000);
-        Map<String, Long> busMap = new HashMap<>();
+        List<Map<String, Object>> busMap = new ArrayList<>();
         for (Object[] data : bus) {
             String busStopName = (String) data[0];
             Double distance = (Double) data[4];
-            busMap.put(busStopName.replace(".", "_"), distance.longValue());
+
+            Map<String, Object> entryMap = new HashMap<>();
+            entryMap.put("name", busStopName.replace(".", "_"));
+            entryMap.put("distance", distance.longValue());
+
+            busMap.add(entryMap);
         }
 //        return new BuildingEntity.TrafficInfo();
         return BuildingEntity.TrafficInfo.builder()
                 .bus(busMap)
-                .subway(new HashMap<String, Long>())
+                .subway(new ArrayList<>())
                 .build();
     }
 
@@ -154,11 +160,11 @@ public class BuildingItemProcessor implements ItemProcessor<BuildingEntity, Buil
     private BuildingEntity.InfraInfo setInfraInfo(BuildingEntity building) {
 //        return new BuildingEntity.InfraInfo();
         return BuildingEntity.InfraInfo.builder()
-                .parks(new HashMap<String, Long>())
-                .Libraries(new HashMap<String, Long>())
-                .medicalFacilities(new HashMap<String, Long>())
-                .schools(new HashMap<String, Long>())
-                .supermarkets(new HashMap<String, Long>())
+                .parks(new ArrayList<>())
+                .Libraries(new ArrayList<>())
+                .medicalFacilities(new ArrayList<>())
+                .schools(new ArrayList<>())
+                .supermarkets(new ArrayList<>())
                 .build();
     }
 }
