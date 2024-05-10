@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:houscore/common/const/color.dart';
 import 'package:houscore/common/layout/default_layout.dart';
 import 'package:houscore/common/view/root_tab.dart';
@@ -9,12 +11,16 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../component/kakao_login_button.dart';
 import '../component/non_member_button.dart';
+import '../provider/user_me_provider.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends ConsumerWidget {
+  static String get routeName => 'login';
   const LoginScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context,WidgetRef ref) {
+    final state = ref.watch(userMeProvider);
+
     return DefaultLayout(
       // backgroundColor: PRIMARY_COLOR,
       backgroundColor: Colors.white,
@@ -69,9 +75,7 @@ class LoginScreen extends StatelessWidget {
                       padding: EdgeInsets.only(bottom: 15),
                       child: NonMemberButton(
                         onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(builder: (context) => RootTab()),
-                          );
+                          context.go('home');
                         },
                         text: '비회원으로 계속', // 필요한 경우 이 부분을 통해 버튼 텍스트를 변경할 수 있습니다.
                       )

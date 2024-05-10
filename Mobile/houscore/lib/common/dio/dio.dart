@@ -2,7 +2,7 @@ import 'package:houscore/common/const/data.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
+import '../../member/provider/auth_provider.dart';
 import '../secure_storage/secure_storage.dart';
 
 final dioProvider = Provider<Dio>((ref) {
@@ -11,7 +11,7 @@ final dioProvider = Provider<Dio>((ref) {
   final storage = ref.watch(secureStorageProvider);
 
   dio.interceptors.add(
-    CustomInterceptor(storage: storage),
+    CustomInterceptor(storage: storage, ref: ref),
   );
 
   return dio;
@@ -21,8 +21,9 @@ final dioProvider = Provider<Dio>((ref) {
 class CustomInterceptor extends Interceptor {
   // 토큰 저장소
   final FlutterSecureStorage storage;
-
+  final Ref ref;
   CustomInterceptor({
+    required this.ref,
     required this.storage,
   });
 
@@ -97,9 +98,10 @@ class CustomInterceptor extends Interceptor {
     }
 
     final isStatus401 = err.response?.statusCode == 401;
-    // final isPathRefresh = err.requestOptions.path == '/auth/token';
+    final isPathRefresh = err.requestOptions.path == '/refresh';
+
     print("에러코드 ${err.response?.statusCode}");
-    if (isStatus401) {
+    if (isStatus401 && !isPathRefresh) {
       print("401에 걸림");
       final dio = Dio();
       try {
@@ -130,6 +132,8 @@ class CustomInterceptor extends Interceptor {
 
         return handler.resolve(response);
       } on DioException catch (e) {
+        ref.read(authProvider.notifier).logout();
+        
         return handler.reject(e);
       }
     }

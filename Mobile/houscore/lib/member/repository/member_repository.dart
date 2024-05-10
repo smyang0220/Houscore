@@ -5,7 +5,7 @@ import 'package:houscore/common/model/cursor_pagination_model.dart';
 import 'package:retrofit/retrofit.dart';
 import '../../common/const/data.dart';
 import '../../common/dio/dio.dart';
-import '../model/kakao_login_token_model.dart';
+import '../../common/model/login_response.dart';
 import '../model/member_search_model.dart';
 
 part 'member_repository.g.dart';
@@ -29,7 +29,7 @@ abstract class MemberRepository {
   @Headers({
     'accessToken': 'false',
   })
-  Future<KakaoLoginTokenModel> loginKakao({
+  Future<LoginResponse> loginKakao({
     @Body() required Map<String, dynamic> data,
   });
 
@@ -46,4 +46,5 @@ abstract class MemberRepository {
   Future<List<MemberSearchModel>> searchMember(
   @Query("memberEmail") String memberEmail,
   );
+
 }
