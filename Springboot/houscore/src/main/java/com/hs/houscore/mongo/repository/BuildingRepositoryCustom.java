@@ -19,9 +19,8 @@ public class BuildingRepositoryCustom  {
     private final MongoTemplate mongoTemplate;
 
     public List<BuildingEntity> findBuildingsWithin1Km(GeoJsonPoint center) {
-        // 2km 반경 내의 건물을 찾는 쿼리 작성
         Query query = new Query();
-        query.addCriteria(Criteria.where("location").nearSphere(center).maxDistance(2000));
+        query.addCriteria(Criteria.where("location").nearSphere(center).maxDistance(1000));
 
         // 쿼리 실행
         List<BuildingEntity> buildings = mongoTemplate.find(query, BuildingEntity.class);
