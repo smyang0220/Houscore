@@ -4,8 +4,8 @@ import com.hs.houscore.batch.entity.BusEntity;
 import com.hs.houscore.batch.repository.BusRepository;
 import com.hs.houscore.dto.BuildingDetailDTO;
 import com.hs.houscore.dto.BuildingInfraDTO;
+import com.hs.houscore.dto.MainPageDTO;
 import com.hs.houscore.dto.RecommendAiDTO;
-import com.hs.houscore.dto.RecommendDTO;
 import com.hs.houscore.mongo.entity.BuildingEntity;
 import com.hs.houscore.mongo.repository.BuildingRepository;
 import com.hs.houscore.mongo.repository.BuildingRepositoryCustom;
@@ -13,6 +13,7 @@ import com.hs.houscore.postgre.entity.ReviewEntity;
 import com.hs.houscore.postgre.repository.ReviewRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,9 +21,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @Service
 @Transactional
@@ -172,8 +171,8 @@ public class BuildingService {
         return reviewRepository.findByAddress(address, pageable).getContent();
     }
 
-    public List<RecommendAiDTO> getRecommendAiScoreTop5(String sigungu){
-        List<BuildingEntity> buildingEntities = buildingRepository.findTop5ByNewPlatPlcContaining(sigungu);
+    public List<RecommendAiDTO> getMainAiScoreTop5(String sigungu){
+        List<BuildingEntity> buildingEntities = buildingRepository.findAllBySigungu(sigungu);
         List<RecommendAiDTO> recommendAiDTOS = new ArrayList<>();
 
         for(BuildingEntity buildingEntity : buildingEntities){
@@ -182,7 +181,7 @@ public class BuildingService {
             Double realPrice = buildingEntity.getInformation().getPriceInfo().getSaleAvg();
             Double archArea = buildingEntity.getInformation().getBuildingInfo().getArchArea();
             recommendAiDTOS.add(RecommendAiDTO.builder()
-                            .address(buildingEntity.getNewPlatPlc())
+                            .address(buildingEntity.getPlatPlc())
                             .aiScore(buildingEntity.getScore())
                             .pricePerRegion(sigungu != null && realPrice != null ? setPricePerRegion(sigungu, realPrice) : 0.0)
                             .pricePerPyeong(realPrice != null && archArea != null ? setPricePerPyeong(realPrice, archArea) : 0)
@@ -211,13 +210,13 @@ public class BuildingService {
         return pricePerPyeong;
     }
 
-    public List<RecommendDTO> getRecommendNearby(Double lat, Double lng){
+    public List<MainPageDTO> getMainNearby(Double lat, Double lng){
         List<BuildingEntity> buildingEntities = buildingRepositoryCustom.findBuildingsWithin1Km(new GeoJsonPoint(lng,lat));
-        List<RecommendDTO> recommendDTOS = new ArrayList<>();
+        List<MainPageDTO> recommendDTOS = new ArrayList<>();
         for(BuildingEntity buildingEntity : buildingEntities){
             System.out.println(buildingEntity.getPlatPlc());
             List<ReviewEntity> reviewEntity = reviewRepository.findByAddress(buildingEntity.getPlatPlc());
-            recommendDTOS.add(RecommendDTO.builder()
+            recommendDTOS.add(MainPageDTO.builder()
                     .address(buildingEntity.getNewPlatPlc())
                     .buildingName(buildingEntity.getInformation().getBuildingInfo().getBldNm())
                     .aiScore(buildingEntity.getScore())
@@ -230,6 +229,47 @@ public class BuildingService {
 
         return null;
 
+    }
+
+    public List<MainPageDTO> getMainPhoto(){
+        List<ReviewEntity> reviewEntities = reviewRepository.findAll();
+        List<MainPageDTO> mainPageDTOS = new ArrayList<>();
+        int reviewSize = reviewEntities.size();
+        Random random = new Random();
+        for(int i = 0; i < reviewSize; i++){
+            int randomNumber = random.nextInt(reviewSize);
+            Optional<ReviewEntity> reviewEntity = reviewRepository.findById((long) randomNumber);
+
+            if(reviewEntity.isPresent()) {
+                Optional<BuildingEntity> buildingEntity = buildingRepository.findById(reviewEntity.get().getBuildingId());
+
+                buildingEntity.ifPresent(entity -> mainPageDTOS.add(MainPageDTO.builder()
+                        .address(entity.getNewPlatPlc())
+                        .buildingName(entity.getInformation().getBuildingInfo().getBldNm())
+                        .aiScore(entity.getScore())
+                        .reviewScore(calculateReviewScore(entity.getId()))
+                        .cons(reviewEntity.get().getCons())
+                        .pros(reviewEntity.get().getPros())
+                        .imageUrl(reviewEntity.get().getImages())
+                        .build()));
+            }
+
+            if(mainPageDTOS.size() >= 5) break;
+        }
+
+        return mainPageDTOS;
+    }
+
+    // 평균 반환 메서드
+    private double calculateReviewScore (ObjectId buildingId) {
+        List<ReviewEntity> reviewEntities = reviewRepository.findByBuildingId(buildingId);
+
+        double score = 0;
+        for(ReviewEntity reviewEntity : reviewEntities){
+            score += reviewEntity.getStarRatingAverage();;
+        }
+
+        return score / reviewEntities.size();
     }
 
 }

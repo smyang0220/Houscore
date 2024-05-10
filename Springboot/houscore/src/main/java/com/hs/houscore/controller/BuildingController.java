@@ -2,8 +2,8 @@ package com.hs.houscore.controller;
 
 import com.hs.houscore.dto.BuildingDetailDTO;
 import com.hs.houscore.dto.BuildingInfraDTO;
+import com.hs.houscore.dto.MainPageDTO;
 import com.hs.houscore.dto.RecommendAiDTO;
-import com.hs.houscore.dto.RecommendDTO;
 import com.hs.houscore.mongo.service.BuildingService;
 import com.hs.houscore.postgre.entity.ReviewEntity;
 import io.swagger.v3.oas.annotations.Operation;
@@ -50,15 +50,21 @@ public class BuildingController {
         return buildingService.getBuildingReviewList(address, pageable);
     }
 
-    @GetMapping("/recommend/ai")
-    @Operation(summary = "AI 추천 거주지 조회 ", description = "AI 추천 거주지 조회 (1위~5위)")
-    public List<RecommendAiDTO> getRecommendAiScoreTop5(@RequestParam String sigungu){
-        return buildingService.getRecommendAiScoreTop5(sigungu);
+    @GetMapping("/main/ai")
+    @Operation(summary = "AI 추천 거주지 조회", description = "AI 추천 거주지 조회 (1위~5위)")
+    public List<RecommendAiDTO> getMainAiScoreTop5(@RequestParam String sigungu){
+        return buildingService.getMainAiScoreTop5(sigungu);
     }
 
-    @GetMapping("/recommend/nearby")
-    @Operation(summary = "근처 거주지 최근 리뷰 조회 ", description = "가장 가까운 거주지 중 리뷰가 있는 2개의 거주지에서 가장 최근의 리뷰 하나씩 총 2개")
-    public List<RecommendDTO> getRecommendNearby(@RequestParam Double lat, @RequestParam Double lng){
-        return buildingService.getRecommendNearby(lat,lng);
+    @GetMapping("/main/nearby")
+    @Operation(summary = "근처 거주지 최근 리뷰 조회", description = "가장 가까운 거주지 중 리뷰가 있는 2개의 거주지에서 가장 최근의 리뷰 하나씩 총 2개")
+    public List<MainPageDTO> getMainNearby(@RequestParam Double lat, @RequestParam Double lng){
+        return buildingService.getMainNearby(lat,lng);
+    }
+
+    @GetMapping("/main/photo")
+    @Operation(summary = "생생한 사진 후기 조회", description = "사진이 등록된 리뷰들 중 가장 최근이나 좋은 리뷰를 받은 순으로 조회")
+    public List<MainPageDTO> getMainPhoto() {
+        return buildingService.getMainPhoto();
     }
 }

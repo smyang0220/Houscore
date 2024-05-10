@@ -93,6 +93,7 @@ public class MemberController {
         }
     }
 
+
     @GetMapping("/refresh")
     @Operation(summary = "액세스 토큰 재발급", description = "리프레시 토큰으로 액세스 토큰 재발급")
     public ResponseEntity<?> refreshAccessToken(HttpServletRequest request) {
