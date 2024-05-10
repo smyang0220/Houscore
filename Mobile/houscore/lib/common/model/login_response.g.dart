@@ -1,20 +1,18 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'kakao_login_token_model.dart';
+part of 'login_response.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-KakaoLoginTokenModel _$KakaoLoginTokenModelFromJson(
-        Map<String, dynamic> json) =>
-    KakaoLoginTokenModel(
+LoginResponse _$LoginResponseFromJson(Map<String, dynamic> json) =>
+    LoginResponse(
       accessToken: json['accessToken'] as String,
       refreshToken: json['refreshToken'] as String,
     );
 
-Map<String, dynamic> _$KakaoLoginTokenModelToJson(
-        KakaoLoginTokenModel instance) =>
+Map<String, dynamic> _$LoginResponseToJson(LoginResponse instance) =>
     <String, dynamic>{
       'accessToken': instance.accessToken,
       'refreshToken': instance.refreshToken,
