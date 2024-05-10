@@ -20,8 +20,8 @@ public interface BuildingRepository extends MongoRepository<BuildingEntity, Stri
 
     Optional<BuildingEntity> findByNewPlatPlcOrPlatPlc(@Param("newPlatPlc")String newPlatPlc, @Param("PlatPlc")String PlatPlc);
 
-    // `information.buildingInfo.sigunguCd` 필드를 이용하여 건물 찾기
-    @Query("{'information.buildingInfo.sigunguCd': ?0}")
+    // sigunguCd의 앞 4자리로 시작하는 모든 건물을 조회 (광역시&특별시 => 구 단위, 도 => 시 단위)
+    @Query("{'information.buildingInfo.sigunguCd': {$regex: '^?0'}}")
     List<BuildingEntity> findByInformationBuildingInfoSigunguCd(String sigunguCd);
 
     //시군구에 있는 모든 지역의 실거래가 평균 조회

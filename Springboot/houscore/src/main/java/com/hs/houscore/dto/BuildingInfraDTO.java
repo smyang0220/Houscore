@@ -2,6 +2,8 @@ package com.hs.houscore.dto;
 
 import lombok.*;
 
+import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 
 @Data
@@ -18,19 +20,19 @@ public class BuildingInfraDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Infras {
-        private Map<String, Long> medicalFacilities;
-        private Map<String, Long> parks;
-        private Map<String, Long> schools;
-        private Map<String, Long> libraries;
-        private Map<String, Long> supermarkets;
+        private List<Map<String, Object>> medicalFacilities;
+        private List<Map<String, Object>> parks;
+        private List<Map<String, Object>> schools;
+        private List<Map<String, Object>> libraries;
+        private List<Map<String, Object>> supermarkets;
     }
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class PublicTransport {
-        private Map<String, Long> bus;
-        private Map<String, Long> subways;
+        private List<Map<String, Object>> bus;
+        private List<Map<String, Object>> subways;
     }
     @Data
     @Builder
@@ -41,5 +43,4 @@ public class BuildingInfraDTO {
         private Double longterm;
         private String monthly;
     }
-
 }

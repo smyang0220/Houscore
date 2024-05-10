@@ -8,6 +8,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 
 @Document(collection = "building")
@@ -74,11 +76,11 @@ public class BuildingEntity {
     @Getter
     @Builder
     public static class InfraInfo {
-        private Map<String, Long> medicalFacilities;
-        private Map<String, Long> parks;
-        private Map<String, Long> schools;
-        private Map<String, Long> Libraries;
-        private Map<String, Long> supermarkets;
+        private List<Map<String, Object>> medicalFacilities;
+        private List<Map<String, Object>> parks;
+        private List<Map<String, Object>> schools;
+        private List<Map<String, Object>> Libraries;
+        private List<Map<String, Object>> supermarkets;
     }
 
     @Data
@@ -96,8 +98,8 @@ public class BuildingEntity {
     @Getter
     @Builder
     public static class TrafficInfo {
-        private Map<String, Long> bus;
-        private Map<String, Long> subway;
+        private List<Map<String, Object>> bus;
+        private List<Map<String, Object>> subway;
     }
 
     @Data

@@ -1,7 +1,5 @@
 package com.hs.houscore.mongo.service;
 
-import com.hs.houscore.batch.entity.BusEntity;
-import com.hs.houscore.batch.repository.BusRepository;
 import com.hs.houscore.dto.BuildingDetailDTO;
 import com.hs.houscore.dto.BuildingInfraDTO;
 import com.hs.houscore.dto.MainPageDTO;
@@ -14,14 +12,13 @@ import com.hs.houscore.postgre.repository.ReviewRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -30,9 +27,7 @@ public class BuildingService {
 
     private final BuildingRepository buildingRepository;
     private final ReviewRepository reviewRepository;
-    private final BusRepository busRepository;
     private final BuildingRepositoryCustom buildingRepositoryCustom;
-    private final int PAGE_SIZE = 5;
 
     public List<BuildingEntity> getBuildingList(){
         return buildingRepository.findAll();
@@ -167,8 +162,11 @@ public class BuildingService {
         return reviewRepository.findByAddress(address, pageable).getContent();
     }
 
-    public List<RecommendAiDTO> getMainAiScoreTop5ForCity(String sigungu){
-        List<BuildingEntity> buildingEntities = buildingRepository.findByInformationBuildingInfoSigunguCd(sigungu);
+    public List<RecommendAiDTO> getMainAiScoreTop5(String sigungu){
+        // sigungu의 앞 4자리를 추출
+        String sigunguPrefix = sigungu.substring(0, 4);
+
+        List<BuildingEntity> buildingEntities = buildingRepository.findByInformationBuildingInfoSigunguCd(sigunguPrefix);
         List<RecommendAiDTO> recommendAiDTOS = new ArrayList<>();
         Double avgCost = calRegionAvg(buildingEntities);
         for(BuildingEntity buildingEntity : buildingEntities){
@@ -178,31 +176,10 @@ public class BuildingService {
             recommendAiDTOS.add(RecommendAiDTO.builder()
                             .address(buildingEntity.getPlatPlc())
                             .aiScore(buildingEntity.getScore())
-                            .pricePerRegion(sigungu != null && realPrice != null ? (realPrice / avgCost) * 100 : 0.0)
+                            .pricePerRegion(realPrice != null ? (realPrice / avgCost) * 100 : 0.0)
                             .pricePerPyeong(realPrice != null && archArea != null ? setPricePerPyeong(realPrice, archArea) : 0)
                             .realPrice(realPrice)
                             .reviewCnt(reviewCnt)
-                    .build());
-        }
-
-        return recommendAiDTOS;
-    }
-
-    public List<RecommendAiDTO> getMainAiScoreTop5(String si){
-        List<BuildingEntity> buildingEntities = buildingRepository.findByInformationBuildingInfoSigunguCd(si);
-        List<RecommendAiDTO> recommendAiDTOS = new ArrayList<>();
-        Double avgCost = calRegionAvg(buildingEntities);
-        for(BuildingEntity buildingEntity : buildingEntities){
-            Long reviewCnt = reviewRepository.countByAddressStartingWith(buildingEntity.getNewPlatPlc());
-            Double realPrice = buildingEntity.getInformation().getPriceInfo().getSaleAvg();
-            Double archArea = buildingEntity.getInformation().getBuildingInfo().getArchArea();
-            recommendAiDTOS.add(RecommendAiDTO.builder()
-                    .address(buildingEntity.getPlatPlc())
-                    .aiScore(buildingEntity.getScore())
-                    .pricePerRegion(si != null && realPrice != null ? (realPrice / avgCost) * 100 : 0.0)
-                    .pricePerPyeong(realPrice != null && archArea != null ? setPricePerPyeong(realPrice, archArea) : 0)
-                    .realPrice(realPrice)
-                    .reviewCnt(reviewCnt)
                     .build());
         }
 
@@ -230,14 +207,61 @@ public class BuildingService {
 
     public List<MainPageDTO> getMainNearby(Double lat, Double lng){
         List<BuildingEntity> buildingEntities = buildingRepositoryCustom.findBuildingsWithin1Km(new GeoJsonPoint(lng,lat));
-        List<MainPageDTO> mainPageDTOS = new ArrayList<>();
-        for(BuildingEntity buildingEntity : buildingEntities){
-            List<ReviewEntity> reviewEntities = reviewRepository.findByAddress(buildingEntity.getPlatPlc());
+        List<ReviewEntity> latestReviewEntities = new ArrayList<>();
 
+        for(BuildingEntity buildingEntity : buildingEntities) {
+            List<ReviewEntity> reviewEntities = reviewRepository.findByAddress(buildingEntity.getPlatPlc());
+            ReviewEntity latestReview = getLatestReview(reviewEntities);
+
+            if(latestReview != null) {
+                   latestReviewEntities.add(latestReview);
+            }
         }
 
-        return null;
+        if(latestReviewEntities.isEmpty()) return null;
 
+        List<ReviewEntity> latestTwoReviews = getLatestTwoReviews(latestReviewEntities);
+        List<MainPageDTO> mainPageDTOS = new ArrayList<>();
+
+        for(ReviewEntity reviewEntity : latestTwoReviews) {
+            Optional<BuildingEntity> buildingEntity = buildingRepository.findById(reviewEntity.getBuildingId());
+
+            buildingEntity.ifPresent(entity -> mainPageDTOS.add(MainPageDTO.builder()
+                    .address(entity.getPlatPlc())
+                    .buildingName(entity.getInformation().getBuildingInfo().getBldNm())
+                    .aiScore(entity.getScore())
+                    .reviewScore(calculateReviewScore(entity.getId()))
+                    .cons(reviewEntity.getCons())
+                    .pros(reviewEntity.getPros())
+                    .imageUrl(reviewEntity.getImages())
+                    .build()));
+        }
+        return mainPageDTOS;
+    }
+
+    //가장 최신의 리뷰 찾기
+    private ReviewEntity getLatestReview (List<ReviewEntity> reviewEntities) {
+        if (reviewEntities == null || reviewEntities.isEmpty()) {
+            return null;
+        }
+
+        // 최신 리뷰를 찾기 위해 createdAt 기준으로 내림차순 정렬
+        return reviewEntities.stream()
+                .max(Comparator.comparing(ReviewEntity::getCreatedAt))
+                .orElse(null);
+    }
+
+    //가장 최신의 리뷰 2개 찾기
+    private List<ReviewEntity> getLatestTwoReviews(List<ReviewEntity> reviewEntities) {
+        if (reviewEntities == null || reviewEntities.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        // 최신순으로 정렬 후 최상위 2개를 선택
+        return reviewEntities.stream()
+                .sorted(Comparator.comparing(ReviewEntity::getCreatedAt).reversed())
+                .limit(2)
+                .collect(Collectors.toList());
     }
 
     public List<MainPageDTO> getMainPhoto(){
@@ -275,7 +299,7 @@ public class BuildingService {
 
         double score = 0;
         for(ReviewEntity reviewEntity : reviewEntities){
-            score += reviewEntity.getStarRatingAverage();;
+            score += reviewEntity.getStarRatingAverage();
         }
 
         return score / reviewEntities.size();
