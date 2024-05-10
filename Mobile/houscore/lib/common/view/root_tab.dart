@@ -4,7 +4,7 @@ import 'package:houscore/common/const/color.dart';
 import '../../building/view/api_test_screen.dart';
 import 'package:houscore/review/view/create_review.dart';
 import 'package:houscore/review/view/my_review_list.dart';
-import '../../member/view/my_page.dart';
+import '../../myinfo/view/my_page.dart';
 import 'home_screen.dart';
 
 class RootTab extends StatefulWidget {
