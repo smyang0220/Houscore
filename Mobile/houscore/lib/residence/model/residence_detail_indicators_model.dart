@@ -39,11 +39,11 @@ class ResidenceDetailIndicatorsModel {
 
 @JsonSerializable()
 class Infras {
-  final List<Infra> medicalFacilities;
-  final List<Infra> park;
-  final List<Infra> school;
-  final List<Infra> library;
-  final List<Infra> supermarket;
+  List<Infra> medicalFacilities;
+  List<Infra> park;
+  List<Infra> school;
+  List<Infra> library;
+  List<Infra> supermarket;
 
   Infras({
     required this.medicalFacilities,
@@ -53,23 +53,35 @@ class Infras {
     required this.supermarket,
   });
 
-  factory Infras.fromJson(Map<String, dynamic> json) => _$InfrasFromJson(json);
+  factory Infras.fromJson(Map<String, dynamic> json) {
+    return Infras(
+      medicalFacilities: (json['medicalFacilities'] as List).map((e) => Infra.fromJson(e..['type'] = 'medicalFacilities')).toList(),
+      park: (json['park'] as List).map((e) => Infra.fromJson(e..['type'] = 'park')).toList(),
+      school: (json['school'] as List).map((e) => Infra.fromJson(e..['type'] = 'school')).toList(),
+      library: (json['library'] as List).map((e) => Infra.fromJson(e..['type'] = 'library')).toList(),
+      supermarket: (json['supermarket'] as List).map((e) => Infra.fromJson(e..['type'] = 'supermarket')).toList(),
+    );
+  }
 
   Map<String, dynamic> toJson() => _$InfrasToJson(this);
 }
 
 @JsonSerializable()
 class PublicTransport {
-  final List<Infra> bus;
-  final List<Infra> subway;
+  List<Infra> bus;
+  List<Infra> subway;
 
   PublicTransport({
     required this.bus,
     required this.subway,
   });
 
-  factory PublicTransport.fromJson(Map<String, dynamic> json) =>
-      _$PublicTransportFromJson(json);
+  factory PublicTransport.fromJson(Map<String, dynamic> json) {
+    return PublicTransport(
+      bus: (json['bus'] as List).map((e) => Infra.fromJson(e..['type'] = 'bus')).toList(),
+      subway: (json['subway'] as List).map((e) => Infra.fromJson(e..['type'] = 'subway')).toList(),
+    );
+  }
 
   Map<String, dynamic> toJson() => _$PublicTransportToJson(this);
 }
@@ -78,7 +90,7 @@ class PublicTransport {
 class RealCost {
   final double? buy;
   final double? longterm;
-  final double? monthly;
+  final String? monthly;
 
   RealCost({
     this.buy,
