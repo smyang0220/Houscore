@@ -11,7 +11,7 @@ final emulatorIp = '10.0.2.2:3000';
 final simulatorIp = '127.0.0.1:3000';
 
 // final ip = Platform.isIOS ? simulatorIp : emulatorIp;
-final ip = '84818524-ad0e-4d24-89c9-2ef5767416ea.mock.pstmn.io'; //우진 목서버
+final ip = 'k10s206.p.ssafy.io:8084/';
 // final ip = '192.168.31.166:8084'; // 희주누나 ip
 // final ip = '70ac0dcc-9306-42b5-9117-1c159e282c00.mock.pstmn.io'; // 상준 Mock 서버
 

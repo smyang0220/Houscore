@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:houscore/common/const/color.dart';
 import 'package:remedi_kopo/remedi_kopo.dart';
+import '../../residence/view/residence_detail.dart';
 
 class SearchResidences extends StatefulWidget {
   @override
@@ -44,7 +45,7 @@ class _SearchResidencesState extends State<SearchResidences> {
                   builder: (context) => RemediKopo(),
                 ),
               );
-              //TODO 건물 상세 정보 페이지로 이동
+              ResidenceDetail(address: model.address!);
               print(model.toJson());
               setState(() {
                 addressJSON =
