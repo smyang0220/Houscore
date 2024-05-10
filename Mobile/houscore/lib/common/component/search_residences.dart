@@ -3,9 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:houscore/common/const/color.dart';
 import 'package:remedi_kopo/remedi_kopo.dart';
 
-class SearchResidences extends StatelessWidget {
-  final String? title;
-  const SearchResidences({Key? key, this.title}) : super(key: key);
+class SearchResidences extends StatefulWidget {
+  @override
+  _SearchResidencesState createState() => _SearchResidencesState();
+}
+
+class _SearchResidencesState extends State<SearchResidences> {
+  String addressJSON = '';
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -39,6 +44,13 @@ class SearchResidences extends StatelessWidget {
                   builder: (context) => RemediKopo(),
                 ),
               );
+
+              //TODO 건물 상세 정보 페이지로 이동
+              print(model.toJson());
+              setState(() {
+                addressJSON =
+                '${model.address} ${model.buildingName}${model.apartment == 'Y' ? '아파트' : ''} ${model.zonecode} ';
+              });
             },
             child: Container(
               padding: EdgeInsets.all(12),
