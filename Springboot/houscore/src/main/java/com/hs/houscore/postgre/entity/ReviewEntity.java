@@ -2,6 +2,7 @@ package com.hs.houscore.postgre.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.bson.types.ObjectId;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -21,7 +22,7 @@ public class ReviewEntity extends BaseTimeEntity{
     @GeneratedValue (strategy = GenerationType.SEQUENCE)
     private Long id;
     private String memberId;
-    private Long buildingId;
+    private ObjectId buildingId;
     private String address;
     private ResidenceType residenceType;
     private Integer year;
@@ -47,5 +48,14 @@ public class ReviewEntity extends BaseTimeEntity{
         private Double inside;
         private Double infra;
         private Double security;
+
+        public double average() {
+            return (traffic + building + inside + infra + security) / 5.0;
+        }
+    }
+
+    // 다른 서비스에서 접근할 평균 반환
+    public double getStarRatingAverage() {
+        return this.starRating.average();
     }
 }
