@@ -26,9 +26,6 @@ class _ReviewDetailButtonState extends ConsumerState<ReviewDetailButton> {
             ReviewModel response;
             final repository = ref.watch(ReviewRepositoryProvider);
             response = await repository.reviewDetail(id: 1);
-            print(response.pros);
-            print(response.cons);
-            print(response.address);
           },
           child: Card(
             margin: const EdgeInsets.fromLTRB(20, 20, 20, 0),
