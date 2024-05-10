@@ -19,7 +19,7 @@ public interface BuildingRepository extends MongoRepository<BuildingEntity, Stri
 
     Optional<BuildingEntity> findByNewPlatPlcOrPlatPlc(@Param("newPlatPlc")String newPlatPlc, @Param("PlatPlc")String PlatPlc);
 
-    List<BuildingEntity> findAllBySigungu(@Param("sigungu") String sigungu);
+    List<BuildingEntity> findAllByInformation_BuildingInfo_SigunguCd(@Param("sigungu") String sigungu);
 
     //시군구에 있는 모든 지역의 실거래가 평균 조회
     Page<BuildingEntity> findByBatchYn(@Param("batchYn")String batchYn, Pageable pageable);

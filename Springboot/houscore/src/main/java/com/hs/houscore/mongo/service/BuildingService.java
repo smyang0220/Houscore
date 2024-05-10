@@ -1,6 +1,5 @@
 package com.hs.houscore.mongo.service;
 
-import com.hs.houscore.batch.entity.BusEntity;
 import com.hs.houscore.batch.repository.BusRepository;
 import com.hs.houscore.dto.BuildingDetailDTO;
 import com.hs.houscore.dto.BuildingInfraDTO;
@@ -14,8 +13,6 @@ import com.hs.houscore.postgre.repository.ReviewRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
@@ -30,9 +27,7 @@ public class BuildingService {
 
     private final BuildingRepository buildingRepository;
     private final ReviewRepository reviewRepository;
-    private final BusRepository busRepository;
     private final BuildingRepositoryCustom buildingRepositoryCustom;
-    private final int PAGE_SIZE = 5;
 
     public List<BuildingEntity> getBuildingList(){
         return buildingRepository.findAll();
@@ -43,10 +38,6 @@ public class BuildingService {
     }
 
     public BuildingDetailDTO getBuildingByAddress(String address, Double lat, Double lng){
-        List<BusEntity> bus = busRepository.findBusByDistance(lat,lng,500);
-        for(BusEntity busEntity : bus){
-            System.out.println(busEntity.toString());
-        }
         BuildingEntity buildingEntity = buildingRepository.findByNewPlatPlcOrPlatPlc(address, address)
                 .orElse(null);
         if(buildingEntity != null){
@@ -172,7 +163,7 @@ public class BuildingService {
     }
 
     public List<RecommendAiDTO> getMainAiScoreTop5(String sigungu){
-        List<BuildingEntity> buildingEntities = buildingRepository.findAllBySigungu(sigungu);
+        List<BuildingEntity> buildingEntities = buildingRepository.findAllByInformation_BuildingInfo_SigunguCd(sigungu);
         List<RecommendAiDTO> recommendAiDTOS = new ArrayList<>();
 
         for(BuildingEntity buildingEntity : buildingEntities){
