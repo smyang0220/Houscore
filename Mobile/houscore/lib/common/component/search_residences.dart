@@ -44,7 +44,6 @@ class _SearchResidencesState extends State<SearchResidences> {
                   builder: (context) => RemediKopo(),
                 ),
               );
-
               //TODO 건물 상세 정보 페이지로 이동
               print(model.toJson());
               setState(() {

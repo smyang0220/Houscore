@@ -3,14 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:houscore/common/layout/default_layout.dart';
 import 'package:houscore/review/component/residence_name_input.dart';
 import 'package:houscore/review/view/my_review_list.dart';
+import 'package:remedi_kopo/remedi_kopo.dart';
+import '../../common/const/color.dart';
 import 'create_reviewdetail.dart';
 import 'package:houscore/review/component/review_rating.dart';
 import 'package:houscore/review/component/dropdown.dart';
+
 class CreateReview extends StatefulWidget {
   @override
   _CreateReviewState createState() => _CreateReviewState();
 }
 class _CreateReviewState extends State<CreateReview> {
+  String addressJSON = '';
   String? nameValue;
   String? typeValue;
   String? yearValue;
@@ -70,6 +74,7 @@ class _CreateReviewState extends State<CreateReview> {
                   ),
                 ),
               ),
+              SearchResidence(),
               Padding(
                 padding: const EdgeInsets.all(3.0),
                 child: ResidenceNameInput(
@@ -139,7 +144,7 @@ class _CreateReviewState extends State<CreateReview> {
                     ),
                     child: Text('다음'),
                   ),
-                  // TODO 임시
+                  // TODO 임시, api 조회 test
                   ElevatedButton(
                       child: Text('MyReviewList'),
                       onPressed: () {Navigator.push(
@@ -152,6 +157,80 @@ class _CreateReviewState extends State<CreateReview> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class SearchResidence extends StatefulWidget {
+
+  final String? address;
+
+  const SearchResidence({Key? key, this.address}) :  super(key : key);
+
+  @override
+  State<SearchResidence> createState() => _SearchResidenceState();
+}
+
+class _SearchResidenceState extends State<SearchResidence> {
+
+  String? selectedAddress = '실제 거주했던 집의 주소를 검색해주세요.';
+
+  void setAddress(String address) {
+    setState(() {
+      selectedAddress = address;
+    });
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 2),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 5.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  '💯 내가 살 곳의 점수는?',
+                  style: TextStyle(
+                    fontFamily: 'NotoSans',
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => RemediKopo()),
+              );
+            },
+            child: Container(
+              padding: EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: PRIMARY_COLOR, width: 2.5),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(selectedAddress!,
+                      style: TextStyle(fontSize: 14, color: Colors.grey)),
+                  Icon(Icons.search, color: PRIMARY_COLOR),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
