@@ -59,6 +59,8 @@ public class BuildingController {
             List<RecommendAiDTO> recommendAiDTOS = buildingService.getMainAiScoreTop5(sigungu);
             if(recommendAiDTOS == null) {
                 return ResponseEntity.badRequest().body(new ErrorResponse("BuildingController getMainAiScoreTop5 NullException"));
+            } else if (recommendAiDTOS.isEmpty()) {
+                return ResponseEntity.badRequest().body(new ErrorResponse("BuildingController getMainAiScoreTop5 is Empty"));
             }
             return ResponseEntity.ok(recommendAiDTOS);
         } catch (Exception e) {
