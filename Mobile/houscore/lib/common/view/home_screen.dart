@@ -41,8 +41,8 @@ class _HomeScreenState extends State<HomeScreen> {
       'address': '서울특별시 강동구 천호대로 1121',
       'userRating': 3.0,
       'aiRating': 3.5,
-      'like': '바다가 가까워서 좋습니다.',
-      'dislike': '주변에 상점이 별로 없습니다.'
+      'like': '회사촌이 가까워서 좋습니다.',
+      'dislike': '주변에 맛집이 별로 없습니다.'
     },
   ];
 
@@ -60,16 +60,16 @@ class _HomeScreenState extends State<HomeScreen> {
       'address': '서울특별시 강동구 천호대로 1121',
       'userRating': 3.0,
       'aiRating': 3.5,
-      'like': '바다가 가까워서 좋습니다.',
-      'dislike': '주변에 상점이 별로 없습니다.',
+      'like': '회사촌이 가까워서 좋습니다.',
+      'dislike': '주변에 맛집이 별로 없습니다.',
       'imageUrl': 'https://example.com/images/review2.jpg'
     },
     {
-      'address': '부산 해운대구 마린시티',
+      'address': '대전 유성구 덕명동 16-1',
       'userRating': 4.5,
       'aiRating': 4.2,
-      'like': '바다 전망이 훌륭합니다.',
-      'dislike': '여름철에 관광객이 많습니다.',
+      'like': '온오프 피자가 훌륭합니다.',
+      'dislike': '방학시즌에 썰렁합니다.',
       'imageUrl': 'https://example.com/images/review3.jpg'
     },
     // {
