@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:houscore/common/utils/data_utils.dart';
 import 'package:houscore/residence/model/residence_detail_indicators_model.dart';
+import 'package:intl/intl.dart';
 
 import '../component/place_with_minute.dart';
 
@@ -14,6 +15,13 @@ enum PlaceType {
 }
 
 class PlaceUtils {
+
+  // 가격 변환 to String & 반점 추가
+  static String formatPrice(num? value) {
+    if (value == null) return '-';
+    final formatter = NumberFormat("#,###", "ko_KR");
+    return "${formatter.format(value)}만원";
+  }
 
   static String typeName(InfraType type) {
     switch (type) {
