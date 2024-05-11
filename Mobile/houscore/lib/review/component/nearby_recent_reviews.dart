@@ -26,12 +26,9 @@ class _NearbyResidencesReviewState
   @override
   void initState() {
     super.initState();
-
     // geolocator를 활용 위치를 불러온 후 해당 position을 가지고 현재 위치 문자열 설정하여 재렌더링
     _determinePosition();
   }
-
-
 
   // 위치 불러오기 (비동기)
   Future<void> _determinePosition() async {
@@ -60,10 +57,6 @@ class _NearbyResidencesReviewState
 
     // 현재 위치(위,경도 값인 상태)
     Position position = await Geolocator.getCurrentPosition();
-    // print('--------------------position--------------------');
-    // print(position);
-    // print('[${position.longitude}, ${position.latitude}]');
-    // print('--------------------position--------------------');
 
     // 현재 위치의 위,경도 값으로 도로명 주소 가져오기 by Naver api
     _fetchAddress(position);

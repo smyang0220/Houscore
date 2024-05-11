@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:houscore/common/const/color.dart';
 import 'package:houscore/common/const/data.dart';
 import 'package:houscore/common/model/data_state_model.dart';
 import 'package:houscore/residence/model/ai_recommended_residence_model.dart';
+import 'package:lottie/lottie.dart';
 
 import '../provider/ai_recommended_residence_provider.dart';
 import 'ai_recommendation_card.dart';
@@ -15,6 +17,7 @@ class AiRecommendation extends ConsumerStatefulWidget {
 }
 
 class _AiRecommendationState extends ConsumerState<AiRecommendation> {
+  final PageController _pageController = PageController(viewportFraction: 0.9); // 한 스크롤에 카드가 하나씩 보이게 하기 위한 설정용
   final GlobalKey _headerKey = GlobalKey();
   final GlobalKey _selectionKey = GlobalKey();
 
@@ -117,9 +120,12 @@ class _AiRecommendationState extends ConsumerState<AiRecommendation> {
                     borderRadius: BorderRadius.circular(5),
                   ),
                   alignment: Alignment.center,
-                  child: Text(
-                    region,
-                    style: TextStyle(color: selectedOrNot),
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      region,
+                      style: TextStyle(color: selectedOrNot),
+                    ),
                   ),
                 ),
               );
@@ -164,6 +170,7 @@ class _AiRecommendationState extends ConsumerState<AiRecommendation> {
           ),
           Container(
             key: _selectionKey,
+            width: MediaQuery.of(context).size.width * 0.8,
             decoration: BoxDecoration(
               border: Border.all(color: Colors.grey),
               borderRadius: BorderRadius.only(
@@ -206,7 +213,7 @@ class _AiRecommendationState extends ConsumerState<AiRecommendation> {
             ),
           ),
           if (residenceData != null) ...[
-            if (residenceData is DataStateLoading) CircularProgressIndicator(),
+            if (residenceData is DataStateLoading) Lottie.asset('asset/img/logo/loading_lottie_animation.json'),
             if (residenceData is DataState)
               if (residenceData.data.isEmpty)
                 Padding(
@@ -216,14 +223,21 @@ class _AiRecommendationState extends ConsumerState<AiRecommendation> {
               else
                 Container(
                   height: 220, // 고정 높이
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
+                  // child: ListView.builder(
+                  //   scrollDirection: Axis.horizontal,
+                  //   itemCount: residenceData.data.length,
+                  //   itemBuilder: (context, index) {
+                  //     return SizedBox(
+                  //       width: MediaQuery.of(context).size.width * 0.9,
+                  //       child: AiRecommendationCard(model: residenceData.data[index]),
+                  //     );
+                  //   },
+                  // ),
+                  child: PageView.builder(
+                    controller: _pageController,
                     itemCount: residenceData.data.length,
                     itemBuilder: (context, index) {
-                      return SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.9,
-                        child: AiRecommendationCard(model: residenceData.data[index]),
-                      );
+                      return AiRecommendationCard(model: residenceData.data[index]);
                     },
                   ),
                 ),
@@ -252,10 +266,13 @@ class _AiRecommendationState extends ConsumerState<AiRecommendation> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              text,
-              style: TextStyle(fontSize: 16, color: Colors.black),
-              textAlign: TextAlign.center,
+            Expanded(
+              child: Text(
+                text,
+                style: TextStyle(fontSize: 16, color: Colors.black),
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
             Icon(
               isExpanded
