@@ -30,6 +30,7 @@ part 'data_state_model.g.dart';
 
 abstract class DataStateBase {}
 
+// 에러 발생
 class DataStateError extends DataStateBase {
   final String message;
 
@@ -38,8 +39,10 @@ class DataStateError extends DataStateBase {
   });
 }
 
+// 로딩 중
 class DataStateLoading extends DataStateBase {}
 
+// 성공한 경우
 @JsonSerializable(
   genericArgumentFactories: true,
 )

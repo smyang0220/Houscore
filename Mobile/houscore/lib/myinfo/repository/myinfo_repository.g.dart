@@ -19,14 +19,14 @@ class _MyinfoRepository implements MyinfoRepository {
   String? baseUrl;
 
   @override
-  Future<List<InterestedArea>> getInterestedAreaList() async {
+  Future<List<InterestedAreaModel>> getInterestedAreaList() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{r'accessToken': 'true'};
     _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
     final _result = await _dio
-        .fetch<List<dynamic>>(_setStreamType<List<InterestedArea>>(Options(
+        .fetch<List<dynamic>>(_setStreamType<List<InterestedAreaModel>>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
@@ -43,18 +43,21 @@ class _MyinfoRepository implements MyinfoRepository {
               baseUrl,
             ))));
     var value = _result.data!
-        .map((dynamic i) => InterestedArea.fromJson(i as Map<String, dynamic>))
+        .map((dynamic i) =>
+            InterestedAreaModel.fromJson(i as Map<String, dynamic>))
         .toList();
     return value;
   }
 
   @override
-  Future<bool> registerInterestedArea(String memberId) async {
+  Future<bool> registerInterestedArea(
+      InterestedAreaModel newInterestedArea) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{r'accessToken': 'true'};
     _headers.removeWhere((k, v) => v == null);
-    final _data = memberId;
+    final _data = <String, dynamic>{};
+    _data.addAll(newInterestedArea.toJson());
     final _result = await _dio.fetch<bool>(_setStreamType<bool>(Options(
       method: 'POST',
       headers: _headers,

@@ -1,19 +1,31 @@
+import 'package:houscore/common/model/hasName.dart';
 import 'package:houscore/common/model/model_with_id.dart';
 import 'package:json_annotation/json_annotation.dart';
+
+import '../../common/component/list_section.dart';
 
 part 'interested_area.g.dart';
 
 @JsonSerializable()
-class InterestedArea extends IModelWithId{
+class InterestedAreaModel extends IModelWithNameAndId{
+  final DateTime createdAt;
+  final DateTime updatedAt;
   final int areaId;
+  final String memberId;
   final String address;
 
-  InterestedArea({
+  InterestedAreaModel({
+    required this.createdAt,
+    required this.updatedAt,
     required this.areaId,
+    required this.memberId,
     required this.address,
   }) : super(id: areaId);
 
   // JSON serialization
-  factory InterestedArea.fromJson(Map<String, dynamic> json) => _$InterestedAreaFromJson(json);
-  Map<String, dynamic> toJson() => _$InterestedAreaToJson(this);
+  factory InterestedAreaModel.fromJson(Map<String, dynamic> json) => _$InterestedAreaModelFromJson(json);
+  Map<String, dynamic> toJson() => _$InterestedAreaModelToJson(this);
+
+  @override
+  String get name => address;
 }

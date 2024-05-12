@@ -22,6 +22,7 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
 
   @override
   void initState() {
+    super.initState();
     controller = TabController(length: 4, vsync: this);
     controller.addListener(tabListener);
   }
@@ -52,8 +53,8 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: PRIMARY_COLOR, // 선택된 탭의 색상을 검정색으로 설정
-        unselectedItemColor: BODY_TEXT_COLOR, // 선택되지 않은 탭의 색상을 검정색으로 설정
+        selectedItemColor: PRIMARY_COLOR,
+        unselectedItemColor: BODY_TEXT_COLOR,
         selectedFontSize: 10,
         unselectedFontSize: 10,
         type: BottomNavigationBarType.shifting,

@@ -7,6 +7,7 @@ import 'package:houscore/review/view/delete_confirmed.dart';
 import 'package:blurry/blurry.dart';
 
 class MyReviewList extends StatefulWidget {
+  static String get routeName => 'myReview';
   const MyReviewList({Key? key}) : super(key: key);
 
   @override
@@ -63,44 +64,23 @@ class _MyReviewListState extends State<MyReviewList> {
   @override
   Widget build(BuildContext context) {
     return DefaultLayout(
+      title: '내가 쓴 리뷰',
       child: SafeArea(
         child: SingleChildScrollView(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 2),
-                child: Row(
-                  children: [
-                    Text(
-                      '내가 쓴 리뷰',
-                      style: TextStyle(
-                        fontFamily: 'NotoSans',
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 15),
-              Column(
-                children: reviewsWithImages
-                    .map(
-                      (review) => MyReviewCard(
-                        address: review['address'],
-                        userRating: review['userRating'],
-                        aiRating: review['aiRating'],
-                        like: review['like'],
-                        dislike: review['dislike'],
-                        imageUrl: review['imageUrl'],
-                      ),
-                    )
-                    .toList(),
-              ),
-            ],
+            children: reviewsWithImages
+                .map(
+                  (review) => MyReviewCard(
+                    address: review['address'],
+                    userRating: review['userRating'],
+                    aiRating: review['aiRating'],
+                    like: review['like'],
+                    dislike: review['dislike'],
+                    imageUrl: review['imageUrl'],
+                  ),
+                )
+                .toList(),
           ),
         ),
       ),
@@ -134,12 +114,13 @@ class MyReviewCard extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 4.0),
         padding: const EdgeInsets.all(16.0),
-        width: MediaQuery.of(context).size.width * 0.8,
+        width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
           border: Border.all(color: Colors.grey, width: 1),
           borderRadius: BorderRadius.circular(8.0),
         ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

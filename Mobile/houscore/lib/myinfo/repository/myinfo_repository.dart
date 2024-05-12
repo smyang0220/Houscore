@@ -41,14 +41,14 @@ abstract class MyinfoRepository {
     'accessToken': 'true',
   })
   // get 함수 // 비동기적 통신을 위한 Future 반환
-  Future<List<InterestedArea>> getInterestedAreaList();
+  Future<List<InterestedAreaModel>> getInterestedAreaList();
 
   // [관심지역 등록] ---------------------------------------
   @POST('/area')
   @Headers({
     'accessToken': 'true',
   })
-  Future<bool> registerInterestedArea(@Body() String memberId);
+  Future<bool> registerInterestedArea(@Body() InterestedAreaModel newInterestedArea);
 
   // [관심지역 삭제] ---------------------------------------
   @DELETE('/area')
