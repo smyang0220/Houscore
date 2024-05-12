@@ -6,10 +6,12 @@ import com.hs.houscore.dto.MainPageDTO;
 import com.hs.houscore.dto.RecommendAiDTO;
 import com.hs.houscore.mongo.service.BuildingService;
 import com.hs.houscore.postgre.entity.ReviewEntity;
+import com.hs.houscore.response.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,8 +54,16 @@ public class BuildingController {
 
     @GetMapping("/main/ai")
     @Operation(summary = "AI 추천 거주지 조회", description = "AI 추천 거주지 조회 (1위~5위)")
-    public List<RecommendAiDTO> getMainAiScoreTop5(@RequestParam String sigungu){
-        return buildingService.getMainAiScoreTop5(sigungu);
+    public ResponseEntity<?> getMainAiScoreTop5(@RequestParam String sigungu){
+        try {
+            List<RecommendAiDTO> recommendAiDTOS = buildingService.getMainAiScoreTop5(sigungu);
+            if(recommendAiDTOS == null) {
+                return ResponseEntity.badRequest().body(new ErrorResponse("BuildingController getMainAiScoreTop5 NullException"));
+            }
+            return ResponseEntity.ok(recommendAiDTOS);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ErrorResponse("BuildingController getMainAiScoreTop5 failure"));
+        }
     }
 
     @GetMapping("/main/nearby")
