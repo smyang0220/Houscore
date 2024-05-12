@@ -22,7 +22,7 @@ class _ReviewRepository implements ReviewRepository {
   Future<ReviewModel> reviewDetail({required int id}) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{r'id': id};
-    final _headers = <String, dynamic>{r'accessToken': 'false'};
+    final _headers = <String, dynamic>{r'accessToken': 'true'};
     _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
     final _result = await _dio

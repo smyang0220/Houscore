@@ -31,7 +31,6 @@ class _NearbyIndicatorsState extends ConsumerState<NearbyIndicators> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    print('NearbyIndicators 넘어왔을 때 widget.address is ${widget.address}');
     final notifier = ref.watch(residenceDetailIndicatorProvider(widget.address).notifier);
     notifier.fetchDetailIndicator();
   }
@@ -148,7 +147,6 @@ class _NearbyIndicatorsState extends ConsumerState<NearbyIndicators> {
         ),
       );
     } else {
-      // 예상치 못한 상태
       return Text('Unexpected state');
     }
   }

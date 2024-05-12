@@ -1,1 +1,1 @@
-final double VERTICAL_GAP = 30;
+final double VERTICAL_GAP = 32;

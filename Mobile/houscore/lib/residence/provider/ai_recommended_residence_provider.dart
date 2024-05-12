@@ -47,7 +47,6 @@ final List<AiRecommendedResidenceModel> dummyAiResidences = [
   )
 ];
 
-
 final aiRecommendedResidenceProvider = StateNotifierProvider.family<
     AiRecommendedResidenceNotifier, DataStateBase, String>((ref, sigungu) {
   final repository = ref.watch(residenceRepositoryProvider);
@@ -59,12 +58,12 @@ class AiRecommendedResidenceNotifier extends StateNotifier<DataStateBase> {
   final String sigungu;
 
   AiRecommendedResidenceNotifier({required this.repository, required this.sigungu}) : super(DataStateLoading()) {
-    print('sigungu before fetching = ${sigungu} ---------------------------');
+    // print('sigungu before fetching = ${sigungu} ---------------------------');
     fetchAiRecommendedResidences();
   }
 
   Future<void> fetchAiRecommendedResidences() async {
-    print('sigungu while fetching = ${sigungu} ---------------------------');
+    // print('sigungu while fetching = ${sigungu} ---------------------------');
 
     // 더미데이터 이용해서 레이아웃 확인용
     try {

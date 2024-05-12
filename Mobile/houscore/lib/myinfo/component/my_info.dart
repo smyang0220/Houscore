@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:houscore/common/const/design.dart';
 import '../../common/const/data.dart';
 import '../model/myinfo_model.dart';
 
@@ -50,9 +51,9 @@ class MyInfo extends ConsumerWidget {
                 ),
               ],
             ),
-            SizedBox(height: 8,),
-            Divider(thickness: 4, endIndent: 20, indent: 20,),
-            Divider(thickness: 4, endIndent: 40, indent: 40,),
+            SizedBox(height: 16),
+            Divider(thickness: 1, endIndent: 8, indent: 8,),
+            // Divider(thickness: 4, endIndent: 40, indent: 40,),
           ],
         );
       },
