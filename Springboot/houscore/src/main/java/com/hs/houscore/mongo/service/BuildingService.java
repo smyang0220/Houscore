@@ -160,8 +160,8 @@ public class BuildingService {
     }
 
     public List<ReviewEntity> getBuildingReviewList(String address, Pageable pageable){
-        //Page<ReviewEntity> reviewEntities = reviewRepository.findByAddress(address, pageable);
-        return reviewRepository.findByAddress(address, pageable).getContent();
+        Page<ReviewEntity> reviewEntities = reviewRepository.findByAddress(address, pageable);
+        return reviewEntities.getContent();
     }
 
     public List<RecommendAiDTO> getMainAiScoreTop5(String sigungu){
