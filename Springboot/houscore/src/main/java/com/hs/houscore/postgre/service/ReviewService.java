@@ -45,11 +45,11 @@ public class ReviewService {
             throw new IllegalArgumentException("리뷰 데이터가 올바르지 않습니다.");
         }
         //buildingId 세팅
-        Optional<BuildingEntity> building = buildingRepository.findByNewPlatPlcOrPlatPlc(review.getAddress(), review.getAddress());
+        BuildingEntity building = buildingRepository.findByNewPlatPlcOrPlatPlc(review.getAddress(), review.getAddress())
+                .orElseThrow(() -> new IllegalArgumentException("해당 리뷰가 존재하지 않습니다."));
 
         ReviewEntity reviewEntity = ReviewEntity.builder()
                 .memberId(member.getMemberEmail())
-                .buildingId(building.get().getId())
                 .address(review.getAddress())
                 .residenceType(fromString(review.getResidenceType()))
                 .year(review.getResidenceYear())
@@ -85,7 +85,6 @@ public class ReviewService {
         ReviewEntity updateReviewEntity = ReviewEntity.builder()
                 .id(reviewEntity.getId())
                 .memberId(member.getMemberEmail())
-                .buildingId(reviewEntity.getBuildingId())
                 .address(reviewEntity.getAddress())
                 .residenceType(fromString(review.getResidenceType()))
                 .year(review.getResidenceYear())

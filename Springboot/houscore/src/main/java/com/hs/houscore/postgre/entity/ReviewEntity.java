@@ -22,7 +22,6 @@ public class ReviewEntity extends BaseTimeEntity{
     @GeneratedValue (strategy = GenerationType.SEQUENCE)
     private Long id;
     private String memberId;
-    private ObjectId buildingId;
     private String address;
     private ResidenceType residenceType;
     private String year;

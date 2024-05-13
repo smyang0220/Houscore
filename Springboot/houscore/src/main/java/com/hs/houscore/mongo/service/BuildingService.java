@@ -12,10 +12,12 @@ import com.hs.houscore.postgre.repository.ReviewRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.stereotype.Service;
 
+import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -158,6 +160,7 @@ public class BuildingService {
     }
 
     public List<ReviewEntity> getBuildingReviewList(String address, Pageable pageable){
+        //Page<ReviewEntity> reviewEntities = reviewRepository.findByAddress(address, pageable);
         return reviewRepository.findByAddress(address, pageable).getContent();
     }
 
@@ -173,7 +176,7 @@ public class BuildingService {
             recommendAiDTOS.add(RecommendAiDTO.builder()
                             .address(buildingEntity.getPlatPlc())
                             .aiScore(buildingEntity.getScore())
-                            .pricePerRegion(realPrice != null ? (realPrice / avgCost) * 100 : 0.0)
+                            .pricePerRegion(realPrice != null && avgCost >= 0.0 ? (realPrice / avgCost) * 100 : 0.0)
                             .pricePerPyeong(realPrice != null && archArea != null ? setPricePerPyeong(realPrice, archArea) : 0)
                             .realPrice(realPrice)
                             .reviewCnt(reviewCnt)
@@ -221,13 +224,13 @@ public class BuildingService {
         List<MainPageDTO> mainPageDTOS = new ArrayList<>();
 
         for(ReviewEntity reviewEntity : latestTwoReviews) {
-            Optional<BuildingEntity> buildingEntity = buildingRepository.findById(reviewEntity.getBuildingId());
+            Optional<BuildingEntity> buildingEntity = buildingRepository.findByNewPlatPlcOrPlatPlc(reviewEntity.getAddress(), reviewEntity.getAddress());
 
             buildingEntity.ifPresent(entity -> mainPageDTOS.add(MainPageDTO.builder()
                     .address(entity.getPlatPlc())
                     .buildingName(entity.getInformation().getBuildingInfo().getBldNm())
                     .aiScore(entity.getScore())
-                    .reviewScore(calculateReviewScore(entity.getId()))
+                    .reviewScore(calculateReviewScore(entity.getPlatPlc()))
                     .cons(reviewEntity.getCons())
                     .pros(reviewEntity.getPros())
                     .imageUrl(reviewEntity.getImages())
@@ -271,13 +274,13 @@ public class BuildingService {
             Optional<ReviewEntity> reviewEntity = reviewRepository.findById((long) randomNumber);
 
             if(reviewEntity.isPresent()) {
-                Optional<BuildingEntity> buildingEntity = buildingRepository.findById(reviewEntity.get().getBuildingId());
+                Optional<BuildingEntity> buildingEntity = buildingRepository.findByNewPlatPlcOrPlatPlc(reviewEntity.get().getAddress(), reviewEntity.get().getAddress());
 
                 buildingEntity.ifPresent(entity -> mainPageDTOS.add(MainPageDTO.builder()
                         .address(entity.getPlatPlc())
                         .buildingName(entity.getInformation().getBuildingInfo().getBldNm())
                         .aiScore(entity.getScore())
-                        .reviewScore(calculateReviewScore(entity.getId()))
+                        .reviewScore(calculateReviewScore(entity.getPlatPlc()))
                         .cons(reviewEntity.get().getCons())
                         .pros(reviewEntity.get().getPros())
                         .imageUrl(reviewEntity.get().getImages())
@@ -291,8 +294,8 @@ public class BuildingService {
     }
 
     // 평균 반환 메서드
-    private double calculateReviewScore (ObjectId buildingId) {
-        List<ReviewEntity> reviewEntities = reviewRepository.findByBuildingId(buildingId);
+    private double calculateReviewScore (String address) {
+        List<ReviewEntity> reviewEntities = reviewRepository.findByAddress(address);
 
         double score = 0;
         for(ReviewEntity reviewEntity : reviewEntities){
