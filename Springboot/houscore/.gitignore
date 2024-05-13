@@ -5,7 +5,7 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 .env
-Springboot/houscore/src/main/resources/application.properties
+*.properties
 
 ### STS ###
 .apt_generated
