@@ -11,12 +11,12 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ReviewRepository extends JpaRepository<ReviewEntity, Long> {
-    List<ReviewEntity> findByAddress(@Param("address")String address);
-    Page<ReviewEntity> findByAddress(@Param("address")String address, Pageable pageable);
+    List<ReviewEntity> findListByAddress(@Param("address")String address);
+    Page<ReviewEntity> findPageByAddress(@Param("address")String address, Pageable pageable);
     Optional<ReviewEntity> findById(Long id);
     List<ReviewEntity> findTop10ByOrderByCreatedAt();
     List<ReviewEntity> findByMemberIdOrderByCreatedAt(String memberId);
-    List<ReviewEntity> findByBuildingId(ObjectId buildingId);
+    //List<ReviewEntity> findByBuildingId(ObjectId buildingId);
     Optional<ReviewEntity> findByIdAndMemberId(Long id, String memberId);
     void deleteById(Long id);
     Long countByAddressStartingWith(String address);

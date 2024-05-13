@@ -1,6 +1,8 @@
 package com.hs.houscore.controller;
 
 import com.hs.houscore.dto.FileUploadDTO;
+import com.hs.houscore.dto.MemberDTO;
+import com.hs.houscore.dto.ReviewDTO;
 import com.hs.houscore.s3.S3UploadService;
 import com.hs.houscore.postgre.entity.ReviewEntity;
 import com.hs.houscore.postgre.service.ReviewService;
@@ -9,6 +11,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Base64;
@@ -47,7 +50,8 @@ public class ReviewController {
 
     @PostMapping("")
     @Operation(summary = "거주지 리뷰 등록", description = "거주지 리뷰 등록")
-    public ResponseEntity<?> addReview(@RequestBody ReviewEntity review,
+    public ResponseEntity<?> addReview(@RequestBody ReviewDTO review,
+                                       @AuthenticationPrincipal MemberDTO member,
                                        @RequestParam @Parameter(description = "imageBase64 : 인코딩 되지 않은 이미지 ") String imageBase64,
                                        @RequestParam @Parameter(description = "imageName : 이미지 이름(임의로 지정)") String imageName) {
         try{
@@ -63,7 +67,7 @@ public class ReviewController {
             String result = s3UploadService.saveImage(fileUploadDTO);
             review.setImages(result);
 
-            reviewService.setReview(review);
+            reviewService.setReview(review, member);
             return ResponseEntity.status(HttpStatus.CREATED).body("리뷰 등록 성공");
         }catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("유효하지 않은 리뷰 데이터");
@@ -74,9 +78,10 @@ public class ReviewController {
 
     @PutMapping("")
     @Operation(summary = "거주지 리뷰 수정", description = "거주지 리뷰 수정")
-    public ResponseEntity<?> updateReview(@RequestBody ReviewEntity review) {
+    public ResponseEntity<?> updateReview(@RequestBody ReviewDTO review,
+                                          @AuthenticationPrincipal MemberDTO member) {
         try{
-            reviewService.updateReview(review);
+            reviewService.updateReview(review, member);
             return ResponseEntity.status(HttpStatus.CREATED).body("리뷰 수정 성공");
         }catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("유효하지 않은 리뷰 데이터");
@@ -87,8 +92,9 @@ public class ReviewController {
 
     @DeleteMapping("")
     @Operation(summary = "거주지 리뷰 삭제", description = "거주지 리뷰 삭제")
-    public ResponseEntity<?> deleteReview(@RequestParam Long id) {
-        reviewService.deleteReview(id);
+    public ResponseEntity<?> deleteReview(@RequestParam Long id,
+                                          @AuthenticationPrincipal MemberDTO member) {
+        reviewService.deleteReview(id, member);
         return ResponseEntity.status(HttpStatus.OK).body("리뷰 삭제 성공");
     }
 }
