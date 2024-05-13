@@ -45,6 +45,11 @@ public class MyInfoController {
     @Operation(summary = "관심 지역 리스트", description = "관심 지역 리스트 조회")
     public ResponseEntity<?> getMyInterestedArea(@AuthenticationPrincipal String memberEmail) {
         try {
+            //유저 검증
+            if(memberEmail == null || memberEmail.equals("anonymousUser")){
+                return ResponseEntity.badRequest().body(new ErrorResponse("사용자 검증 필요"));
+            }
+
             List<MyInterestedAreaEntity> myInterestedAreaEntities = myInterestedAreaService.getMyInterestedAreaList(memberEmail);
             if(myInterestedAreaEntities == null) {
                 return ResponseEntity.badRequest().body(new ErrorResponse("BuildingController getMyInterestedAreaList NullException"));
@@ -59,8 +64,14 @@ public class MyInfoController {
 
     @PostMapping("/area")
     @Operation(summary = "관심 지역 등록", description = "관심 지역 등록")
-    public ResponseEntity<?> setMyInterestedArea(@RequestBody MyInterestedAreaEntity myInterestedArea) {
+    public ResponseEntity<?> setMyInterestedArea(@AuthenticationPrincipal String memberEmail,
+                                                 @RequestBody MyInterestedAreaEntity myInterestedArea) {
         try{
+            //유저 검증
+            if(memberEmail == null || memberEmail.equals("anonymousUser")){
+                return ResponseEntity.badRequest().body(new ErrorResponse("사용자 검증 필요"));
+            }
+
             myInterestedAreaService.setMyInterestedArea(myInterestedArea);
             return ResponseEntity.status(HttpStatus.CREATED).body("관심지역 등록 성공");
         }catch (IllegalArgumentException e) {
@@ -72,9 +83,21 @@ public class MyInfoController {
 
     @DeleteMapping("/area")
     @Operation(summary = "관심 지역 삭제", description = "관심 지역 삭제")
-    public ResponseEntity<?> delMyInterestedArea(@RequestParam Long areaId, @RequestParam String memberId) {
-        myInterestedAreaService.deleteMyInterestedArea(areaId, memberId);
-        return ResponseEntity.status(HttpStatus.OK).body("관심 지역 삭제 성공");
+    public ResponseEntity<?> delMyInterestedArea(@RequestParam Long areaId,
+                                                 @AuthenticationPrincipal String memberEmail) {
+        try {
+            //유저 검증
+            if(memberEmail == null || memberEmail.equals("anonymousUser")){
+                return ResponseEntity.badRequest().body(new ErrorResponse("사용자 검증 필요"));
+            }
+
+            myInterestedAreaService.deleteMyInterestedArea(areaId, memberEmail);
+            return ResponseEntity.status(HttpStatus.OK).body("관심 지역 삭제 성공");
+        }catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("유효하지 않은 관심지역 데이터");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("관심지역 삭제 실패!");
+        }
     }
 
 }

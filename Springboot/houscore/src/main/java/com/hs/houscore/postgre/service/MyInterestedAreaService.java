@@ -25,8 +25,8 @@ public class MyInterestedAreaService {
         myInterestedAreaRepository.save(myInterestedArea);
     }
 
-    public void deleteMyInterestedArea(Long areaId, String memberId){
-        myInterestedAreaRepository.findByMemberIdAndAreaId(memberId, areaId)
+    public void deleteMyInterestedArea(Long areaId, String memberEmail){
+        myInterestedAreaRepository.findByMemberEmailAndAreaId(memberEmail, areaId)
                 .map(myInterestedAreaEntity -> {
                     myInterestedAreaRepository.delete(myInterestedAreaEntity);
                     return myInterestedAreaEntity;

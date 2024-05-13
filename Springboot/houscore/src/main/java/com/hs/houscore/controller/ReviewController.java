@@ -64,9 +64,14 @@ public class ReviewController {
 
     @GetMapping("my-review")
     @Operation(summary = "내가 쓴 리뷰 리스트", description = "내가 쓴 리뷰 리스트 조회")
-    public ResponseEntity<?> getMyReviews(@RequestParam String memberId){
+    public ResponseEntity<?> getMyReviews(@AuthenticationPrincipal String memberEmail){
         try {
-            List<ReviewEntity> reviewEntities = reviewService.getMyReviews(memberId);
+            //유저 검증
+            if(memberEmail == null || memberEmail.equals("anonymousUser")){
+                return ResponseEntity.badRequest().body(new ErrorResponse("사용자 검증 필요"));
+            }
+
+            List<ReviewEntity> reviewEntities = reviewService.getMyReviews(memberEmail);
             if(reviewEntities == null) {
                 return ResponseEntity.badRequest().body(new ErrorResponse("BuildingController getMyReviews NullException"));
             }else if (reviewEntities.isEmpty()) {
@@ -82,15 +87,17 @@ public class ReviewController {
     @Operation(summary = "거주지 리뷰 등록", description = "거주지 리뷰 등록")
     public ResponseEntity<?> addReview(@RequestBody ReviewDTO review,
                                        @AuthenticationPrincipal String memberEmail,
-                                       @RequestParam @Parameter(description = "imageBase64 : 인코딩 되지 않은 이미지 ") String imageBase64,
+                                       @RequestParam @Parameter(description = "imageBase64 : 인코딩 된 이미지 ") String imageBase64,
                                        @RequestParam @Parameter(description = "imageName : 이미지 이름(임의로 지정)") String imageName) {
         try{
-            // 이미지 데이터를 Base64로 인코딩
-            String encodedImageBase64 = Base64.getEncoder().encodeToString(imageBase64.getBytes());
+            //유저 검증
+            if(memberEmail == null || memberEmail.equals("anonymousUser")){
+                return ResponseEntity.badRequest().body(new ErrorResponse("사용자 검증 필요"));
+            }
 
             // FileUploadDTO 세팅
             FileUploadDTO fileUploadDTO = new FileUploadDTO();
-            fileUploadDTO.setImageBase64(encodedImageBase64);
+            fileUploadDTO.setImageBase64(imageBase64);
             fileUploadDTO.setImageName(imageName);
 
             // S3 이미지 업로드
@@ -111,6 +118,11 @@ public class ReviewController {
     public ResponseEntity<?> updateReview(@RequestBody ReviewDTO review,
                                           @AuthenticationPrincipal String memberEmail) {
         try{
+            //유저 검증
+            if(memberEmail == null || memberEmail.equals("anonymousUser")){
+                return ResponseEntity.badRequest().body(new ErrorResponse("사용자 검증 필요"));
+            }
+
             reviewService.updateReview(review, memberEmail);
             return ResponseEntity.status(HttpStatus.CREATED).body("리뷰 수정 성공");
         }catch (IllegalArgumentException e) {
@@ -124,7 +136,18 @@ public class ReviewController {
     @Operation(summary = "거주지 리뷰 삭제", description = "거주지 리뷰 삭제")
     public ResponseEntity<?> deleteReview(@RequestParam Long id,
                                           @AuthenticationPrincipal String memberEmail) {
-        reviewService.deleteReview(id, memberEmail);
-        return ResponseEntity.status(HttpStatus.OK).body("리뷰 삭제 성공");
+        try {
+            //유저 검증
+            if(memberEmail == null || memberEmail.equals("anonymousUser")){
+                return ResponseEntity.badRequest().body(new ErrorResponse("사용자 검증 필요"));
+            }
+
+            reviewService.deleteReview(id, memberEmail);
+            return ResponseEntity.status(HttpStatus.OK).body("리뷰 삭제 성공");
+        }catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("유효하지 않은 리뷰 데이터");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("리뷰 삭제 실패!");
+        }
     }
 }

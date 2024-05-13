@@ -1,6 +1,5 @@
 package com.hs.houscore.postgre.service;
 
-import com.hs.houscore.dto.MemberDTO;
 import com.hs.houscore.dto.ReviewDTO;
 import com.hs.houscore.mongo.entity.BuildingEntity;
 import com.hs.houscore.mongo.repository.BuildingRepository;
@@ -11,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 import static com.hs.houscore.postgre.entity.ReviewEntity.ResidenceFloor.fromFloorNumber;
 import static com.hs.houscore.postgre.entity.ReviewEntity.ResidenceType.fromString;
@@ -34,8 +32,8 @@ public class ReviewService {
     }
 
     //내가 쓴 리뷰 리스트
-    public List<ReviewEntity> getMyReviews(String memberId) {
-        return reviewRepository.findByMemberIdOrderByCreatedAt(memberId);
+    public List<ReviewEntity> getMyReviews(String memberEmail) {
+        return reviewRepository.findByMemberIdOrderByCreatedAt(memberEmail);
     }
 
     //리뷰 등록
