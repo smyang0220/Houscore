@@ -12,14 +12,14 @@ List<InterestedAreaModel> createSampleInterestedAreas() {
         updatedAt: DateTime.now().subtract(Duration(days: 1)),
         areaId: 1,
         memberId: 'member1',
-        address: '서울특별시 강남구 개포동 12번지'
+        address: '서울 강남구 개포동 12'
     ),
     InterestedAreaModel(
         createdAt: DateTime.now().subtract(Duration(days: 2)),
         updatedAt: DateTime.now().subtract(Duration(days: 2)),
         areaId: 2,
         memberId: 'member2',
-        address: '서울특별시 강동구 천호대로 1121'
+        address: '서울 강동구 천호대로 1121'
     ),
     InterestedAreaModel(
         createdAt: DateTime.now().subtract(Duration(days: 3)),
@@ -75,7 +75,7 @@ List<InterestedAreaModel> createSampleInterestedAreas() {
         updatedAt: DateTime.now().subtract(Duration(days: 10)),
         areaId: 10,
         memberId: 'member10',
-        address: '경기도 성남시 분당구 야탑동 12번지'
+        address: '경기 성남시 분당구 야탑동 12'
     ),
   ];
 }

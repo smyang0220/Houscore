@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:houscore/common/const/color.dart';
 import 'package:remedi_kopo/remedi_kopo.dart';
 import '../../residence/view/residence_detail.dart';
@@ -10,7 +11,7 @@ class SearchResidences extends StatefulWidget {
 }
 
 class _SearchResidencesState extends State<SearchResidences> {
-  String addressJSON = '';
+  String addressJSON = ''; // 선택된 주소를 문자열 형태로 저장
 
   @override
   Widget build(BuildContext context) {
@@ -39,18 +40,21 @@ class _SearchResidencesState extends State<SearchResidences> {
           ),
           GestureDetector(
             onTap: () async {
+              // KopoModel을 받아서 주소 추출
               KopoModel model = await Navigator.push(
                 context,
+                // 주소 검색 창으로 이동
                 CupertinoPageRoute(
                   builder: (context) => RemediKopo(),
                 ),
               );
-              ResidenceDetail(address: model.address!);
-              print(model.toJson());
-              setState(() {
-                addressJSON =
-                '${model.address} ${model.buildingName}${model.apartment == 'Y' ? '아파트' : ''} ${model.zonecode} ';
-              });
+              // 받은 결과로 이동
+              if (model != null && model.address != null) {
+                // GoRouter를 사용하여 ResidenceDetail로 라우팅
+                context.push('/residence/${model.address}');
+              }
+              // ResidenceDetail(address: model.address!);
+              print('model.toJson() == ${model.toJson()}');
             },
             child: Container(
               padding: EdgeInsets.all(12),

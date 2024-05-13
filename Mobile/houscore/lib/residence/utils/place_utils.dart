@@ -16,6 +16,52 @@ enum PlaceType {
 
 class PlaceUtils {
 
+  static Map<String, String> sidoDict = {
+    "서울": "서울특별시",
+    "부산": "부산광역시",
+    "대구": "대구광역시",
+    "인천": "인천광역시",
+    "광주": "광주광역시",
+    "대전": "대전광역시",
+    "울산": "울산광역시",
+    "세종": "세종특별자치시",
+    "경기": "경기도",
+    "강원": "강원특별자치도",
+    "충북": "충청북도",
+    "충남": "충청남도",
+    "전북": "전북특별자치도",
+    "전남": "전라남도",
+    "경북": "경상북도",
+    "경남": "경상남도",
+    "제주": "제주특별자치도"
+  };
+
+  static final Map<String, String> reversedSidoDict = sidoDict.map((key, value) => MapEntry(value, key));
+
+  static String mapAddressForAPI(String address) {
+    // 주소를 공백으로 분리하고 첫 부분을 추출
+    var parts = address.split(' ');
+    if (parts.isEmpty) return address; // 주소가 비어있으면 변환 없이 반환
+
+    var firstPart = parts[0]; // 첫 부분을 추출
+    if (sidoDict.containsKey(firstPart)) {
+      // 매핑된 주소로 변환
+      return address.replaceFirst(firstPart, sidoDict[firstPart]!);
+    }
+
+    return address; // 매핑 키가 없으면 원본 주소 반환
+  }
+
+  static String shortenMapAddress(String fullAddress) {
+    // 매핑된 주소를 찾아 반대로 매핑하여 반환
+    for (String key in reversedSidoDict.keys) {
+      if (fullAddress.contains(key)) {
+        return fullAddress.replaceFirst(key, reversedSidoDict[key]!);
+      }
+    }
+    return fullAddress;
+  }
+
   // 가격 변환 to String & 반점 추가
   static String formatPrice(num? value) {
     if (value == null) return '-';

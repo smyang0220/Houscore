@@ -40,7 +40,7 @@ class _ListSectionState<T extends IModelWithNameAndId> extends ConsumerState<Lis
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            padding: const EdgeInsets.symmetric (vertical: 8.0),
             child: Text(
               widget.title,
               style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),

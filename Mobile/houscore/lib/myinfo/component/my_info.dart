@@ -58,7 +58,7 @@ class MyInfo extends ConsumerWidget {
         );
       },
       loading: () => Center(child: CircularProgressIndicator()),
-      error: (e, _) => Center(child: Text('에러 발생: $e')),
+      error: (e, _) => Center(child: Text('개인정보를 불러오지 못했습니다.')),
     );
   }
 }

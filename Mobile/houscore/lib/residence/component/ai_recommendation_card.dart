@@ -133,14 +133,14 @@ class _AiRecommendationCardState extends State<AiRecommendationCard>
                         Text('지역 평균 평당가격 대비 ', style: TextStyle(fontWeight: FontWeight.w600),),
                         SizedBox(width: 15,),
                         SizedBox(
-                          width: 70,
+                          width: 110,
                           height: 28,
                           child: DefaultTextStyle(
                             style: const TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.w800,
                               // color: PRIMARY_COLOR,
-                              color: Colors.green,
+                              // color: Colors.green,
                               // shadows: [
                               //   Shadow(
                               //     blurRadius: 5.0,
@@ -153,7 +153,11 @@ class _AiRecommendationCardState extends State<AiRecommendationCard>
                               repeatForever: true,
                               animatedTexts: [
                                 FlickerAnimatedText(
-                                    '${widget.model.pricePerRegion}%'),
+                                  '${widget.model.pricePerRegion - 100.0 < 0 ? "" : "+"}${(widget.model.pricePerRegion - 100.0).toStringAsFixed(1)}%',
+                                  textStyle: TextStyle(
+                                    color: widget.model.pricePerRegion - 100.0 < 0 ? Colors.blue : Colors.red,
+                                  ),
+                                ),
                               ],
                               onTap: () {
                                 //

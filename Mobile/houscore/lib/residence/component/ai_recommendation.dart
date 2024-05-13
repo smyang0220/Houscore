@@ -17,7 +17,8 @@ class AiRecommendation extends ConsumerStatefulWidget {
 }
 
 class _AiRecommendationState extends ConsumerState<AiRecommendation> {
-  final PageController _pageController = PageController(viewportFraction: 0.9); // 한 스크롤에 카드가 하나씩 보이게 하기 위한 설정용
+  final PageController _pageController =
+      PageController(viewportFraction: 0.9); // 한 스크롤에 카드가 하나씩 보이게 하기 위한 설정용
   final GlobalKey _headerKey = GlobalKey();
   final GlobalKey _selectionKey = GlobalKey();
 
@@ -142,7 +143,9 @@ class _AiRecommendationState extends ConsumerState<AiRecommendation> {
         ? getSiGunGuCode(selectedRegion!, selectedSubRegion!)
         : null;
 
-    final residenceData = selectedCode != null ? ref.watch(aiRecommendedResidenceProvider(selectedCode)) : null;
+    final residenceData = selectedCode != null
+        ? ref.watch(aiRecommendedResidenceProvider(selectedCode))
+        : null;
 
     print('residenceData = ${residenceData}');
 
@@ -213,7 +216,9 @@ class _AiRecommendationState extends ConsumerState<AiRecommendation> {
             ),
           ),
           if (residenceData != null) ...[
-            if (residenceData is DataStateLoading) Lottie.asset('asset/img/logo/loading_lottie_animation.json'),
+            if (residenceData is DataStateLoading)
+              Lottie.asset('asset/img/logo/loading_lottie_animation.json'),
+            // 로티 애니메이션 조정 시 테스트용 // if (residenceData is DataState) Lottie.asset('asset/img/logo/loading_lottie_animation.json'),
             if (residenceData is DataState)
               if (residenceData.data.isEmpty)
                 Padding(
@@ -237,11 +242,25 @@ class _AiRecommendationState extends ConsumerState<AiRecommendation> {
                     controller: _pageController,
                     itemCount: residenceData.data.length,
                     itemBuilder: (context, index) {
-                      return AiRecommendationCard(model: residenceData.data[index]);
+                      return AiRecommendationCard(
+                          model: residenceData.data[index]);
                     },
                   ),
                 ),
-            if (residenceData is DataStateError) Text('Error: ${residenceData.message}'),
+            if (residenceData is DataStateError)
+              Container(
+                height: 300,
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: Lottie.asset('asset/img/logo/error_lottie_animation_cat.json'),
+                      // child: Lottie.asset('asset/img/logo/error_lottie_animation_slime.json'),
+                    ),
+                    Text('해당 지역의 AI 추천 거주지를 찾지 못했습니다.', style: TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold
+                    ),)
+                  ],
+                )),
           ],
         ],
       ),
