@@ -1,9 +1,6 @@
 package com.hs.houscore.mongo.service;
 
-import com.hs.houscore.dto.BuildingDetailDTO;
-import com.hs.houscore.dto.BuildingInfraDTO;
-import com.hs.houscore.dto.MainPageDTO;
-import com.hs.houscore.dto.RecommendAiDTO;
+import com.hs.houscore.dto.*;
 import com.hs.houscore.mongo.entity.BuildingEntity;
 import com.hs.houscore.mongo.repository.BuildingRepository;
 import com.hs.houscore.mongo.repository.BuildingRepositoryCustom;
@@ -13,6 +10,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.stereotype.Service;
@@ -159,9 +157,40 @@ public class BuildingService {
                 .build();
     }
 
-    public List<ReviewEntity> getBuildingReviewList(String address, Pageable pageable){
+    public BuildingReviewDTO getBuildingReviewList(String address, Integer page, Integer size){
+        Pageable pageable = PageRequest.of(page, size);
         Page<ReviewEntity> reviewEntities = reviewRepository.findPageByAddress(address, pageable);
-        return reviewEntities.getContent();
+        Long reviewCnt = reviewRepository.countByAddressStartingWith(address);
+
+        List<ReviewEntity> reviews = reviewEntities.getContent();
+        List<BuildingReviewDTO.Review> buildingReviewDTOS = new ArrayList<>();
+        for(ReviewEntity review : reviews){
+            buildingReviewDTOS.add(BuildingReviewDTO.Review.builder()
+                            .id(review.getId())
+                            .address(review.getAddress())
+                            .residenceType(review.getResidenceType().toString())
+                            .residenceFloor(review.getResidenceFloor().toString())
+                            .starRating(BuildingReviewDTO.Review.StarRating.builder()
+                                    .infra(review.getStarRating().getInfra())
+                                    .building(review.getStarRating().getBuilding())
+                                    .inside(review.getStarRating().getInside())
+                                    .traffic(review.getStarRating().getTraffic())
+                                    .security(review.getStarRating().getSecurity())
+                                    .build())
+                            .pros(review.getPros())
+                            .cons(review.getCons())
+                            .maintenanceCost(review.getMaintenanceCost())
+                            .images(review.getImages())
+                            .residenceYear(review.getYear())
+                    .build());
+        }
+
+        return BuildingReviewDTO.builder()
+                .meta(BuildingReviewDTO.Meta.builder()
+                        .count(reviewCnt)
+                        .build())
+                .data(buildingReviewDTOS)
+                .build();
     }
 
     public List<RecommendAiDTO> getMainAiScoreTop5(String sigungu){

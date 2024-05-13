@@ -1,8 +1,10 @@
 package com.hs.houscore.controller;
 
+import com.hs.houscore.dto.BuildingDetailDTO;
 import com.hs.houscore.dto.FileUploadDTO;
 import com.hs.houscore.dto.MemberDTO;
 import com.hs.houscore.dto.ReviewDTO;
+import com.hs.houscore.response.ErrorResponse;
 import com.hs.houscore.s3.S3UploadService;
 import com.hs.houscore.postgre.entity.ReviewEntity;
 import com.hs.houscore.postgre.service.ReviewService;
@@ -32,26 +34,54 @@ public class ReviewController {
 
     @GetMapping("")
     @Operation(summary = "리뷰 상세 내용", description = "리뷰 상세 내용 조회")
-    public ReviewEntity getReview(@RequestParam Long id) {
-        return reviewService.getDetailReview(id);
+    public ResponseEntity<?> getReview(@RequestParam Long id) {
+        try {
+            ReviewEntity reviewEntity = reviewService.getDetailReview(id);
+            if(reviewEntity == null) {
+                return ResponseEntity.badRequest().body(new ErrorResponse("BuildingController getDetailReview NullException"));
+            }
+            return ResponseEntity.ok(reviewEntity);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ErrorResponse("BuildingController getDetailReview failure"));
+        }
     }
 
     @GetMapping("recent")
     @Operation(summary = "최근 리뷰 리스트", description = "최근 리뷰 리스트 조회")
-    public List<ReviewEntity> getRecentReviews(){
-        return reviewService.getRecentReviews();
+    public ResponseEntity<?> getRecentReviews(){
+        try {
+            List<ReviewEntity> reviewEntities = reviewService.getRecentReviews();
+            if(reviewEntities == null) {
+                return ResponseEntity.badRequest().body(new ErrorResponse("BuildingController getRecentReviews NullException"));
+            }else if (reviewEntities.isEmpty()) {
+                return ResponseEntity.badRequest().body(new ErrorResponse("BuildingController getRecentReviews is Empty"));
+            }
+            return ResponseEntity.ok(reviewEntities);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ErrorResponse("BuildingController getRecentReviews failure"));
+        }
     }
 
     @GetMapping("my-review")
     @Operation(summary = "내가 쓴 리뷰 리스트", description = "내가 쓴 리뷰 리스트 조회")
-    public List<ReviewEntity> getMyReviews(@RequestParam String memberId){
-        return reviewService.getMyReviews(memberId);
+    public ResponseEntity<?> getMyReviews(@RequestParam String memberId){
+        try {
+            List<ReviewEntity> reviewEntities = reviewService.getMyReviews(memberId);
+            if(reviewEntities == null) {
+                return ResponseEntity.badRequest().body(new ErrorResponse("BuildingController getMyReviews NullException"));
+            }else if (reviewEntities.isEmpty()) {
+                return ResponseEntity.badRequest().body(new ErrorResponse("BuildingController getMyReviews is Empty"));
+            }
+            return ResponseEntity.ok(reviewEntities);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ErrorResponse("BuildingController getMyReviews failure"));
+        }
     }
 
     @PostMapping("")
     @Operation(summary = "거주지 리뷰 등록", description = "거주지 리뷰 등록")
     public ResponseEntity<?> addReview(@RequestBody ReviewDTO review,
-                                       @AuthenticationPrincipal MemberDTO member,
+                                       @AuthenticationPrincipal String memberEmail,
                                        @RequestParam @Parameter(description = "imageBase64 : 인코딩 되지 않은 이미지 ") String imageBase64,
                                        @RequestParam @Parameter(description = "imageName : 이미지 이름(임의로 지정)") String imageName) {
         try{
@@ -67,7 +97,7 @@ public class ReviewController {
             String result = s3UploadService.saveImage(fileUploadDTO);
             review.setImages(result);
 
-            reviewService.setReview(review, member);
+            reviewService.setReview(review, memberEmail);
             return ResponseEntity.status(HttpStatus.CREATED).body("리뷰 등록 성공");
         }catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("유효하지 않은 리뷰 데이터");
@@ -79,9 +109,9 @@ public class ReviewController {
     @PutMapping("")
     @Operation(summary = "거주지 리뷰 수정", description = "거주지 리뷰 수정")
     public ResponseEntity<?> updateReview(@RequestBody ReviewDTO review,
-                                          @AuthenticationPrincipal MemberDTO member) {
+                                          @AuthenticationPrincipal String memberEmail) {
         try{
-            reviewService.updateReview(review, member);
+            reviewService.updateReview(review, memberEmail);
             return ResponseEntity.status(HttpStatus.CREATED).body("리뷰 수정 성공");
         }catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("유효하지 않은 리뷰 데이터");
@@ -93,8 +123,8 @@ public class ReviewController {
     @DeleteMapping("")
     @Operation(summary = "거주지 리뷰 삭제", description = "거주지 리뷰 삭제")
     public ResponseEntity<?> deleteReview(@RequestParam Long id,
-                                          @AuthenticationPrincipal MemberDTO member) {
-        reviewService.deleteReview(id, member);
+                                          @AuthenticationPrincipal String memberEmail) {
+        reviewService.deleteReview(id, memberEmail);
         return ResponseEntity.status(HttpStatus.OK).body("리뷰 삭제 성공");
     }
 }

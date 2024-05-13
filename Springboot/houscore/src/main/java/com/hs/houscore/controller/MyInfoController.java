@@ -1,15 +1,22 @@
 package com.hs.houscore.controller;
 
+import com.hs.houscore.dto.MemberDTO;
+import com.hs.houscore.oauth2.member.OAuth2MemberInfo;
+import com.hs.houscore.oauth2.service.OAuth2MemberPrincipal;
 import com.hs.houscore.postgre.entity.MemberEntity;
 import com.hs.houscore.postgre.entity.MyInterestedAreaEntity;
+import com.hs.houscore.postgre.entity.ReviewEntity;
 import com.hs.houscore.postgre.service.MemberService;
 import com.hs.houscore.postgre.service.MyInterestedAreaService;
+import com.hs.houscore.response.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,8 +43,18 @@ public class MyInfoController {
 
     @GetMapping("/area")
     @Operation(summary = "관심 지역 리스트", description = "관심 지역 리스트 조회")
-    public List<MyInterestedAreaEntity> getMyInterestedArea(String email, Pageable pageable) {
-        return myInterestedAreaService.getMyInterestedAreaList(email, pageable);
+    public ResponseEntity<?> getMyInterestedArea(@AuthenticationPrincipal String memberEmail) {
+        try {
+            List<MyInterestedAreaEntity> myInterestedAreaEntities = myInterestedAreaService.getMyInterestedAreaList(memberEmail);
+            if(myInterestedAreaEntities == null) {
+                return ResponseEntity.badRequest().body(new ErrorResponse("BuildingController getMyInterestedAreaList NullException"));
+            }else if (myInterestedAreaEntities.isEmpty()) {
+                return ResponseEntity.badRequest().body(new ErrorResponse("BuildingController getMyInterestedAreaList is Empty"));
+            }
+            return ResponseEntity.ok(myInterestedAreaEntities);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ErrorResponse("BuildingController getMyInterestedAreaList failure"));
+        }
     }
 
     @PostMapping("/area")
