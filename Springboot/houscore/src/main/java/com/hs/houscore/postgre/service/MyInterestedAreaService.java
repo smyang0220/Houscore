@@ -17,8 +17,8 @@ import java.util.List;
 public class MyInterestedAreaService {
     private final MyInterestedAreaRepository myInterestedAreaRepository;
 
-    public List<MyInterestedAreaEntity> getMyInterestedAreaList(String memberId, Pageable pageable){
-        return myInterestedAreaRepository.findByMemberId(memberId, pageable).getContent();
+    public List<MyInterestedAreaEntity> getMyInterestedAreaList(String memberId){
+        return myInterestedAreaRepository.findByMemberId(memberId);
     }
 
     public void setMyInterestedArea(MyInterestedAreaEntity myInterestedArea){

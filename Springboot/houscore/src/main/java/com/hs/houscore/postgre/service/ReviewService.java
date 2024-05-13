@@ -39,9 +39,9 @@ public class ReviewService {
     }
 
     //리뷰 등록
-    public void setReview(ReviewDTO review, MemberDTO member) {
+    public void setReview(ReviewDTO review, String memberEmail) {
         // 유효성 검사
-        if (review == null || member.getMemberEmail() == null) {
+        if (review == null || memberEmail == null) {
             throw new IllegalArgumentException("리뷰 데이터가 올바르지 않습니다.");
         }
         //buildingId 세팅
@@ -49,7 +49,7 @@ public class ReviewService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 리뷰가 존재하지 않습니다."));
 
         ReviewEntity reviewEntity = ReviewEntity.builder()
-                .memberId(member.getMemberEmail())
+                .memberId(memberEmail)
                 .address(review.getAddress())
                 .residenceType(fromString(review.getResidenceType()))
                 .year(review.getResidenceYear())
@@ -75,8 +75,8 @@ public class ReviewService {
         }
     }
 
-    public void updateReview(ReviewDTO review, MemberDTO member){
-        ReviewEntity reviewEntity = reviewRepository.findByIdAndMemberId(review.getId(), member.getMemberEmail()).orElse(null);
+    public void updateReview(ReviewDTO review, String memberEmail){
+        ReviewEntity reviewEntity = reviewRepository.findByIdAndMemberId(review.getId(), memberEmail).orElse(null);
 
         if(reviewEntity == null){
             throw new IllegalArgumentException("수정 가능한 리뷰가 없습니다.");
@@ -84,7 +84,7 @@ public class ReviewService {
 
         ReviewEntity updateReviewEntity = ReviewEntity.builder()
                 .id(reviewEntity.getId())
-                .memberId(member.getMemberEmail())
+                .memberId(memberEmail)
                 .address(reviewEntity.getAddress())
                 .residenceType(fromString(review.getResidenceType()))
                 .year(review.getResidenceYear())
@@ -111,9 +111,9 @@ public class ReviewService {
 
     }
 
-    public void deleteReview(Long id, MemberDTO member){
+    public void deleteReview(Long id, String memberEmail){
         //해당 리뷰를 작성한 사용자가 맞는지 검증 후 삭제
-        reviewRepository.findByIdAndMemberId(id, member.getMemberEmail())
+        reviewRepository.findByIdAndMemberId(id, memberEmail)
                 .map(reviewEntity -> {
                     reviewRepository.delete(reviewEntity);
                     return reviewEntity;
