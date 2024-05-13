@@ -1,5 +1,6 @@
 package com.hs.houscore.postgre.service;
 
+import com.hs.houscore.dto.CreateReviewDTO;
 import com.hs.houscore.dto.ReviewDTO;
 import com.hs.houscore.mongo.entity.BuildingEntity;
 import com.hs.houscore.mongo.repository.BuildingRepository;
@@ -37,7 +38,7 @@ public class ReviewService {
     }
 
     //리뷰 등록
-    public void setReview(ReviewDTO review, String memberEmail) {
+    public void setReview(CreateReviewDTO review, String memberEmail) {
         // 유효성 검사
         if (review == null || memberEmail == null) {
             throw new IllegalArgumentException("리뷰 데이터가 올바르지 않습니다.");

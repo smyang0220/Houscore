@@ -2,12 +2,10 @@ package com.hs.houscore.postgre.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.bson.types.ObjectId;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.io.Serializable;
-import java.util.Date;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -37,11 +35,11 @@ public class ReviewEntity extends BaseTimeEntity{
         VILLA, APT, OFFICETEL;
 
         public static ResidenceType fromString(String residenceType) {
-            if (residenceType.equalsIgnoreCase("VILLA")) {
+            if (residenceType.equalsIgnoreCase("원룸/빌라")) {
                 return VILLA;
-            } else if (residenceType.equalsIgnoreCase("APT")) {
+            } else if (residenceType.equalsIgnoreCase("아파트")) {
                 return APT;
-            } else if (residenceType.equalsIgnoreCase("OFFICETEL")) {
+            } else if (residenceType.equalsIgnoreCase("오피스텔")) {
                 return OFFICETEL;
             } else {
                 // 기본값으로 예외처리하거나 다른 로직을 추가할 수 있습니다.
@@ -52,12 +50,12 @@ public class ReviewEntity extends BaseTimeEntity{
     public enum ResidenceFloor {
         HIGH, MEDIUM, LOW, BOTTOM;
 
-        public static ResidenceFloor fromFloorNumber(int floorNumber) {
-            if (floorNumber == 1) {
+        public static ResidenceFloor fromFloorNumber(String floorNumber) {
+            if (floorNumber == "1층") {
                 return BOTTOM;
-            } else if (floorNumber >= 2 && floorNumber < 5) {
+            } else if (floorNumber == "2~5층") {
                 return LOW;
-            } else if (floorNumber >= 5 && floorNumber <= 15) {
+            } else if (floorNumber == "5~15층") {
                 return MEDIUM;
             } else {
                 return HIGH;
