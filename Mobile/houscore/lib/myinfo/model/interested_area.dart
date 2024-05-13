@@ -3,6 +3,7 @@ import 'package:houscore/common/model/model_with_id.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../common/component/list_section.dart';
+import '../../residence/utils/place_utils.dart';
 
 part 'interested_area.g.dart';
 
@@ -22,8 +23,15 @@ class InterestedAreaModel extends IModelWithNameAndId{
     required this.address,
   }) : super(id: areaId);
 
-  // JSON serialization
-  factory InterestedAreaModel.fromJson(Map<String, dynamic> json) => _$InterestedAreaModelFromJson(json);
+  factory InterestedAreaModel.fromJson(Map<String, dynamic> json) {
+    return InterestedAreaModel(
+      createdAt: DateTime.parse(json['createdAt']),
+      updatedAt: DateTime.parse(json['updatedAt']),
+      areaId: json['areaId'],
+      memberId: json['memberId'],
+      address: PlaceUtils.shortenMapAddress(json['address']),
+    );
+  }
   Map<String, dynamic> toJson() => _$InterestedAreaModelToJson(this);
 
   @override

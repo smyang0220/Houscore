@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:houscore/residence/utils/place_utils.dart';
 import '../../common/model/data_state_model.dart';
 import '../repository/residence_repository.dart';
 import '../model/residence_detail_indicators_model.dart';
@@ -20,7 +21,8 @@ class ResidenceDetailIndicatorNotifier extends StateNotifier<DataStateBase> {
 
   Future<void> fetchDetailIndicator() async {
     try {
-      final response = await repository.getResidenceDetailIndicator(address: address);
+      print('실제 api 요청 보내는 주소는 ${PlaceUtils.mapAddressForAPI(address)}');
+      final response = await repository.getResidenceDetailIndicator(address: PlaceUtils.mapAddressForAPI(address));
       print(' ---------------------------------- response ${response} ----------------------------------');
       state = DataState(data: response);
     } catch (e) {
