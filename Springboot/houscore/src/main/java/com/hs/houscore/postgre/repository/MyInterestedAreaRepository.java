@@ -10,5 +10,5 @@ import java.util.Optional;
 @Repository
 public interface MyInterestedAreaRepository extends JpaRepository<MyInterestedAreaEntity, Long> {
     List<MyInterestedAreaEntity> findByMemberId(String id);
-    Optional<MyInterestedAreaEntity> findByMemberIdAndAreaId(String memberId, Long areaId);
+    Optional<MyInterestedAreaEntity> findByMemberEmailAndAreaId(String memberEmail, Long areaId);
 }
