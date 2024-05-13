@@ -25,10 +25,20 @@ class _ResidenceDetailState extends State<ResidenceDetail>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(_handleTabSelection);
+  }
+
+  void _handleTabSelection() {
+    if (mounted) {
+      setState(() {
+        // 탭이 변경될 때마다 상태를 업데이트
+      });
+    }
   }
 
   @override
   void dispose() {
+    _tabController.removeListener(_handleTabSelection);
     _tabController.dispose();
     super.dispose();
   }
@@ -41,13 +51,13 @@ class _ResidenceDetailState extends State<ResidenceDetail>
         fontSize: 24.0,
         fontWeight: FontWeight.bold,
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: _tabController.index == 1 ? FloatingActionButton(
         onPressed: () {},
         backgroundColor: PRIMARY_COLOR,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(50))),
         child: Icon(Icons.create_rounded),
-      ),
+      ) : null,
       child: Column(
         children: [
           // 지표와 리뷰 탭바

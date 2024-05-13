@@ -80,7 +80,7 @@ class _ResidenceRepository implements ResidenceRepository {
   }
 
   @override
-  Future<ResidenceDetailModel> getResidenceDetail({
+  Future<ResidenceDetailInfoModel> getResidenceDetailInfo({
     required String address,
     required double lat,
     required double lng,
@@ -95,7 +95,7 @@ class _ResidenceRepository implements ResidenceRepository {
     _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
     final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<ResidenceDetailModel>(Options(
+        _setStreamType<ResidenceDetailInfoModel>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
@@ -111,7 +111,7 @@ class _ResidenceRepository implements ResidenceRepository {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    final value = ResidenceDetailModel.fromJson(_result.data!);
+    final value = ResidenceDetailInfoModel.fromJson(_result.data!);
     return value;
   }
 

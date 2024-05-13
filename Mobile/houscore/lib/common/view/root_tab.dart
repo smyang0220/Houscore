@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:houscore/common/const/color.dart';
-import '../../building/view/api_test_screen.dart';
 import 'package:houscore/review/view/create_review.dart';
 import 'package:houscore/review/view/my_review_list.dart';
 import '../../myinfo/view/my_page.dart';
@@ -23,7 +22,7 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    controller = TabController(length: 4, vsync: this);
+    controller = TabController(length: 3, vsync: this);
     controller.addListener(tabListener);
   }
 
@@ -49,7 +48,6 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
           HomeScreen(),
           CreateReview(),
           MyPage(),
-          ApiTestScreen(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -69,7 +67,6 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
           BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
           BottomNavigationBarItem(icon: Icon(Icons.rate_review_rounded), label: '리뷰'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'My'),
-          BottomNavigationBarItem(icon: Icon(Icons.telegram_sharp), label: '통신테스트')
         ],
       ),
     );

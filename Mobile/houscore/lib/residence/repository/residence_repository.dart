@@ -3,7 +3,7 @@ import 'package:dio/dio.dart' hide Headers;
 // 이 경우에는 Retrofit과의 충돌 방지!
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:houscore/residence/model/ai_recommended_residence_model.dart';
-import 'package:houscore/residence/model/residence_detail_model.dart';
+import 'package:houscore/residence/model/residence_detail_info_model.dart';
 import '../model/residence_detail_indicators_model.dart';
 import 'package:houscore/common/model/cursor_pagination_model.dart';
 import 'package:retrofit/retrofit.dart';
@@ -61,7 +61,7 @@ abstract class ResidenceRepository {
     'accessToken': 'true',
   })
   // get 함수 // 비동기적 통신을 위한 Future 반환
-  Future<ResidenceDetailModel> getResidenceDetail({
+  Future<ResidenceDetailInfoModel> getResidenceDetailInfo({
     @Query('address') required String address,
     @Query('lat') required double lat,
     @Query('lng') required double lng,

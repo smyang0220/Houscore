@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:houscore/common/const/color.dart'; // PRIMARY_COLOR 정의가 포함된 모듈
 
@@ -65,36 +67,62 @@ class ResidencePriceSafety extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<String>? monthlyPrices = realCost?.monthly?.split('/');
+    String formattedBuy = PlaceUtils.formatPrice(realCost?.buy);
+    String formattedLongterm = PlaceUtils.formatPrice(realCost?.longterm);
+    String formattedMonthly = monthlyPrices?.map((price) => PlaceUtils.formatPrice(double.tryParse(price))).join(' & ') ?? '-';
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('실거래가 (매매/전세/월세)', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
+        const Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('실거래가 [ 매매 | 전세 | 월세 ]', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
+            Padding(
+              padding: EdgeInsets.only(right: 8.0),
+              child: Text('*단위: 만원', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: Colors.grey)),
+            ),
+          ],
+        ),
         SizedBox(height: 5),
-        Text('${PlaceUtils.formatPrice(realCost?.buy)} / ${PlaceUtils.formatPrice(realCost?.longterm)} / ${realCost?.monthly}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+        Text('$formattedBuy  |  $formattedLongterm  |  $formattedMonthly', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
         SizedBox(height: 15),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('평당 가격', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
-                  SizedBox(height: 5),
+                  Row(
+                    children: [
+                      Text('평당 가격', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
+                      Opacity(
+                        opacity: 0,
+                        child: IconButton(
+                          icon: Icon(Icons.help_outline, color: Colors.grey, size: 18,),
+                          onPressed: () {},
+                        ),
+                      ),
+                    ],
+                  ),
                   Text('${PlaceUtils.formatPrice(pricePerPyeong?.toDouble())}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
                 ],
               ),
             ),
             Expanded(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
                       Text('안전등급', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
                       IconButton(
-                        icon: Icon(Icons.help_outline, color: Colors.grey),
+                        icon: Icon(Icons.help_outline, color: Colors.grey, size: 18,),
                         onPressed: () => showSafetyGradeInfo(context),
                       ),
                     ],

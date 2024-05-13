@@ -22,6 +22,11 @@ class DefaultLayout extends StatelessWidget {
       ),
       bottomNavigationBar: bottomNavigationBar,
       floatingActionButton: floatingActionButton,
+      floatingActionButtonLocation: CustomFloatingButtonLocation(
+        FloatingActionButtonLocation.endFloat, // 기본 위치
+        -30, // X축으로 -20 픽셀 (왼쪽으로 이동)
+        -30, // Y축 변경 없음
+      ),
     );
   }
 
@@ -47,3 +52,16 @@ class DefaultLayout extends StatelessWidget {
 
 }
 
+class CustomFloatingButtonLocation extends FloatingActionButtonLocation {
+  final FloatingActionButtonLocation location;
+  final double offsetX; // X축의 오프셋 조정 값
+  final double offsetY; // Y축의 오프셋 조정 값
+
+  CustomFloatingButtonLocation(this.location, this.offsetX, this.offsetY);
+
+  @override
+  Offset getOffset(ScaffoldPrelayoutGeometry scaffoldGeometry) {
+    final Offset offset = location.getOffset(scaffoldGeometry);
+    return Offset(offset.dx + offsetX, offset.dy + offsetY);
+  }
+}

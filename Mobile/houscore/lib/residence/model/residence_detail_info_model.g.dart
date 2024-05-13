@@ -1,14 +1,14 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'residence_detail_model.dart';
+part of 'residence_detail_info_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-ResidenceDetailModel _$ResidenceDetailModelFromJson(
+ResidenceDetailInfoModel _$ResidenceDetailInfoModelFromJson(
         Map<String, dynamic> json) =>
-    ResidenceDetailModel(
+    ResidenceDetailInfoModel(
       id: Id.fromJson(json['id'] as Map<String, dynamic>),
       score: (json['score'] as num).toDouble(),
       lat: (json['lat'] as num).toDouble(),
@@ -19,8 +19,8 @@ ResidenceDetailModel _$ResidenceDetailModelFromJson(
           BuildingInfo.fromJson(json['buildingInfo'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$ResidenceDetailModelToJson(
-        ResidenceDetailModel instance) =>
+Map<String, dynamic> _$ResidenceDetailInfoModelToJson(
+        ResidenceDetailInfoModel instance) =>
     <String, dynamic>{
       'id': instance.id,
       'score': instance.score,
@@ -29,6 +29,16 @@ Map<String, dynamic> _$ResidenceDetailModelToJson(
       'platPlc': instance.platPlc,
       'newPlatPlc': instance.newPlatPlc,
       'buildingInfo': instance.buildingInfo,
+    };
+
+Id _$IdFromJson(Map<String, dynamic> json) => Id(
+      timestamp: (json['timestamp'] as num).toInt(),
+      date: DateTime.parse(json['date'] as String),
+    );
+
+Map<String, dynamic> _$IdToJson(Id instance) => <String, dynamic>{
+      'timestamp': instance.timestamp,
+      'date': instance.date.toIso8601String(),
     };
 
 BuildingInfo _$BuildingInfoFromJson(Map<String, dynamic> json) => BuildingInfo(
@@ -58,14 +68,4 @@ Map<String, dynamic> _$BuildingInfoToJson(BuildingInfo instance) =>
       'hhldCnt': instance.hhldCnt,
       'mainBldCnt': instance.mainBldCnt,
       'totPkngCnt': instance.totPkngCnt,
-    };
-
-Id _$IdFromJson(Map<String, dynamic> json) => Id(
-      timestamp: (json['timestamp'] as num).toInt(),
-      date: json['date'] as String,
-    );
-
-Map<String, dynamic> _$IdToJson(Id instance) => <String, dynamic>{
-      'timestamp': instance.timestamp,
-      'date': instance.date,
     };

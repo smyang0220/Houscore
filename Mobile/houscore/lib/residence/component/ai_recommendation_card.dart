@@ -50,9 +50,11 @@ class _AiRecommendationCardState extends State<AiRecommendationCard>
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 2,
+      elevation: 1,
       color: Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shadowColor: Colors.black,
+      surfaceTintColor: PRIMARY_COLOR,
       child: GestureDetector(
         onTap: () {
           print('${widget.model.address} tapped!');
@@ -93,12 +95,29 @@ class _AiRecommendationCardState extends State<AiRecommendationCard>
                             SizedBox(height: 5),
                             AnimatedBuilder(
                               animation: _scoreAnimation,
-                              builder: (context, child) => Text(
-                                '${_scoreAnimation.value.toStringAsFixed(1)}점',
-                                style: TextStyle(
-                                    fontSize: 32,
-                                    color: PRIMARY_COLOR,
-                                    fontWeight: FontWeight.bold),
+                              builder: (context, child) => Row(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    '${_scoreAnimation.value.toStringAsFixed(1)}',
+                                    style: TextStyle(
+                                        fontSize: 32,
+                                        color: PRIMARY_COLOR,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  Text('/', style: TextStyle(
+                                      fontSize: 28,
+                                      color: Colors.grey,
+                                      // color: Colors.black,
+                                      fontWeight: FontWeight.w500),
+                                  ),
+                                  Text('5', style: TextStyle(
+                                      fontSize: 24,
+                                      color: Colors.grey,
+                                      // color: Colors.black,
+                                      fontWeight: FontWeight.w500),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
@@ -109,16 +128,16 @@ class _AiRecommendationCardState extends State<AiRecommendationCard>
                             Text(
                                 '실거래가: ${PlaceUtils.formatPrice(widget.model.realPrice)}',
                                 style: TextStyle(
-                                    fontSize: 14, fontWeight: FontWeight.bold)),
+                                    fontSize: 16, fontWeight: FontWeight.bold)),
                             SizedBox(height: 5),
                             Text(
                                 '평당가격: ${PlaceUtils.formatPrice(widget.model.pricePerPyeong)}',
                                 style: TextStyle(
-                                    fontSize: 14, fontWeight: FontWeight.bold)),
+                                    fontSize: 16, fontWeight: FontWeight.bold)),
                             SizedBox(height: 5),
                             Text('리뷰건수: ${widget.model.reviewCnt ?? '0'}건',
                                 style: TextStyle(
-                                    fontSize: 14, fontWeight: FontWeight.bold)),
+                                    fontSize: 16, fontWeight: FontWeight.bold)),
                           ],
                         ),
                       ],
@@ -127,42 +146,18 @@ class _AiRecommendationCardState extends State<AiRecommendationCard>
                       height: 15,
                     ),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Text('지역 평균 평당가격 대비 ', style: TextStyle(fontWeight: FontWeight.w600),),
                         SizedBox(width: 15,),
-                        SizedBox(
-                          width: 110,
-                          height: 28,
-                          child: DefaultTextStyle(
-                            style: const TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.w800,
-                              // color: PRIMARY_COLOR,
-                              // color: Colors.green,
-                              // shadows: [
-                              //   Shadow(
-                              //     blurRadius: 5.0,
-                              //     color: Colors.green,
-                              //     offset: Offset(0, 0),
-                              //   ),
-                              // ],
-                            ),
-                            child: AnimatedTextKit(
-                              repeatForever: true,
-                              animatedTexts: [
-                                FlickerAnimatedText(
-                                  '${widget.model.pricePerRegion - 100.0 < 0 ? "" : "+"}${(widget.model.pricePerRegion - 100.0).toStringAsFixed(1)}%',
-                                  textStyle: TextStyle(
-                                    color: widget.model.pricePerRegion - 100.0 < 0 ? Colors.blue : Colors.red,
-                                  ),
-                                ),
-                              ],
-                              onTap: () {
-                                //
-                              },
-                            ),
+                        Text('지역 평당가격 대비 ', style: TextStyle(fontWeight: FontWeight.w600),),
+                        SizedBox(width: 15,),
+                        Text(
+                          '${widget.model.pricePerRegion - 100.0 < 0 ? "" : "+"}${(widget.model.pricePerRegion - 100.0).toStringAsFixed(1)}%',
+                          style: TextStyle(
+                            color: widget.model.pricePerRegion - 100.0 < 0 ? Colors.blue : Colors.red,
+                            fontSize: 22,
+                            fontWeight: FontWeight.w800,
                           ),
                         ),
                       ],
