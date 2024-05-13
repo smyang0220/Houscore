@@ -17,8 +17,8 @@ import java.util.List;
 public class MyInterestedAreaService {
     private final MyInterestedAreaRepository myInterestedAreaRepository;
 
-    public List<MyInterestedAreaEntity> getMyInterestedAreaList(String memberId){
-        return myInterestedAreaRepository.findByMemberId(memberId);
+    public List<MyInterestedAreaEntity> getMyInterestedAreaList(String memberEmail){
+        return myInterestedAreaRepository.findByMemberEmail(memberEmail);
     }
 
     public void setMyInterestedArea(MyInterestedAreaEntity myInterestedArea){
