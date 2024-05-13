@@ -66,7 +66,7 @@ class PlaceUtils {
   static String formatPrice(num? value) {
     if (value == null) return '-';
     final formatter = NumberFormat("#,###", "ko_KR");
-    return "${formatter.format(value)}만원";
+    return "${formatter.format(value)}";
   }
 
   static String typeName(InfraType type) {

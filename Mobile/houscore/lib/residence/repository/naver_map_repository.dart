@@ -22,4 +22,9 @@ abstract class NaverMapRepository {
   Future<HttpResponse> getAddressFromLatLng(
     @Queries() Map<String, dynamic> queries,
   );
+  
+  @GET("/map-geocode/v2/geocode")
+  Future<HttpResponse> getLatLngFromAddress(
+      @Query("query") String address,
+  );
 }
