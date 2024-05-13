@@ -55,7 +55,7 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
         unselectedItemColor: BODY_TEXT_COLOR,
         selectedFontSize: 10,
         unselectedFontSize: 10,
-        type: BottomNavigationBarType.shifting,
+        type: BottomNavigationBarType.shifting, 
         onTap: (int index){
           setState(() {
             this.index = index;
