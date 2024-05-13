@@ -12,9 +12,7 @@ import '../../common/const/data.dart';
 import '../../myinfo/model/myinfo_model.dart';
 
 class MyReviewList extends StatefulWidget {
-  final String email;
-
-  const MyReviewList({Key? key, required this.email}) : super(key: key);
+  const MyReviewList({Key? key}) : super(key: key);
 
   @override
   State<MyReviewList> createState() => _MyReviewListState();
