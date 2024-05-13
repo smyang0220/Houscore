@@ -1,9 +1,6 @@
 package com.hs.houscore.controller;
 
-import com.hs.houscore.dto.BuildingDetailDTO;
-import com.hs.houscore.dto.FileUploadDTO;
-import com.hs.houscore.dto.MemberDTO;
-import com.hs.houscore.dto.ReviewDTO;
+import com.hs.houscore.dto.*;
 import com.hs.houscore.response.ErrorResponse;
 import com.hs.houscore.s3.S3UploadService;
 import com.hs.houscore.postgre.entity.ReviewEntity;
@@ -85,7 +82,7 @@ public class ReviewController {
 
     @PostMapping("")
     @Operation(summary = "거주지 리뷰 등록", description = "거주지 리뷰 등록")
-    public ResponseEntity<?> addReview(@RequestBody ReviewDTO review,
+    public ResponseEntity<?> addReview(@RequestBody CreateReviewDTO review,
                                        @AuthenticationPrincipal String memberEmail,
                                        @RequestParam @Parameter(description = "image : 인코딩 되지 않은 이미지 ") String image,
                                        @RequestParam @Parameter(description = "imageName : 이미지 이름(임의로 지정)") String imageName) {

@@ -7,8 +7,7 @@ import java.io.Serializable;
 
 @Data
 @Builder
-public class ReviewDTO {
-    private Long id;
+public class CreateReviewDTO {
     private String address;
     private String residenceType;
     private String resideceFloor;
