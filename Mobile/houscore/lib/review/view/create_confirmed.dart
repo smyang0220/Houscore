@@ -2,7 +2,10 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:confirmation_success/confirmation_success.dart';
-import 'package:houscore/common/view/root_tab.dart';
+import 'package:go_router/go_router.dart';
+import 'package:houscore/myinfo/view/my_page.dart';
+
+import '../component/recent_review_button.dart';
 
 class CreateConfirmed extends StatefulWidget {
   @override
@@ -72,13 +75,6 @@ class _CreateConfirmedState extends State<CreateConfirmed> {
                               fontSize: 18,
                             ),
                           ),
-                          Text(
-                            "리뷰는 심사 후 등록될 예정입니다",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 15,
-                            ),
-                          ),
                         ],
                       ),
                     ),
@@ -113,7 +109,13 @@ class _CreateConfirmedState extends State<CreateConfirmed> {
                   ),
                   OutlinedButton(
                     onPressed: () {
-                      //TODO 내가 쓴 리뷰 페이지로 다시 이동. 그냥 pop할 경우 alert 표시됨
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              MyPage(),
+                        ),
+                      );
                     },
                     style: OutlinedButton.styleFrom(
                       foregroundColor: Colors.white,
@@ -127,6 +129,23 @@ class _CreateConfirmedState extends State<CreateConfirmed> {
                       ),
                     ),
                     child: Text('확인'),
+                  ),
+                  OutlinedButton(
+                    onPressed: () {
+                      RecentReviewButton();
+                    },
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.blue,
+                      side: BorderSide(
+                        color: Colors.blue,
+                        width: 2,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                      ),
+                    ),
+                    child: Text('최근리뷰 테스트'),
                   ),
                 ],
               ),

@@ -7,7 +7,8 @@ import 'package:retrofit/retrofit.dart';
 
 part 'review_repository.g.dart';
 
-final ReviewRepositoryProvider = Provider<ReviewRepository>(
+//통신을 위한 객체 제공
+final reviewRepositoryProvider = Provider<ReviewRepository>(
   (ref) {
     final dio = ref.watch(dioProvider);
     final repository = ReviewRepository(dio, baseUrl: 'http://$ip/api/review');
@@ -23,6 +24,15 @@ abstract class ReviewRepository {
   factory ReviewRepository(Dio dio, {String baseUrl}) = _ReviewRepository;
 
   /*
+   최근 리뷰 조회
+   */
+  @GET('')
+  @Headers({
+    'accessToken': 'true',
+  })
+  Future<ReviewModel> recentReview();
+
+  /*
    리뷰 상세 내용 조회
    */
   @GET('')
@@ -34,7 +44,20 @@ abstract class ReviewRepository {
   });
 
   /*
-   거주지 리뷰 수정
+   리뷰 등록
+   */
+  @POST('')
+  @Headers({
+    'accessToken': 'true',
+  })
+  Future<void> createOneReview({
+    @Body() required ReviewModel reviewModel,
+    @Query('image') required String image,
+    @Query('imageName') required String imageName,
+  });
+
+  /*
+   리뷰 수정
    */
   @PUT('')
   @Headers({
@@ -45,18 +68,7 @@ abstract class ReviewRepository {
   });
 
   /*
-   거주지 리뷰 등록
-   */
-  @POST('')
-  @Headers({
-    'accessToken': 'true',
-  })
-  Future<void> createOneReview({
-    @Body() required ReviewModel reviewModel,
-  });
-
-  /*
-   리뷰 상세 내용 조회
+   리뷰 삭제
    */
   @DELETE('')
   @Headers({
@@ -64,5 +76,16 @@ abstract class ReviewRepository {
   })
   Future<ReviewModel> deleteReview({
     @Query("id") required int id,
+  });
+  
+  /*
+   내 리뷰 조회
+   */
+  @DELETE('')
+  @Headers({
+    'accessToken': 'true',
+  })
+  Future<ReviewModel> readMyReviews({
+    @Query("memberId") required String mail,
   });
 }

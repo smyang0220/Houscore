@@ -7,13 +7,8 @@ part of 'review_model.dart';
 // **************************************************************************
 
 ReviewModel _$ReviewModelFromJson(Map<String, dynamic> json) => ReviewModel(
-      createdAt: json['createdAt'] as String,
-      updatedAt: json['updatedAt'] as String,
-      id: (json['id'] as num).toInt(),
-      memberId: json['memberId'] as String,
-      buildingId: (json['buildingId'] as num).toInt(),
       address: json['address'] as String,
-      year: (json['year'] as num).toInt(),
+      residenceType: json['residenceType'] as String,
       residenceFloor: json['residenceFloor'] as String,
       starRating:
           StarRating.fromJson(json['starRating'] as Map<String, dynamic>),
@@ -21,23 +16,20 @@ ReviewModel _$ReviewModelFromJson(Map<String, dynamic> json) => ReviewModel(
       cons: json['cons'] as String,
       maintenanceCost: json['maintenanceCost'] as String,
       images: json['images'] as String,
+      residenceYear: json['residenceYear'] as String,
     );
 
 Map<String, dynamic> _$ReviewModelToJson(ReviewModel instance) =>
     <String, dynamic>{
-      'createdAt': instance.createdAt,
-      'updatedAt': instance.updatedAt,
-      'id': instance.id,
-      'memberId': instance.memberId,
-      'buildingId': instance.buildingId,
       'address': instance.address,
-      'year': instance.year,
+      'residenceType': instance.residenceType,
       'residenceFloor': instance.residenceFloor,
       'starRating': instance.starRating,
       'pros': instance.pros,
       'cons': instance.cons,
       'maintenanceCost': instance.maintenanceCost,
       'images': instance.images,
+      'residenceYear': instance.residenceYear,
     };
 
 StarRating _$StarRatingFromJson(Map<String, dynamic> json) => StarRating(

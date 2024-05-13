@@ -11,6 +11,7 @@ import '../model/interested_area.dart';
 import '../provider/interested_area_provider.dart';
 
 class MyPage extends ConsumerStatefulWidget {
+  static String get routeName => 'myPage';
   @override
   _MyPageState createState() => _MyPageState();
 }
