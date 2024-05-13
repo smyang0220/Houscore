@@ -160,7 +160,7 @@ public class BuildingService {
     }
 
     public List<ReviewEntity> getBuildingReviewList(String address, Pageable pageable){
-        Page<ReviewEntity> reviewEntities = reviewRepository.findByAddress(address, pageable);
+        Page<ReviewEntity> reviewEntities = reviewRepository.findPageByAddress(address, pageable);
         return reviewEntities.getContent();
     }
 
@@ -210,7 +210,7 @@ public class BuildingService {
         List<ReviewEntity> latestReviewEntities = new ArrayList<>();
 
         for(BuildingEntity buildingEntity : buildingEntities) {
-            List<ReviewEntity> reviewEntities = reviewRepository.findByAddress(buildingEntity.getPlatPlc());
+            List<ReviewEntity> reviewEntities = reviewRepository.findListByAddress(buildingEntity.getPlatPlc());
             ReviewEntity latestReview = getLatestReview(reviewEntities);
 
             if(latestReview != null) {
@@ -295,7 +295,7 @@ public class BuildingService {
 
     // 평균 반환 메서드
     private double calculateReviewScore (String address) {
-        List<ReviewEntity> reviewEntities = reviewRepository.findByAddress(address);
+        List<ReviewEntity> reviewEntities = reviewRepository.findListByAddress(address);
 
         double score = 0;
         for(ReviewEntity reviewEntity : reviewEntities){
