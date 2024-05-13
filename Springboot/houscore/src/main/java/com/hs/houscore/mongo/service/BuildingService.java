@@ -162,7 +162,6 @@ public class BuildingService {
     }
 
     public List<RecommendAiDTO> getMainAiScoreTop5(String sigungu){
-
         List<BuildingEntity> buildingEntities = buildingRepository.findByInformationBuildingInfoSigunguCd(sigungu);
         List<RecommendAiDTO> recommendAiDTOS = new ArrayList<>();
         Double avgCost = calRegionAvg(buildingEntities);
@@ -208,10 +207,10 @@ public class BuildingService {
 
         for(BuildingEntity buildingEntity : buildingEntities) {
             List<ReviewEntity> reviewEntities = reviewRepository.findByAddress(buildingEntity.getPlatPlc());
-            ReviewEntity latestReview = getLatestReview(reviewEntities);
 
-            if(latestReview != null) {
-                   latestReviewEntities.add(latestReview);
+            if(reviewEntities != null && !reviewEntities.isEmpty()) {
+                ReviewEntity latestReview = getLatestReview(reviewEntities);
+                latestReviewEntities.add(latestReview);
             }
         }
 
