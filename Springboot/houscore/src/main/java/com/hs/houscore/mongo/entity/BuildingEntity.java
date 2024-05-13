@@ -108,8 +108,8 @@ public class BuildingEntity {
     @Getter
     @Builder
     public static class PriceInfo {
-        private Double leaseAvg;        //평균 전세가격
+        private long leaseAvg;        //평균 전세가격
         private String rentAvg;         //평균 월세가격
-        private Double saleAvg;         //평균 매매가
+        private long saleAvg;         //평균 매매가
     }
 }

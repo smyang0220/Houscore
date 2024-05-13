@@ -145,7 +145,7 @@ public class BuildingService {
 
         Integer safetyGrade = building.getInformation().getSecurityInfo().getSafetyGrade() == null ? 0 : building.getInformation().getSecurityInfo().getSafetyGrade();
 
-        Double realPrice = building.getInformation().getPriceInfo().getSaleAvg();
+        Long realPrice = building.getInformation().getPriceInfo().getSaleAvg();
         Double archArea = building.getInformation().getBuildingInfo().getArchArea();
 
         return BuildingInfraDTO.builder()
@@ -199,7 +199,7 @@ public class BuildingService {
         Double avgCost = calRegionAvg(buildingEntities);
         for(BuildingEntity buildingEntity : buildingEntities){
             Long reviewCnt = reviewRepository.countByAddressStartingWith(buildingEntity.getNewPlatPlc());
-            Double realPrice = buildingEntity.getInformation().getPriceInfo().getSaleAvg();
+            Long realPrice = buildingEntity.getInformation().getPriceInfo().getSaleAvg();
             Double archArea = buildingEntity.getInformation().getBuildingInfo().getArchArea();
             recommendAiDTOS.add(RecommendAiDTO.builder()
                             .address(buildingEntity.getPlatPlc())
@@ -225,7 +225,7 @@ public class BuildingService {
     }
 
     //평당 가격
-    private Integer setPricePerPyeong(Double realPrice, Double archArea){
+    private Integer setPricePerPyeong(Long realPrice, Double archArea){
         //1평 = 3.30579
         Double pyeongArea = archArea / 3.30579 ;
         Integer pricePerPyeong = (int) (realPrice / pyeongArea);

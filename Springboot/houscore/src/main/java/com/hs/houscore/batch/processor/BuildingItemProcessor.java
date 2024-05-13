@@ -8,6 +8,7 @@ import com.hs.houscore.mongo.entity.BuildingEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemProcessor;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -97,37 +98,37 @@ public class BuildingItemProcessor implements ItemProcessor<BuildingEntity, Buil
         //전세
         List<RealTransactionPriceEntity> leaseList = realTransactionPriceRepository.findByPlatPlcAndTradeType(building.getPlatPlc(),"전세");
         long leaseTot = 0;
-        double leaseAvg = 0;
+        long leaseAvg = 0;
         if(!leaseList.isEmpty()){
             for(RealTransactionPriceEntity entity : leaseList){
                 leaseTot += Integer.parseInt(entity.getTradeAmount().replaceAll(",", ""));
             }
-            leaseAvg = (double) leaseTot /leaseList.size();
+            leaseAvg = leaseTot /leaseList.size();
         }
         //월세
         List<RealTransactionPriceEntity> rentList = realTransactionPriceRepository.findByPlatPlcAndTradeType(building.getPlatPlc(), "월세");
         long depositTot = 0;
         long rentTot = 0;
-        double depositAvg = 0;
-        double rentAvg = 0;
+        long depositAvg = 0;
+        long rentAvg = 0;
         if(!rentList.isEmpty()){
             for(RealTransactionPriceEntity entity : rentList){
                 String[] tradeAmount = entity.getTradeAmount().replaceAll(",", "").split("/");
                 depositTot += Integer.parseInt(tradeAmount[0]);
                 rentTot += Integer.parseInt(tradeAmount[1]);
             }
-            depositAvg = (double) depositTot /rentList.size();
-            rentAvg = (double) rentTot/rentList.size();
+            depositAvg = depositTot /rentList.size();
+            rentAvg = rentTot/rentList.size();
         }
         //매매
         List<RealTransactionPriceEntity> saleList = realTransactionPriceRepository.findByPlatPlcAndTradeType(building.getPlatPlc(), "매매");
         long saleTot = 0;
-        double saleAvg = 0;
+        long saleAvg = 0;
         if(!saleList.isEmpty()){
             for(RealTransactionPriceEntity entity : saleList){
                 saleTot += Integer.parseInt(entity.getTradeAmount().replaceAll(",", ""));
             }
-            saleAvg = (double) saleTot / saleList.size();
+            saleAvg = saleTot / saleList.size();
         }
 
         return BuildingEntity.PriceInfo.builder()
