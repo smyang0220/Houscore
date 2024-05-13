@@ -22,6 +22,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Sort;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 
@@ -73,6 +74,7 @@ public class BuildingInfoJobConfiguration {
     }
     //step
     @Bean(name = "buildingStep")
+    @Transactional
     public Step buildingStep(JobRepository jobRepository, PlatformTransactionManager transactionManager,
                               RepositoryItemReader<BuildingEntity> reader, ItemProcessor<BuildingEntity, BuildingEntity> processor, RepositoryItemWriter<BuildingEntity> writer){
         log.info("빌딩 Step 시작!");

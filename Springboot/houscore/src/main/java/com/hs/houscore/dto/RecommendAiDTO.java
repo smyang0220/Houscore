@@ -8,7 +8,7 @@ import lombok.Data;
 public class RecommendAiDTO {
     private String address;
     private Double aiScore;
-    private Double realPrice;   //만원 단위
+    private Long realPrice;   //만원 단위
     private Integer pricePerPyeong;
     private Double pricePerRegion ; //지역대비가격 %
     private Long reviewCnt;

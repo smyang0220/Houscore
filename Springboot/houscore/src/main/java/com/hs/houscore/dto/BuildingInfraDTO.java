@@ -39,8 +39,8 @@ public class BuildingInfraDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class RealCost{
-        private Double buy;
-        private Double longterm;
+        private Long buy;
+        private Long longterm;
         private String monthly;
     }
 }
