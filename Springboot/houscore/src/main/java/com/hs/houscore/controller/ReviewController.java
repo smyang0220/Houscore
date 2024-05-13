@@ -87,13 +87,16 @@ public class ReviewController {
     @Operation(summary = "거주지 리뷰 등록", description = "거주지 리뷰 등록")
     public ResponseEntity<?> addReview(@RequestBody ReviewDTO review,
                                        @AuthenticationPrincipal String memberEmail,
-                                       @RequestParam @Parameter(description = "imageBase64 : 인코딩 된 이미지 ") String imageBase64,
+                                       @RequestParam @Parameter(description = "image : 인코딩 되지 않은 이미지 ") String image,
                                        @RequestParam @Parameter(description = "imageName : 이미지 이름(임의로 지정)") String imageName) {
         try{
             //유저 검증
             if(memberEmail == null || memberEmail.equals("anonymousUser")){
                 return ResponseEntity.badRequest().body(new ErrorResponse("사용자 검증 필요"));
             }
+
+            // 이미지 데이터를 Base64로 인코딩
+            String imageBase64 = Base64.getEncoder().encodeToString(image.getBytes());
 
             // FileUploadDTO 세팅
             FileUploadDTO fileUploadDTO = new FileUploadDTO();
