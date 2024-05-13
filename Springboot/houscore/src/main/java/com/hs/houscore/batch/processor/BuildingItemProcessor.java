@@ -214,7 +214,7 @@ public class BuildingItemProcessor implements ItemProcessor<BuildingEntity, Buil
                 Double distance = (Double) data[6];
 
                 Map<String, Object> entryMap = new HashMap<>();
-                entryMap.put("name", stationName + "-"  + lineName);
+                entryMap.put("name", stationName + "("  + lineName + ")");
                 entryMap.put("distance", distance.longValue());
 
                 subwayMap.add(entryMap);
@@ -228,11 +228,10 @@ public class BuildingItemProcessor implements ItemProcessor<BuildingEntity, Buil
         if(hospital != null && !hospital.isEmpty()){
             for (Object[] data : hospital) {
                 String hospitalName = (String) data[0];
-                String typeName = (String) data[1];
                 Double distance = (Double) data[7];
 
                 Map<String, Object> entryMap = new HashMap<>();
-                entryMap.put("name", hospitalName + "-"  + typeName);
+                entryMap.put("name", hospitalName);
                 entryMap.put("distance", distance.longValue());
 
                 hospitalMap.add(entryMap);
@@ -279,11 +278,10 @@ public class BuildingItemProcessor implements ItemProcessor<BuildingEntity, Buil
         if(school != null && !school.isEmpty()){
             for (Object[] data : school) {
                 String schoolName = (String) data[0];
-                String typeName = (String) data[1];
                 Double distance = (Double) data[7];
 
                 Map<String, Object> entryMap = new HashMap<>();
-                entryMap.put("name", schoolName + "-"  + typeName);
+                entryMap.put("name", schoolName);
                 entryMap.put("distance", distance.longValue());
 
                 schoolMap.add(entryMap);

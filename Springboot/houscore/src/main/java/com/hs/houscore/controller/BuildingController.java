@@ -1,9 +1,6 @@
 package com.hs.houscore.controller;
 
-import com.hs.houscore.dto.BuildingDetailDTO;
-import com.hs.houscore.dto.BuildingInfraDTO;
-import com.hs.houscore.dto.MainPageDTO;
-import com.hs.houscore.dto.RecommendAiDTO;
+import com.hs.houscore.dto.*;
 import com.hs.houscore.mongo.service.BuildingService;
 import com.hs.houscore.postgre.entity.ReviewEntity;
 import com.hs.houscore.response.ErrorResponse;
@@ -34,22 +31,46 @@ public class BuildingController {
 
     @GetMapping("/detail")
     @Operation(summary = "건물 상세 검색", description = "주소 기반으로 건물 상세 정보 검색")
-    public BuildingDetailDTO getBuildingDetail(@RequestParam String address,
+    public ResponseEntity<?> getBuildingDetail(@RequestParam String address,
                                                @RequestParam Double lat, @RequestParam Double lng){
-        return buildingService.getBuildingByAddress(address,lat,lng);
+        try {
+            BuildingDetailDTO buildingDetailDTO = buildingService.getBuildingByAddress(address,lat, lng);
+            if(buildingDetailDTO == null) {
+                return ResponseEntity.badRequest().body(new ErrorResponse("BuildingController getBuildingByAddress NullException"));
+            }
+            return ResponseEntity.ok(buildingDetailDTO);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ErrorResponse("BuildingController getBuildingByAddress failure"));
+        }
     }
 
     @GetMapping("/detail/indicator")
     @Operation(summary = "건물 상세 지표 검색", description = "주소 기반으로 건물 상세 지표 검색")
-    public BuildingInfraDTO getBuildingIndicator(@RequestParam String address){
-        return buildingService.getBuildingInfra(address);
+    public ResponseEntity<?> getBuildingIndicator(@RequestParam String address){
+        try {
+            BuildingInfraDTO buildingInfraDTO = buildingService.getBuildingInfra(address);
+            if(buildingInfraDTO == null) {
+                return ResponseEntity.badRequest().body(new ErrorResponse("BuildingController getBuildingInfra NullException"));
+            }
+            return ResponseEntity.ok(buildingInfraDTO);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ErrorResponse("BuildingController getBuildingInfra failure"));
+        }
     }
 
     @GetMapping("/review")
     @Operation(summary = "건물 리뷰 정보", description = "건물 리뷰 정보 검색")
-    public List<ReviewEntity> getBuildingReview(@RequestParam String address
-            , Pageable pageable){
-        return buildingService.getBuildingReviewList(address, pageable);
+    public ResponseEntity<?> getBuildingReview(@RequestParam String address
+            , Integer page, Integer size){
+        try {
+            BuildingReviewDTO buildingReviewDTO = buildingService.getBuildingReviewList(address, page, size);
+            if(buildingReviewDTO == null) {
+                return ResponseEntity.badRequest().body(new ErrorResponse("BuildingController getBuildingReviewList NullException"));
+            }
+            return ResponseEntity.ok(buildingReviewDTO);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ErrorResponse("BuildingController getBuildingReviewList failure"));
+        }
     }
 
     @GetMapping("/main/ai")

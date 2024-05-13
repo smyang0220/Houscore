@@ -12,7 +12,6 @@ public class ReviewDTO {
     private String address;
     private String residenceType;
     private Integer resideceFloor;
-    private String buildingName;
     private StarRating starRating;
     private String pros;
     private String cons;
