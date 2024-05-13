@@ -15,6 +15,6 @@ public class MyInterestedAreaEntity extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long areaId;
-    private String memberId;
+    private String memberEmail;
     private String address;
 }
