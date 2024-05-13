@@ -70,13 +70,33 @@ public class BuildingController {
 
     @GetMapping("/main/nearby")
     @Operation(summary = "근처 거주지 최근 리뷰 조회", description = "가장 가까운 거주지 중 리뷰가 있는 2개의 거주지에서 가장 최근의 리뷰 하나씩 총 2개")
-    public List<MainPageDTO> getMainNearby(@RequestParam Double lat, @RequestParam Double lng){
-        return buildingService.getMainNearby(lat,lng);
+    public ResponseEntity<?> getMainNearby(@RequestParam Double lat, @RequestParam Double lng){
+        try {
+            List<MainPageDTO> mainPageDTOS = buildingService.getMainNearby(lat,lng);
+            if(mainPageDTOS == null) {
+                return ResponseEntity.badRequest().body(new ErrorResponse("BuildingController getMainNearby NullException"));
+            } else if (mainPageDTOS.isEmpty()) {
+                return ResponseEntity.badRequest().body(new ErrorResponse("BuildingController getMainNearby is Empty"));
+            }
+            return ResponseEntity.ok(mainPageDTOS);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ErrorResponse("BuildingController getMainNearby failure"));
+        }
     }
 
     @GetMapping("/main/photo")
     @Operation(summary = "생생한 사진 후기 조회", description = "사진이 등록된 리뷰들 중 가장 최근이나 좋은 리뷰를 받은 순으로 조회")
-    public List<MainPageDTO> getMainPhoto() {
-        return buildingService.getMainPhoto();
+    public ResponseEntity<?> getMainPhoto() {
+        try {
+            List<MainPageDTO> mainPageDTOS = buildingService.getMainPhoto();
+            if(mainPageDTOS == null) {
+                return ResponseEntity.badRequest().body(new ErrorResponse("BuildingController getMainPhoto NullException"));
+            } else if (mainPageDTOS.isEmpty()) {
+                return ResponseEntity.badRequest().body(new ErrorResponse("BuildingController getMainPhoto is Empty"));
+            }
+            return ResponseEntity.ok(mainPageDTOS);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ErrorResponse("BuildingController getMainPhoto failure"));
+        }
     }
 }
