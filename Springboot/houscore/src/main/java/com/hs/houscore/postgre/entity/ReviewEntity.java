@@ -22,10 +22,9 @@ public class ReviewEntity extends BaseTimeEntity{
     @GeneratedValue (strategy = GenerationType.SEQUENCE)
     private Long id;
     private String memberId;
-    private ObjectId buildingId;
     private String address;
     private ResidenceType residenceType;
-    private Integer year;
+    private String year;
     private ResidenceFloor residenceFloor;
     @JdbcTypeCode(SqlTypes.JSON)
     private StarRating starRating;
@@ -35,14 +34,42 @@ public class ReviewEntity extends BaseTimeEntity{
     private String images;
 
     public enum ResidenceType {
-        VILLA, APT, OFFICETEL
+        VILLA, APT, OFFICETEL;
+
+        public static ResidenceType fromString(String residenceType) {
+            if (residenceType.equalsIgnoreCase("VILLA")) {
+                return VILLA;
+            } else if (residenceType.equalsIgnoreCase("APT")) {
+                return APT;
+            } else if (residenceType.equalsIgnoreCase("OFFICETEL")) {
+                return OFFICETEL;
+            } else {
+                // 기본값으로 예외처리하거나 다른 로직을 추가할 수 있습니다.
+                throw new IllegalArgumentException("Invalid ResidenceType: " + residenceType);
+            }
+        }
     }
     public enum ResidenceFloor {
-        HIGH, MEDIUM, LOW
+        HIGH, MEDIUM, LOW, BOTTOM;
+
+        public static ResidenceFloor fromFloorNumber(int floorNumber) {
+            if (floorNumber == 1) {
+                return BOTTOM;
+            } else if (floorNumber >= 2 && floorNumber < 5) {
+                return LOW;
+            } else if (floorNumber >= 5 && floorNumber <= 15) {
+                return MEDIUM;
+            } else {
+                return HIGH;
+            }
+        }
     }
 
     @Data
-    private static class StarRating implements Serializable {
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class StarRating implements Serializable {
         private Double traffic;
         private Double building;
         private Double inside;

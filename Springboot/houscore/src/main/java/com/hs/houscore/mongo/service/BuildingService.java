@@ -12,10 +12,12 @@ import com.hs.houscore.postgre.repository.ReviewRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.stereotype.Service;
 
+import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -158,7 +160,8 @@ public class BuildingService {
     }
 
     public List<ReviewEntity> getBuildingReviewList(String address, Pageable pageable){
-        return reviewRepository.findByAddress(address, pageable).getContent();
+        Page<ReviewEntity> reviewEntities = reviewRepository.findPageByAddress(address, pageable);
+        return reviewEntities.getContent();
     }
 
     public List<RecommendAiDTO> getMainAiScoreTop5(String sigungu){
@@ -172,7 +175,7 @@ public class BuildingService {
             recommendAiDTOS.add(RecommendAiDTO.builder()
                             .address(buildingEntity.getPlatPlc())
                             .aiScore(buildingEntity.getScore())
-                            .pricePerRegion(realPrice != null ? (realPrice / avgCost) * 100 : 0.0)
+                            .pricePerRegion(realPrice != null && avgCost >= 0.0 ? (realPrice / avgCost) * 100 : 0.0)
                             .pricePerPyeong(realPrice != null && archArea != null ? setPricePerPyeong(realPrice, archArea) : 0)
                             .realPrice(realPrice)
                             .reviewCnt(reviewCnt)
@@ -206,7 +209,7 @@ public class BuildingService {
         List<ReviewEntity> latestReviewEntities = new ArrayList<>();
 
         for(BuildingEntity buildingEntity : buildingEntities) {
-            List<ReviewEntity> reviewEntities = reviewRepository.findByAddress(buildingEntity.getPlatPlc());
+            List<ReviewEntity> reviewEntities = reviewRepository.findListByAddress(buildingEntity.getPlatPlc());
 
             if(reviewEntities != null && !reviewEntities.isEmpty()) {
                 ReviewEntity latestReview = getLatestReview(reviewEntities);
@@ -220,13 +223,13 @@ public class BuildingService {
         List<MainPageDTO> mainPageDTOS = new ArrayList<>();
 
         for(ReviewEntity reviewEntity : latestTwoReviews) {
-            Optional<BuildingEntity> buildingEntity = buildingRepository.findById(reviewEntity.getBuildingId());
+            Optional<BuildingEntity> buildingEntity = buildingRepository.findByNewPlatPlcOrPlatPlc(reviewEntity.getAddress(), reviewEntity.getAddress());
 
             buildingEntity.ifPresent(entity -> mainPageDTOS.add(MainPageDTO.builder()
                     .address(entity.getPlatPlc())
                     .buildingName(entity.getInformation().getBuildingInfo().getBldNm())
                     .aiScore(entity.getScore())
-                    .reviewScore(calculateReviewScore(entity.getId()))
+                    .reviewScore(calculateReviewScore(entity.getPlatPlc()))
                     .cons(reviewEntity.getCons())
                     .pros(reviewEntity.getPros())
                     .imageUrl(reviewEntity.getImages())
@@ -270,13 +273,13 @@ public class BuildingService {
             Optional<ReviewEntity> reviewEntity = reviewRepository.findById((long) randomNumber);
 
             if(reviewEntity.isPresent()) {
-                Optional<BuildingEntity> buildingEntity = buildingRepository.findById(reviewEntity.get().getBuildingId());
+                Optional<BuildingEntity> buildingEntity = buildingRepository.findByNewPlatPlcOrPlatPlc(reviewEntity.get().getAddress(), reviewEntity.get().getAddress());
 
                 buildingEntity.ifPresent(entity -> mainPageDTOS.add(MainPageDTO.builder()
                         .address(entity.getPlatPlc())
                         .buildingName(entity.getInformation().getBuildingInfo().getBldNm())
                         .aiScore(entity.getScore())
-                        .reviewScore(calculateReviewScore(entity.getId()))
+                        .reviewScore(calculateReviewScore(entity.getPlatPlc()))
                         .cons(reviewEntity.get().getCons())
                         .pros(reviewEntity.get().getPros())
                         .imageUrl(reviewEntity.get().getImages())
@@ -290,8 +293,8 @@ public class BuildingService {
     }
 
     // 평균 반환 메서드
-    private double calculateReviewScore (ObjectId buildingId) {
-        List<ReviewEntity> reviewEntities = reviewRepository.findByBuildingId(buildingId);
+    private double calculateReviewScore (String address) {
+        List<ReviewEntity> reviewEntities = reviewRepository.findListByAddress(address);
 
         double score = 0;
         for(ReviewEntity reviewEntity : reviewEntities){
