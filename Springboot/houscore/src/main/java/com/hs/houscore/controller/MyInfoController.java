@@ -92,9 +92,14 @@ public class MyInfoController {
             if(memberEmail == null || memberEmail.equals("anonymousUser")){
                 return ResponseEntity.badRequest().body(new ErrorResponse("사용자 검증 필요"));
             }
+            boolean deleted = myInterestedAreaService.deleteMyInterestedArea(areaId, memberEmail);
 
-            myInterestedAreaService.deleteMyInterestedArea(areaId, memberEmail);
-            return ResponseEntity.status(HttpStatus.OK).body("관심 지역 삭제 성공");
+            if (deleted) {
+                List<MyInfoDTO> myInterestedAreaEntities = myInterestedAreaService.getMyInterestedAreaList(memberEmail);
+                return ResponseEntity.status(HttpStatus.OK).body(myInterestedAreaEntities);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("삭제된 데이터가 없습니다.");
+            }
         }catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("유효하지 않은 관심지역 데이터");
         } catch (RuntimeException e) {

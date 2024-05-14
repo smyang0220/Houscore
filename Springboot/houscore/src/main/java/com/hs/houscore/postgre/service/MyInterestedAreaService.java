@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -35,12 +36,14 @@ public class MyInterestedAreaService {
         myInterestedAreaRepository.save(MyInterestedAreaEntity.builder().address(address).memberEmail(memberEmail).build());
     }
 
-    public void deleteMyInterestedArea(Long areaId, String memberEmail){
-        myInterestedAreaRepository.findByMemberEmailAndAreaId(memberEmail, areaId)
-                .map(myInterestedAreaEntity -> {
-                    myInterestedAreaRepository.delete(myInterestedAreaEntity);
-                    return myInterestedAreaEntity;
-                })
-                .orElseThrow(() -> new IllegalArgumentException("해당 데이터가 존재 하지 않습니다."));
+    public boolean deleteMyInterestedArea(Long areaId, String memberEmail){
+        Optional<MyInterestedAreaEntity> areaEntityOptional = myInterestedAreaRepository.findByMemberEmailAndAreaId(memberEmail, areaId);
+
+        if (areaEntityOptional.isPresent()) {
+            myInterestedAreaRepository.delete(areaEntityOptional.get());
+            return true; // 삭제된 경우 true 반환
+        } else {
+            return false; // 삭제된 데이터가 없는 경우 false 반환
+        }
     }
 }
