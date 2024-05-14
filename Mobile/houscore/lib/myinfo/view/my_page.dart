@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -5,10 +7,14 @@ import 'package:houscore/common/component/list_section.dart';
 import 'package:houscore/common/const/design.dart';
 import 'package:houscore/common/layout/default_layout.dart';
 import 'package:houscore/member/provider/user_me_provider.dart';
+import 'package:houscore/residence/utils/place_utils.dart';
+import 'package:remedi_kopo/remedi_kopo.dart';
 import '../../common/model/data_state_model.dart';
 import '../component/my_info.dart';
 import '../model/interested_area.dart';
 import '../provider/interested_area_provider.dart';
+import '../repository/myinfo_repository.dart';
+import 'package:dio/dio.dart'; // Dio 패키지 추가
 
 class MyPage extends ConsumerStatefulWidget {
   static String get routeName => 'myPage';
@@ -17,11 +23,27 @@ class MyPage extends ConsumerStatefulWidget {
 }
 
 class _MyPageState extends ConsumerState<MyPage> {
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     final notifier = ref.watch(interestedAreaListProvider.notifier);
     notifier.fetchInterestedAreaList();
+  }
+
+  Future<void> _deleteInterestedArea(InterestedAreaModel area) async {
+    final repository = ref.watch(myinfoRepositoryProvider);
+    try {
+      await repository.deleteInterestedArea(areaId: area.id!);
+      final notifier = ref.watch(interestedAreaListProvider.notifier);
+      notifier.fetchInterestedAreaList();
+    } catch (e) {
+      if (e is DioError) {
+        print('DioError: ${e.response?.statusCode} - ${e.response?.data}');
+      } else {
+        print('Error deleting interested area: $e');
+      }
+    }
   }
 
   @override
@@ -44,10 +66,45 @@ class _MyPageState extends ConsumerState<MyPage> {
               MyInfo(),
               SizedBox(height: VERTICAL_GAP,),
               ListSection(
-                  title: '내 관심지역',
-                  list: listToShow,
-                  onItemTap: (item) =>
-                      context.push('/residence/${item.name}')),
+                title: '내 관심지역',
+                list: listToShow,
+                onItemTap: (item) =>
+                    context.push('/residence/${item.name}'),
+                onAddTap: () async {
+                  KopoModel model = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => RemediKopo(),
+                    ),
+                  );
+                  // 검색된 주소 정보를 바탕으로
+                  // 새로운 관심 지역을 등록하는 API 호출
+                  if (model != null && model.jibunAddress != null) {
+                    print('Selected Address: ${PlaceUtils.mapAddressForAPI(model.jibunAddress!)}');
+
+                    // 관심 지역 등록 API 호출
+                    final repository = ref.watch(myinfoRepositoryProvider);
+
+                    try {
+                      repository.registerInterestedArea({
+                        'address': model.jibunAddress!,
+                      });
+
+                      print('등록은 무사히 마쳤습니다!!');
+                      print('리스트를 다시 불러와볼까요?');
+
+                      final notifier = ref.watch(interestedAreaListProvider.notifier);
+                      notifier.fetchInterestedAreaList();
+
+                      print('리스트 다시 불러오기도 성공했네요!! 축하합니다!!');
+                    } catch (e) {
+                      print('등록 실패: $e');
+                    }
+                  } else {
+                    print('[[[[없는 주소입니다.]]]]');
+                  }
+                }, onDelete: (item) => _deleteInterestedArea(item),
+              ),
               SizedBox(height: VERTICAL_GAP,),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -108,18 +165,3 @@ class _MyPageState extends ConsumerState<MyPage> {
     );
   }
 }
-
-/*
-              DynamicListWidget(
-                title: '내 관심지역',
-                initialItemCount : 3
-                onAddPressed: () {
-                  print('관심 지역 추가 기능 구현 필요');
-                },
-                showMoreText: "${interestedAreaListState.detail!.length - 3}개 보기",
-                showLessText: "접기",
-                showMoreIcon: Icon(Icons.expand_more),
-                showLessIcon: Icon(Icons.expand_less),
-                itemListProvider: interestedAreaListProvider,
-              ),
- */

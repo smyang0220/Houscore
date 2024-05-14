@@ -50,15 +50,14 @@ class _MyinfoRepository implements MyinfoRepository {
   }
 
   @override
-  Future<bool> registerInterestedArea(
-      InterestedAreaModel newInterestedArea) async {
+  Future<void> registerInterestedArea(Map<String, String> address) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{r'accessToken': 'true'};
     _headers.removeWhere((k, v) => v == null);
     final _data = <String, dynamic>{};
-    _data.addAll(newInterestedArea.toJson());
-    final _result = await _dio.fetch<bool>(_setStreamType<bool>(Options(
+    _data.addAll(address);
+    await _dio.fetch<void>(_setStreamType<void>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
@@ -74,18 +73,16 @@ class _MyinfoRepository implements MyinfoRepository {
           _dio.options.baseUrl,
           baseUrl,
         ))));
-    final value = _result.data!;
-    return value;
   }
 
   @override
-  Future<bool> deleteInterestedArea(int areaId) async {
+  Future<void> deleteInterestedArea({required int areaId}) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'areaId': areaId};
     final _headers = <String, dynamic>{r'accessToken': 'true'};
     _headers.removeWhere((k, v) => v == null);
-    final _data = areaId;
-    final _result = await _dio.fetch<bool>(_setStreamType<bool>(Options(
+    const Map<String, dynamic>? _data = null;
+    await _dio.fetch<void>(_setStreamType<void>(Options(
       method: 'DELETE',
       headers: _headers,
       extra: _extra,
@@ -101,8 +98,6 @@ class _MyinfoRepository implements MyinfoRepository {
           _dio.options.baseUrl,
           baseUrl,
         ))));
-    final value = _result.data!;
-    return value;
   }
 
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {

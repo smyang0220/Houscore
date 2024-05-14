@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart' hide Headers;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:retrofit/retrofit.dart';
@@ -5,14 +7,12 @@ import '../../../common/const/data.dart';
 import '../../../common/dio/dio.dart';
 import '../model/interested_area.dart';
 
-
 part 'myinfo_repository.g.dart';
 
 final myinfoRepositoryProvider = Provider<MyinfoRepository>(
-      (ref) {
+  (ref) {
     final dio = ref.watch(dioProvider);
-    final repository =
-    MyinfoRepository(dio, baseUrl: 'http://$ip/api/myinfo');
+    final repository = MyinfoRepository(dio, baseUrl: 'http://$ip/api/myinfo');
 
     return repository;
   },
@@ -20,8 +20,7 @@ final myinfoRepositoryProvider = Provider<MyinfoRepository>(
 
 @RestApi()
 abstract class MyinfoRepository {
-  factory MyinfoRepository(Dio dio, {String baseUrl}) =
-  _MyinfoRepository;
+  factory MyinfoRepository(Dio dio, {String baseUrl}) = _MyinfoRepository;
 
   // [내 정보 상세 조회] ---------------------------------------
   // 요청 url
@@ -45,15 +44,16 @@ abstract class MyinfoRepository {
 
   // [관심지역 등록] ---------------------------------------
   @POST('/area')
-  @Headers({
-    'accessToken': 'true',
-  })
-  Future<bool> registerInterestedArea(@Body() InterestedAreaModel newInterestedArea);
+  @Headers({'accessToken': 'true'})
+  Future<void> registerInterestedArea(@Body() Map<String, String> address);
 
   // [관심지역 삭제] ---------------------------------------
   @DELETE('/area')
   @Headers({
     'accessToken': 'true',
   })
-  Future<bool> deleteInterestedArea(@Body() int areaId);
+  Future<void> deleteInterestedArea({
+    // request로 address가 필요!
+    @Query('areaId') required int areaId,
+  });
 }
