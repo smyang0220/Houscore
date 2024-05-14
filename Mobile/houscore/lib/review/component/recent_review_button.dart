@@ -21,8 +21,8 @@ class _RecentReviewButtonState extends ConsumerState<RecentReviewButton> {
         InkWell(
           onTap: () async {
             ReviewModel response;
-            final repository = ref.watch(reviewRepositoryProvider);
-            response = await repository.recentReview();
+            final repository = ref.watch(ReviewRepositoryProvider);
+            response = await repository.recentReviews();
             print('********* ReviewDetailButton clicked ************');
             print(response.address);
           },
