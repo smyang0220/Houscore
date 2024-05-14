@@ -84,7 +84,6 @@ public class ReviewController {
     @Operation(summary = "거주지 리뷰 등록", description = "거주지 리뷰 등록")
     public ResponseEntity<?> addReview(@RequestBody CreateReviewDTO review,
                                        @AuthenticationPrincipal String memberEmail,
-                                       @RequestParam @Parameter(description = "image : 인코딩 된 이미지 ") String imageBase64,
                                        @RequestParam @Parameter(description = "imageName : 이미지 이름(임의로 지정)") String imageName) {
         try{
             //유저 검증
@@ -94,7 +93,7 @@ public class ReviewController {
 
             // FileUploadDTO 세팅
             FileUploadDTO fileUploadDTO = new FileUploadDTO();
-            fileUploadDTO.setImageBase64(imageBase64);
+            fileUploadDTO.setImageBase64(review.getImages());
             fileUploadDTO.setImageName(imageName);
 
             // S3 이미지 업로드
