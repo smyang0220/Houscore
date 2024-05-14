@@ -1,13 +1,16 @@
 package com.hs.houscore.postgre.service;
 
+import com.hs.houscore.dto.BuildingDetailDTO;
 import com.hs.houscore.dto.CreateReviewDTO;
 import com.hs.houscore.dto.ReviewDTO;
 import com.hs.houscore.mongo.entity.BuildingEntity;
 import com.hs.houscore.mongo.repository.BuildingRepository;
+import com.hs.houscore.mongo.service.BuildingService;
 import com.hs.houscore.postgre.entity.ReviewEntity;
 import com.hs.houscore.postgre.repository.ReviewRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,6 +24,7 @@ import static com.hs.houscore.postgre.entity.ReviewEntity.ResidenceType.fromStri
 public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final BuildingRepository buildingRepository;
+    private final BuildingService buildingService;
 
     //리뷰 상세
     public ReviewEntity getDetailReview(Long id){
@@ -43,16 +47,19 @@ public class ReviewService {
         if (review == null || memberEmail == null) {
             throw new IllegalArgumentException("리뷰 데이터가 올바르지 않습니다.");
         }
-        //buildingId 세팅
-        BuildingEntity building = buildingRepository.findByNewPlatPlcOrPlatPlc(review.getAddress(), review.getAddress())
-                .orElseThrow(() -> new IllegalArgumentException("해당 리뷰가 존재하지 않습니다."));
+        //buildingId 값이 없을 때 buildingEntity 생성하고 저장한 후 리뷰등록
+        BuildingEntity building = buildingRepository.findByNewPlatPlcOrPlatPlc(review.getAddress(), review.getAddress()).orElse(null);
+        if(building == null){
+            //buildingEntity 저장
+            buildingService.getBuildingByAddress(review.getAddress(), review.getLat(), review.getLat());
+        }
 
         ReviewEntity reviewEntity = ReviewEntity.builder()
                 .memberId(memberEmail)
                 .address(review.getAddress())
                 .residenceType(fromString(review.getResidenceType()))
                 .year(review.getResidenceYear())
-                .residenceFloor(fromFloorNumber(review.getResideceFloor()))
+                .residenceFloor(fromFloorNumber(review.getResidenceFloor()))
                 .starRating(ReviewEntity.StarRating.builder()
                         .infra(review.getStarRating().getInfra())
                         .building(review.getStarRating().getBuilding())

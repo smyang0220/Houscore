@@ -9,8 +9,10 @@ import java.io.Serializable;
 @Builder
 public class CreateReviewDTO {
     private String address;
+    private Double lat;
+    private Double lng;
     private String residenceType;
-    private String resideceFloor;
+    private String residenceFloor;
     private StarRating starRating;
     private String pros;
     private String cons;
