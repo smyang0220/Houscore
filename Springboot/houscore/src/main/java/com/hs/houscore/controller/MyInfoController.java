@@ -74,7 +74,7 @@ public class MyInfoController {
                 return ResponseEntity.badRequest().body(new ErrorResponse("사용자 검증 필요"));
             }
 
-            myInterestedAreaService.setMyInterestedArea(requestMyInfoDTO.getAddress(),memberEmail);
+            myInterestedAreaService.setMyInterestedArea(requestMyInfoDTO.getAddress());
             return ResponseEntity.status(HttpStatus.CREATED).body("관심지역 등록 성공");
         }catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("유효하지 않은 관심지역 데이터");
@@ -92,14 +92,9 @@ public class MyInfoController {
             if(memberEmail == null || memberEmail.equals("anonymousUser")){
                 return ResponseEntity.badRequest().body(new ErrorResponse("사용자 검증 필요"));
             }
-            boolean deleted = myInterestedAreaService.deleteMyInterestedArea(areaId, memberEmail);
 
-            if (deleted) {
-                List<MyInfoDTO> myInterestedAreaEntities = myInterestedAreaService.getMyInterestedAreaList(memberEmail);
-                return ResponseEntity.status(HttpStatus.OK).body(myInterestedAreaEntities);
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("삭제된 데이터가 없습니다.");
-            }
+            myInterestedAreaService.deleteMyInterestedArea(areaId, memberEmail);
+            return ResponseEntity.status(HttpStatus.OK).body("관심 지역 삭제 성공");
         }catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("유효하지 않은 관심지역 데이터");
         } catch (RuntimeException e) {
