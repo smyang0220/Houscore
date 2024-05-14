@@ -60,7 +60,8 @@ class _NearbyInfraState extends State<NearbyInfra> {
                 ),
               ),
               Text(
-                '${results['minute']}분 (${DataUtils.convertToKilometers(infra.distance)}km)',
+                // '${results['minute']}분 (${DataUtils.convertToKilometers(infra.distance)}km)',
+                '${results['minute']}분 (${infra.distance.toStringAsFixed(1)}km)',
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,

@@ -67,7 +67,8 @@ class _NearbyPublicTransportationState
                   ),
                 ),
                 Text(
-                  '${time}분 (${DataUtils.convertToKilometers(transport.distance)}km)',
+                  // '${time}분 (${DataUtils.convertToKilometers(transport.distance)}km)',
+                  '${time}분 (${transport.distance.toStringAsFixed(1)}km)',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
