@@ -17,7 +17,8 @@ public interface BusRepository extends JpaRepository<BusEntity, Long> {
             "WHERE ST_DWithin(CAST(ST_SetSRID(ST_Point(:latitude, :longitude), 4326) AS geography), " +
             "CAST(ST_SetSRID(ST_Point(b.latitude, b.longitude), 4326) AS geography), :distance) " +
             "AND b.id IN (" +
-            "SELECT MIN(b2.id) FROM bus b2 WHERE b2.bus_stop_name = b.bus_stop_name GROUP BY b2.bus_stop_name)",
+            "SELECT MIN(b2.id) FROM bus b2 WHERE b2.bus_stop_name = b.bus_stop_name GROUP BY b2.bus_stop_name)" +
+            "ORDER BY distance asc",
             nativeQuery = true)
     List<Object[]> findBusByDistance(
             @Param("latitude") Double userLatitude,

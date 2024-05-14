@@ -8,14 +8,12 @@ import com.hs.houscore.postgre.entity.ReviewEntity;
 import com.hs.houscore.postgre.repository.ReviewRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
