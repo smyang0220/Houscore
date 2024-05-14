@@ -1,6 +1,5 @@
 package com.hs.houscore.postgre.service;
 
-import com.hs.houscore.dto.BuildingDetailDTO;
 import com.hs.houscore.dto.CreateReviewDTO;
 import com.hs.houscore.dto.ReviewDTO;
 import com.hs.houscore.mongo.entity.BuildingEntity;
@@ -10,7 +9,6 @@ import com.hs.houscore.postgre.entity.ReviewEntity;
 import com.hs.houscore.postgre.repository.ReviewRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -51,7 +49,7 @@ public class ReviewService {
         BuildingEntity building = buildingRepository.findByNewPlatPlcOrPlatPlc(review.getAddress(), review.getAddress()).orElse(null);
         if(building == null){
             //buildingEntity 저장
-            buildingService.getBuildingByAddress(review.getAddress(), review.getLat(), review.getLat());
+            buildingService.getBuildingByAddress(review.getAddress(), review.getLat(), review.getLng());
         }
 
         ReviewEntity reviewEntity = ReviewEntity.builder()
