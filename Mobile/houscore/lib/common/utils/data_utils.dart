@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:image_picker/image_picker.dart';
+
 import '../const/data.dart';
 
 
@@ -64,5 +66,15 @@ class DataUtils{
   static double convertToKilometers(double meters) {
     double kilometers = meters / 1000;
     return double.parse(kilometers.toStringAsFixed(2)); // 소수점 2자리까지
+  }
+
+  static Future<String> xFileToBase64(XFile file) async {
+    // 파일로부터 바이트 데이터를 읽어옵니다.
+    List<int> imageBytes = await file.readAsBytes();
+
+    // 바이트 데이터를 base64 문자열로 인코딩합니다.
+    String base64String = base64Encode(imageBytes);
+
+    return base64String;
   }
 }

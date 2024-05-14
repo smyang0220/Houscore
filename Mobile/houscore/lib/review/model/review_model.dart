@@ -5,24 +5,28 @@ part 'review_model.g.dart';
 @JsonSerializable()
 class ReviewModel {
   final String address;
+  final double lat;
+  final double lng;
   final String residenceType;
   final String residenceFloor;
   final StarRating starRating;
   final String pros;
   final String cons;
   final String maintenanceCost;
-  final String images;
+  final String? images;
   final String residenceYear;
 
   ReviewModel({
     required this.address,
+    required this.lat,
+    required this.lng,
     required this.residenceType,
     required this.residenceFloor,
     required this.starRating,
     required this.pros,
     required this.cons,
     required this.maintenanceCost,
-    required this.images,
+    this.images,
     required this.residenceYear,
 });
 
