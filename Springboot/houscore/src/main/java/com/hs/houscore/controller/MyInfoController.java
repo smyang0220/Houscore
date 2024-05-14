@@ -74,7 +74,7 @@ public class MyInfoController {
                 return ResponseEntity.badRequest().body(new ErrorResponse("사용자 검증 필요"));
             }
 
-            myInterestedAreaService.setMyInterestedArea(requestMyInfoDTO.getAddress());
+            myInterestedAreaService.setMyInterestedArea(requestMyInfoDTO.getAddress(),memberEmail);
             return ResponseEntity.status(HttpStatus.CREATED).body("관심지역 등록 성공");
         }catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("유효하지 않은 관심지역 데이터");
