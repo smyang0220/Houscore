@@ -1,6 +1,7 @@
 package com.hs.houscore.controller;
 
 import com.hs.houscore.dto.MemberDTO;
+import com.hs.houscore.dto.MyInfoDTO;
 import com.hs.houscore.oauth2.member.OAuth2MemberInfo;
 import com.hs.houscore.oauth2.service.OAuth2MemberPrincipal;
 import com.hs.houscore.postgre.entity.MemberEntity;
@@ -50,7 +51,7 @@ public class MyInfoController {
                 return ResponseEntity.badRequest().body(new ErrorResponse("사용자 검증 필요"));
             }
 
-            List<MyInterestedAreaEntity> myInterestedAreaEntities = myInterestedAreaService.getMyInterestedAreaList(memberEmail);
+            List<MyInfoDTO> myInterestedAreaEntities = myInterestedAreaService.getMyInterestedAreaList(memberEmail);
             if(myInterestedAreaEntities == null) {
                 return ResponseEntity.badRequest().body(new ErrorResponse("BuildingController getMyInterestedAreaList NullException"));
             }else if (myInterestedAreaEntities.isEmpty()) {
@@ -65,14 +66,14 @@ public class MyInfoController {
     @PostMapping("/area")
     @Operation(summary = "관심 지역 등록", description = "관심 지역 등록")
     public ResponseEntity<?> setMyInterestedArea(@AuthenticationPrincipal String memberEmail,
-                                                 @RequestBody MyInterestedAreaEntity myInterestedArea) {
+                                                 @RequestBody String address) {
         try{
             //유저 검증
             if(memberEmail == null || memberEmail.equals("anonymousUser")){
                 return ResponseEntity.badRequest().body(new ErrorResponse("사용자 검증 필요"));
             }
 
-            myInterestedAreaService.setMyInterestedArea(myInterestedArea);
+            myInterestedAreaService.setMyInterestedArea(address);
             return ResponseEntity.status(HttpStatus.CREATED).body("관심지역 등록 성공");
         }catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("유효하지 않은 관심지역 데이터");

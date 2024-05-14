@@ -46,7 +46,7 @@ public class BatchScheduler {
 //        return jobProcessor;
 //    }
 
-    @Scheduled(fixedRate = 600000)
+    @Scheduled(fixedRate = 1800000)  //600000 = 10분
     public void runJob() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
         JobParameters jobParameters = new JobParameters();
         log.info("10분 스캐줄러 작동중");
