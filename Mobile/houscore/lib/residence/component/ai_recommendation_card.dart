@@ -57,7 +57,7 @@ class _AiRecommendationCardState extends State<AiRecommendationCard>
       surfaceTintColor: PRIMARY_COLOR,
       child: GestureDetector(
         onTap: () {
-          print('${widget.model.address} tapped!');
+          // print('${widget.model.address} tapped!');
           Navigator.push(
             context,
             MaterialPageRoute(

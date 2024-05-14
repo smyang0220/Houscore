@@ -147,7 +147,7 @@ class _AiRecommendationState extends ConsumerState<AiRecommendation> {
         ? ref.watch(aiRecommendedResidenceProvider(selectedCode))
         : null;
 
-    print('residenceData = ${residenceData}');
+    // print('residenceData = ${residenceData}');
 
     return SingleChildScrollView(
       child: Column(

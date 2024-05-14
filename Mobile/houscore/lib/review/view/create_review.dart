@@ -23,6 +23,7 @@ class _CreateReviewState extends State<CreateReview> {
   String? floorValue;
   Map<String, int> ratings = {};
 
+  // 모두 고른후에야 넘어갈 수 있게 함
   bool get isButtonEnabled =>
       selectedAddress != null &&
       typeValue != null &&
@@ -31,30 +32,35 @@ class _CreateReviewState extends State<CreateReview> {
       ratings.length == categories.length &&
       ratings.values.every((rating) => rating != 0);
 
+  // 선택한 주소
   void _updateSelectedAddress(String? newValue) {
     setState(() {
       selectedAddress = newValue;
     });
   }
 
+  // 유저 입력 값
   void _updateTypeValue(String? newValue) {
     setState(() {
       typeValue = newValue;
     });
   }
 
+  // 거주 년도
   void _updateYearValue(String? newValue) {
     setState(() {
       yearValue = newValue;
     });
   }
 
+  // 거주층수
   void _updateFloorValue(String? newValue) {
     setState(() {
       floorValue = newValue;
     });
   }
 
+  // 평가
   void _updateRating(String category, int newRating) {
     setState(() {
       ratings[category] = newRating;
@@ -126,6 +132,14 @@ class _CreateReviewState extends State<CreateReview> {
                               floorValue: floorValue,
                               ratings: ratings,
                             );
+
+                            // print('selectedAddress : ${reviewData.selectedAddress}');
+                            // print('lat : ${reviewData.lat}');
+                            // print('lng : ${reviewData.lng}');
+                            // print('typeValue : ${reviewData.typeValue}');
+                            // print('yearValue : ${reviewData.yearValue}');
+                            // print('floorValue : ${reviewData.floorValue}');
+
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -219,8 +233,6 @@ class _SearchResidenceState extends ConsumerState<SearchResidence> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      //TODO 위젯 크기 통일시키기
-      //TODO 주소 너무 길면 잘림
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
@@ -274,7 +286,7 @@ class _SearchResidenceState extends ConsumerState<SearchResidence> {
         }
       }
     } catch (e) {
-      print('Error fetching lat/lng: $e');
+      // print('Error fetching lat/lng: $e');
     }
     return null;
   }
@@ -446,7 +458,7 @@ Widget dropdownWidget({
   );
 }
 
-//별점 rating
+// 별점 rating
 final List<String> categories = ['교통', '건물', '내부', '인프라', '치안'];
 
 class ReviewRating extends StatelessWidget {

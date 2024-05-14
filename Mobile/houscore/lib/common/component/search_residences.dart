@@ -54,7 +54,7 @@ class _SearchResidencesState extends State<SearchResidences> {
                 context.push('/residence/${model.jibunAddress}');
               }
               // ResidenceDetail(address: model.address!);
-              print('model.toJson() == ${model.toJson()}');
+              // print('model.toJson() == ${model.toJson()}');
             },
             child: Container(
               padding: EdgeInsets.all(12),

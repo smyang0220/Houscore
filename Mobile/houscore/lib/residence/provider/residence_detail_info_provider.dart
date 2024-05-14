@@ -24,13 +24,13 @@ class ResidenceDetailInfoNotifier extends StateNotifier<DataStateBase> {
 
   Future<void> fetchResidenceDetailInfo() async {
     try {
-      print('실제 api 요청 보내는 주소는 ${PlaceUtils.mapAddressForAPI(location.address)}');
+      // print('실제 api 요청 보내는 주소는 ${PlaceUtils.mapAddressForAPI(location.address)}');
       final response = await repository.getResidenceDetailInfo(address: PlaceUtils.mapAddressForAPI(location.address), lat: location.latitude, lng: location.longitude);
-      print(' ---------------------------------- response ${response} ----------------------------------');
+      // print(' ---------------------------------- response ${response} ----------------------------------');
       state = DataState(data: response);
       // state = DataStateError(message: "에러 실험");
     } catch (e) {
-      print(' ---------------------------------- error ${e} ----------------------------------');
+      // print(' ---------------------------------- error ${e} ----------------------------------');
       state = DataStateError(message: e.toString());
     }
   }
