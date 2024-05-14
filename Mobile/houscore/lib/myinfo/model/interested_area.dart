@@ -9,26 +9,18 @@ part 'interested_area.g.dart';
 
 @JsonSerializable()
 class InterestedAreaModel extends IModelWithNameAndId{
-  final DateTime createdAt;
-  final DateTime updatedAt;
   final int areaId;
-  final String memberId;
   final String address;
 
   InterestedAreaModel({
-    required this.createdAt,
-    required this.updatedAt,
     required this.areaId,
-    required this.memberId,
     required this.address,
   }) : super(id: areaId);
 
+
   factory InterestedAreaModel.fromJson(Map<String, dynamic> json) {
     return InterestedAreaModel(
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
       areaId: json['areaId'],
-      memberId: json['memberId'],
       address: PlaceUtils.shortenMapAddress(json['address']),
     );
   }
