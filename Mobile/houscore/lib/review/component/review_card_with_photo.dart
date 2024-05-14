@@ -26,7 +26,7 @@ class ReviewCardWithPhoto extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        print('${this.address} tapped!');
+        // print('${this.address} tapped!');
         Navigator.push(
           context,
           MaterialPageRoute(

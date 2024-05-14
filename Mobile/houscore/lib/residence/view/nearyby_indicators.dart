@@ -36,30 +36,30 @@ class _NearbyIndicatorsState extends ConsumerState<NearbyIndicators> {
 // 응답 데이터 파싱
       if (response.data.isNotEmpty) {
         final responseData = response.data;
-        print("responseData['status'] = ${responseData['status']}");
+        // print("responseData['status'] = ${responseData['status']}");
         if (responseData['status'] == 'OK' &&
             responseData['addresses'].isNotEmpty) {
           final addressInfo = responseData['addresses'][0];
           final latitude = double.parse(addressInfo['y']);
           final longitude = double.parse(addressInfo['x']);
-          print('( ${latitude}, ${longitude} )');
+          // print('( ${latitude}, ${longitude} )');
           setState(() {
             _currentLocation = Location(address: widget.address, latitude: latitude, longitude: longitude);
-            print(
-                '_currentLocation = (${_currentLocation?.address} : ${_currentLocation?.latitude} , ${_currentLocation?.longitude})');
+            // print(
+            //     '_currentLocation = (${_currentLocation?.address} : ${_currentLocation?.latitude} , ${_currentLocation?.longitude})');
           });
         } else {
-          print('latLng change error [EMPTY ADDRESS OR BAD STATUS]');
+          // print('latLng change error [EMPTY ADDRESS OR BAD STATUS]');
           setState(() => _currentLocation = null);
         }
       }
       else {
-        print('latLng change error [EMPTY RESPONSE]');
+        // print('latLng change error [EMPTY RESPONSE]');
         setState(() => _currentLocation = null);
       }
     } catch (e) {
-      print('latLng change error [API ERROR]');
-      print(e.toString());
+      // print('latLng change error [API ERROR]');
+      // print(e.toString());
       setState(() => _currentLocation = null);
     }
   }

@@ -39,9 +39,9 @@ class _MyPageState extends ConsumerState<MyPage> {
       notifier.fetchInterestedAreaList();
     } catch (e) {
       if (e is DioError) {
-        print('DioError: ${e.response?.statusCode} - ${e.response?.data}');
+        // print('DioError: ${e.response?.statusCode} - ${e.response?.data}');
       } else {
-        print('Error deleting interested area: $e');
+        // print('Error deleting interested area: $e');
       }
     }
   }
@@ -80,7 +80,7 @@ class _MyPageState extends ConsumerState<MyPage> {
                   // 검색된 주소 정보를 바탕으로
                   // 새로운 관심 지역을 등록하는 API 호출
                   if (model != null && model.jibunAddress != null) {
-                    print('Selected Address: ${PlaceUtils.mapAddressForAPI(model.jibunAddress!)}');
+                    // print('Selected Address: ${PlaceUtils.mapAddressForAPI(model.jibunAddress!)}');
 
                     // 관심 지역 등록 API 호출
                     final repository = ref.watch(myinfoRepositoryProvider);
@@ -90,18 +90,18 @@ class _MyPageState extends ConsumerState<MyPage> {
                         'address': model.jibunAddress!,
                       });
 
-                      print('등록은 무사히 마쳤습니다!!');
-                      print('리스트를 다시 불러와볼까요?');
+                      // print('등록은 무사히 마쳤습니다!!');
+                      // print('리스트를 다시 불러와볼까요?');
 
                       final notifier = ref.watch(interestedAreaListProvider.notifier);
                       notifier.fetchInterestedAreaList();
 
-                      print('리스트 다시 불러오기도 성공했네요!! 축하합니다!!');
+                      // print('리스트 다시 불러오기도 성공했네요!! 축하합니다!!');
                     } catch (e) {
-                      print('등록 실패: $e');
+                      // print('등록 실패: $e');
                     }
                   } else {
-                    print('[[[[없는 주소입니다.]]]]');
+                    // print('[[[[없는 주소입니다.]]]]');
                   }
                 }, onDelete: (item) => _deleteInterestedArea(item),
               ),

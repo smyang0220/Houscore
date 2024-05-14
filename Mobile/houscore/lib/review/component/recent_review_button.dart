@@ -23,8 +23,8 @@ class _RecentReviewButtonState extends ConsumerState<RecentReviewButton> {
             ReviewModel response;
             final repository = ref.watch(ReviewRepositoryProvider);
             response = await repository.recentReviews();
-            print('********* ReviewDetailButton clicked ************');
-            print(response.address);
+            // print('********* ReviewDetailButton clicked ************');
+            // print(response.address);
           },
           child: OutlinedButton(
             onPressed: () {},

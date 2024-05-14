@@ -21,10 +21,10 @@ class MyReviewsIndicatorNotifier extends StateNotifier<DataStateBase> {
   Future<void> fetchDetailIndicator() async {
     try {
       final response = await repository.readMyReviews();
-      print(' ---------------------------------- response ${response} ----------------------------------');
+      // print(' ---------------------------------- response ${response} ----------------------------------');
       state = DataState(data: response);
     } catch (e) {
-      print(' ---------------------------------- error ${e} ----------------------------------');
+      // print(' ---------------------------------- error ${e} ----------------------------------');
       state = DataStateError(message: e.toString());
     }
   }

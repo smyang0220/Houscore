@@ -71,15 +71,15 @@ class LoginScreen extends ConsumerWidget {
                       padding: EdgeInsets.only(bottom: 15),
                       child: KakaoLoginButton(),
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(bottom: 15),
-                      child: NonMemberButton(
-                        onPressed: () {
-                          context.go('home');
-                        },
-                        text: '비회원으로 계속', // 필요한 경우 이 부분을 통해 버튼 텍스트를 변경할 수 있습니다.
-                      )
-                    ),
+                    // Padding(
+                    //   padding: EdgeInsets.only(bottom: 15),
+                    //   child: NonMemberButton(
+                    //     onPressed: () {
+                    //       context.go('home');
+                    //     },
+                    //     text: '비회원으로 계속', // 필요한 경우 이 부분을 통해 버튼 텍스트를 변경할 수 있습니다.
+                    //   )
+                    // ),
                   ]),
                 ),
               ],

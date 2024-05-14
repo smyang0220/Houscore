@@ -77,7 +77,7 @@ class AuthProvider extends ChangeNotifier {
     // 로그인중이면 그대로 로그인 페이지에 두고
     // 만약에 로그인중이 아니라면 로그인 페이지로 이동
     if (user == null) {
-      print("user==null");
+      // print("user==null");
       return logginIn ? null : '/login';
     }
 

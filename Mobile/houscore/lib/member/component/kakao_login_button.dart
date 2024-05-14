@@ -32,7 +32,7 @@ class _KakaoLoginButtonState extends ConsumerState<KakaoLoginButton> {
               try {
                 token = await UserApi.instance.loginWithKakaoTalk();
               } catch (error) {
-                print('로그인 실패 $error');
+                // print('로그인 실패 $error');
                 if (error is PlatformException && error.code == 'CANCELED') {
                   return;
                 }
@@ -71,7 +71,7 @@ class _KakaoLoginButtonState extends ConsumerState<KakaoLoginButton> {
               // print("검색완료");
               // print(result[0].memberName);
             } catch (e) {
-              print("카카오 로그인 실패 $e");
+              // print("카카오 로그인 실패 $e");
             }
             // print("리프레시 보내기 전");
             // final repository = ref.watch(kakaoLoginRepositoryProvider);
@@ -88,12 +88,13 @@ class _KakaoLoginButtonState extends ConsumerState<KakaoLoginButton> {
 //thing to do
 
           child: Card(
-            margin: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+            // margin: const EdgeInsets.fromLTRB(20, 20, 20, 0),
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
             elevation: 2,
             child: Container(
               height: 50,
+              width: MediaQuery.of(context).size.width * 0.8,
               decoration: BoxDecoration(
                 color: Colors.yellow,
                 borderRadius: BorderRadius.circular(7),

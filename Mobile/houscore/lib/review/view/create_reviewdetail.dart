@@ -116,8 +116,8 @@ class _CreateReviewDetailState extends ConsumerState<CreateReviewDetail> {
       Navigator.push(
           context, MaterialPageRoute(builder: (_) => CreateConfirmed()));
     } catch (e) {
-      print(reviewModel.toJson());
-      print("Error submitting review: $e");
+      // print(reviewModel.toJson());
+      // print("Error submitting review: $e");
     }
   }
 

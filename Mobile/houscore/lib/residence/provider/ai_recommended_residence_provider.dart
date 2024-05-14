@@ -77,11 +77,11 @@ class AiRecommendedResidenceNotifier extends StateNotifier<DataStateBase> {
 
     try {
       final response = await repository.getAiRecommendedResidences(sigungu: sigungu);
-      print(' ---------------------------------- response length ${response.length} ----------------------------------');
-      print(' ---------------------------------- response ${response} ----------------------------------');
+      // print(' ---------------------------------- response length ${response.length} ----------------------------------');
+      // print(' ---------------------------------- response ${response} ----------------------------------');
       state = DataState(data: response);
     } catch (e) {
-      print(' ---------------------------------- error ${e} ----------------------------------');
+      // print(' ---------------------------------- error ${e} ----------------------------------');
       state = DataStateError(message: e.toString());
     }
   }

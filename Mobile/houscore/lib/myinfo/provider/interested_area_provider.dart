@@ -77,11 +77,11 @@ class InterestedAreaListNotifier extends StateNotifier<DataStateBase> {
 
     try {
       final response = await repository.getInterestedAreaList();
-      print(' @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ response length ${response.length} ----------------------------------');
-      print(' %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% response ${response} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
+      // print(' @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ response length ${response.length} ----------------------------------');
+      // print(' %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% response ${response} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
       state = DataState(data: response);
     } catch (e) {
-      print(' ############################## error ${e} ############################## error ');
+      // print(' ############################## error ${e} ############################## error ');
       state = DataStateError(message: e.toString());
     }
   }
