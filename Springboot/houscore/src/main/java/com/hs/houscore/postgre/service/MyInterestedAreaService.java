@@ -31,8 +31,8 @@ public class MyInterestedAreaService {
         return myInfoDTOS;
     }
 
-    public void setMyInterestedArea(String address){
-        myInterestedAreaRepository.save(MyInterestedAreaEntity.builder().address(address).build());
+    public void setMyInterestedArea(String address, String memberEmail){
+        myInterestedAreaRepository.save(MyInterestedAreaEntity.builder().address(address).memberEmail(memberEmail).build());
     }
 
     public void deleteMyInterestedArea(Long areaId, String memberEmail){
