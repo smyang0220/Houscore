@@ -67,7 +67,7 @@ public class MyInfoController {
     @PostMapping("/area")
     @Operation(summary = "관심 지역 등록", description = "관심 지역 등록")
     public ResponseEntity<?> setMyInterestedArea(@AuthenticationPrincipal String memberEmail,
-                                                 @RequestParam RequestMyInfoDTO requestMyInfoDTO) {
+                                                 @RequestBody RequestMyInfoDTO requestMyInfoDTO) {
         try{
             //유저 검증
             if(memberEmail == null || memberEmail.equals("anonymousUser")){
