@@ -96,7 +96,8 @@ class PlaceUtils {
     Icon leadingIcon;
     Color iconColor;
 
-    double kiloDistance = DataUtils.convertToKilometers(distance);
+    // double kiloDistance = DataUtils.convertToKilometers(distance);
+    double kiloDistance = distance;
 
     // 1.5 km 까지만 도보로 가정 // 사람이 1시간에 4km를 걷는다고 가정
     if (kiloDistance <= 1.5) {

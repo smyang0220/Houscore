@@ -49,9 +49,9 @@ class _SearchResidencesState extends State<SearchResidences> {
                 ),
               );
               // 받은 결과로 이동
-              if (model != null && model.address != null) {
+              if (model != null && model.jibunAddress != null) {
                 // GoRouter를 사용하여 ResidenceDetail로 라우팅
-                context.push('/residence/${model.address}');
+                context.push('/residence/${model.jibunAddress}');
               }
               // ResidenceDetail(address: model.address!);
               print('model.toJson() == ${model.toJson()}');

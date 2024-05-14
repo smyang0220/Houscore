@@ -38,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
       'dislike': '배달음식을 시켜먹을 곳이 별로 없습니다.'
     },
     {
-      'address': '서울 강동구 천호대로 1121',
+      'address': '서울 강동구 길동 454-1',
       'userRating': 3.0,
       'aiRating': 3.5,
       'like': '회사촌이 가까워서 좋습니다.',
@@ -57,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
       'imageUrl': 'https://example.com/images/review1.jpg'
     },
     {
-      'address': '서울 강동구 천호대로 1121',
+      'address': '서울 강동구 길동 454-1',
       'userRating': 3.0,
       'aiRating': 3.5,
       'like': '회사촌이 가까워서 좋습니다.',
@@ -65,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
       'imageUrl': 'https://example.com/images/review2.jpg'
     },
     {
-      'address': '대전 유성구 덕명동 16-1',
+      'address': '대전 유성구 덕명동 522-1',
       'userRating': 4.5,
       'aiRating': 4.2,
       'like': '온오프 피자가 훌륭합니다.',
