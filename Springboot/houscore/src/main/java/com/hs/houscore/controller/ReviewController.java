@@ -90,7 +90,6 @@ public class ReviewController {
             if(memberEmail == null || memberEmail.equals("anonymousUser")){
                 return ResponseEntity.badRequest().body(new ErrorResponse("사용자 검증 필요"));
             }
-
             // FileUploadDTO 세팅
             FileUploadDTO fileUploadDTO = new FileUploadDTO();
             fileUploadDTO.setImageBase64(review.getImages());
