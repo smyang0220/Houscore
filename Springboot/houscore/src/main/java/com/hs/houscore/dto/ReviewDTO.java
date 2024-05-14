@@ -27,10 +27,6 @@ public class ReviewDTO {
         private Double inside;
         private Double infra;
         private Double security;
-
-        public double average() {
-            return (traffic + building + inside + infra + security) / 5.0;
-        }
     }
 
 }
