@@ -4,7 +4,7 @@ import '../repository/review_repository.dart';
 
 final residenceDetailIndicatorProvider = StateNotifierProvider.family<
     MyReviewsIndicatorNotifier, DataStateBase, String>((ref, mail) {
-  final repository = ref.watch(reviewRepositoryProvider);
+  final repository = ref.watch(ReviewRepositoryProvider);
   return MyReviewsIndicatorNotifier(repository: repository, mail: mail);
 });
 
@@ -20,7 +20,7 @@ class MyReviewsIndicatorNotifier extends StateNotifier<DataStateBase> {
   //유저 메일로 리뷰 검색
   Future<void> fetchDetailIndicator() async {
     try {
-      final response = await repository.readMyReviews(mail: mail);
+      final response = await repository.readMyReviews();
       print(' ---------------------------------- response ${response} ----------------------------------');
       state = DataState(data: response);
     } catch (e) {

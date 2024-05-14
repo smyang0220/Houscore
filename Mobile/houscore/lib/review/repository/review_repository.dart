@@ -4,33 +4,19 @@ import '../../common/const/data.dart';
 import '../../common/dio/dio.dart';
 import 'package:houscore/review/model/review_model.dart';
 import 'package:retrofit/retrofit.dart';
-
 part 'review_repository.g.dart';
-
-//통신을 위한 객체 제공
-final reviewRepositoryProvider = Provider<ReviewRepository>(
-  (ref) {
+final ReviewRepositoryProvider = Provider<ReviewRepository>(
+      (ref) {
     final dio = ref.watch(dioProvider);
     final repository = ReviewRepository(dio, baseUrl: 'http://$ip/api/review');
-
     return repository;
   },
 );
-
 //retrofit 인터페이스
 //build_runner가 build 시에 이 추상 클래스의 인스턴스를 생성해줌 -> g 파일 by JsonSerializableGenerator
 @RestApi()
 abstract class ReviewRepository {
   factory ReviewRepository(Dio dio, {String baseUrl}) = _ReviewRepository;
-
-  /*
-   최근 리뷰 조회
-   */
-  @GET('')
-  @Headers({
-    'accessToken': 'true',
-  })
-  Future<ReviewModel> recentReview();
 
   /*
    리뷰 상세 내용 조회
@@ -44,20 +30,7 @@ abstract class ReviewRepository {
   });
 
   /*
-   리뷰 등록
-   */
-  @POST('')
-  @Headers({
-    'accessToken': 'true',
-  })
-  Future<void> createOneReview({
-    @Body() required ReviewModel reviewModel,
-    @Query('image') required String image,
-    @Query('imageName') required String imageName,
-  });
-
-  /*
-   리뷰 수정
+   거주지 리뷰 수정
    */
   @PUT('')
   @Headers({
@@ -68,7 +41,20 @@ abstract class ReviewRepository {
   });
 
   /*
-   리뷰 삭제
+   거주지 리뷰 등록
+   */
+  @POST('')
+  @Headers({
+    'accessToken': 'true',
+  })
+
+  Future<void> createOneReview({
+    @Query("imageName") required String imageName,
+    @Body() required ReviewModel reviewModel,
+  });
+
+  /*
+   리뷰 상세 내용 조회
    */
   @DELETE('')
   @Headers({
@@ -77,15 +63,22 @@ abstract class ReviewRepository {
   Future<ReviewModel> deleteReview({
     @Query("id") required int id,
   });
-  
+
   /*
-   내 리뷰 조회
+   내가 쓴 리뷰 리스트 조회
    */
-  @DELETE('')
+  @GET('/my-review')
   @Headers({
     'accessToken': 'true',
   })
-  Future<ReviewModel> readMyReviews({
-    @Query("memberId") required String mail,
-  });
+  Future<ReviewModel> readMyReviews();
+
+  /*
+   리뷰 상세 내용 조회
+   */
+  @GET('/recent')
+  @Headers({
+    'accessToken': 'true',
+  })
+  Future<ReviewModel> recentReviews();
 }

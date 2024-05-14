@@ -82,7 +82,7 @@ class _NearbyIndicatorsState extends ConsumerState<NearbyIndicators> {
   Infra? findClosestInfra(List<Infra> infras) {
     if (infras.isEmpty) return null;
     return infras.reduce((closest, current) =>
-        current.distance < closest.distance ? current : closest);
+    current.distance < closest.distance ? current : closest);
   }
 
   // 전체 카테고리에서 가까운 곳들 찾아서 리스트화
