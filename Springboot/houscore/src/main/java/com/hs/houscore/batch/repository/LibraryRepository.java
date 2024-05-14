@@ -15,7 +15,8 @@ public interface LibraryRepository extends JpaRepository<LibraryEntity, Long> {
             "CAST(ST_SetSRID(ST_Point(b.latitude, b.longitude), 4326) AS geography)) AS distance " +
             "FROM library b " +
             "WHERE ST_DWithin(CAST(ST_SetSRID(ST_Point(:latitude, :longitude), 4326) AS geography), " +
-            "CAST(ST_SetSRID(ST_Point(b.latitude, b.longitude), 4326) AS geography), :distance) ",
+            "CAST(ST_SetSRID(ST_Point(b.latitude, b.longitude), 4326) AS geography), :distance) " +
+            "ORDER BY distance asc",
             nativeQuery = true)
     List<Object[]> findLibraryByDistance(
             @Param("latitude") Double userLatitude,

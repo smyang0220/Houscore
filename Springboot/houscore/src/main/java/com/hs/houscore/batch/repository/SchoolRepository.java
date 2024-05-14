@@ -15,7 +15,8 @@ public interface SchoolRepository extends JpaRepository<SchoolEntity, Long> {
             "CAST(ST_SetSRID(ST_Point(b.latitude, b.longitude), 4326) AS geography)) AS distance " +
             "FROM School b " +
             "WHERE ST_DWithin(CAST(ST_SetSRID(ST_Point(:latitude, :longitude), 4326) AS geography), " +
-            "CAST(ST_SetSRID(ST_Point(b.latitude, b.longitude), 4326) AS geography), :distance) ",
+            "CAST(ST_SetSRID(ST_Point(b.latitude, b.longitude), 4326) AS geography), :distance) " +
+            "ORDER BY distance asc",
             nativeQuery = true)
     List<Object[]> findSchoolByDistance(
             @Param("latitude") Double userLatitude,

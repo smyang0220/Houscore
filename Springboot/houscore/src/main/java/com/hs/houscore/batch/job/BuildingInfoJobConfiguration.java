@@ -59,10 +59,12 @@ public class BuildingInfoJobConfiguration {
                                                        ParkRepository parkRepository,
                                                        SchoolRepository schoolRepository,
                                                        StoreRepository storeRepository,
-                                                       SafeRankRepository safeRankRepository) {
+                                                       SafeRankRepository safeRankRepository,
+                                                       LaundryRepository laundryRepository,
+                                                       IndividualPubliclyAnnouncedPriceRepository individualPubliclyAnnouncedPriceRepository) {
         return new BuildingItemProcessor(masterRegisterRepository, realTransactionPriceRepository,
                 busRepository, subwayRepository, hospitalRepository, libraryRepository, parkRepository,
-                schoolRepository, storeRepository, safeRankRepository);
+                schoolRepository, storeRepository, safeRankRepository, laundryRepository, individualPubliclyAnnouncedPriceRepository);
     }
 
     //writer

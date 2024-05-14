@@ -23,7 +23,8 @@ public interface HospitalRepository extends JpaRepository<HospitalEntity, Long> 
             "    SELECT hospital_name, MIN(id)\n" +
             "    FROM hospital\n" +
             "    GROUP BY hospital_name\n" +
-            ")",
+            ")" +
+            "ORDER BY distance asc",
             nativeQuery = true)
     List<Object[]> findHospitalByDistance(
             @Param("latitude") Double userLatitude,

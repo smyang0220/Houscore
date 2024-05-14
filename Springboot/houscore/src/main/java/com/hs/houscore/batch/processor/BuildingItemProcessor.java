@@ -1,5 +1,6 @@
 package com.hs.houscore.batch.processor;
 
+import com.hs.houscore.batch.entity.IndividualPubliclyAnnouncedPriceEntity;
 import com.hs.houscore.batch.entity.MasterRegisterEntity;
 import com.hs.houscore.batch.entity.RealTransactionPriceEntity;
 import com.hs.houscore.batch.entity.SafeRankEntity;
@@ -29,6 +30,8 @@ public class BuildingItemProcessor implements ItemProcessor<BuildingEntity, Buil
     private final SchoolRepository schoolRepository;
     private final StoreRepository storeRepository;
     private final SafeRankRepository safeRankRepository;
+    private final LaundryRepository laundryRepository;
+    private final IndividualPubliclyAnnouncedPriceRepository individualPubliclyAnnouncedPriceRepository;
 
     @Override
     public BuildingEntity process(BuildingEntity building) throws Exception {
@@ -130,11 +133,23 @@ public class BuildingItemProcessor implements ItemProcessor<BuildingEntity, Buil
             }
             saleAvg = saleTot / saleList.size();
         }
+        //공시지가
+        List<IndividualPubliclyAnnouncedPriceEntity> individualPubliclyAnnouncedPriceEntityList = individualPubliclyAnnouncedPriceRepository.findByPlatPlac(building.getPlatPlc());
+        Long[] individualPrices = new Long[individualPubliclyAnnouncedPriceEntityList.size()];
+        if(!individualPubliclyAnnouncedPriceEntityList.isEmpty()){
+            for(int i = 0; i < individualPubliclyAnnouncedPriceEntityList.size(); i++){
+                individualPrices[i] = individualPubliclyAnnouncedPriceEntityList.get(i).getOfficialPrice();
+            }
+        }else {
+            individualPrices = null;
+        }
+
 
         return BuildingEntity.PriceInfo.builder()
                 .leaseAvg(leaseAvg)
                 .rentAvg(depositAvg + "/" + rentAvg)
                 .saleAvg(saleAvg)
+                .individualPubliclyAnnouncedPrice(individualPrices)
                 .build();
     }
     private BuildingEntity.TrafficInfo setTrafficInfo(BuildingEntity building) {
@@ -180,12 +195,16 @@ public class BuildingItemProcessor implements ItemProcessor<BuildingEntity, Buil
         List<Object[]> store = storeRepository.findStoreByDistance(building.getLocation().getY(),building.getLocation().getX(),700);
         List<Map<String, Object>> storeMap = getStoreMap(store);
 
+        List<Object[]> laundry = laundryRepository.findLaundryByDistance(building.getLocation().getY(),building.getLocation().getX(),700);
+        List<Map<String, Object>> laundryMap = getLaundryMap(laundry);
+
         return BuildingEntity.InfraInfo.builder()
                 .parks(parkMap)
                 .Libraries(libraryMap)
                 .medicalFacilities(hospitalMap)
                 .schools(schoolMap)
                 .supermarkets(storeMap)
+                .laundry(laundryMap)
                 .build();
     }
 
@@ -198,7 +217,7 @@ public class BuildingItemProcessor implements ItemProcessor<BuildingEntity, Buil
 
                 Map<String, Object> entryMap = new HashMap<>();
                 entryMap.put("name", busStopName);
-                entryMap.put("distance", distance.longValue());
+                entryMap.put("distance", convertKm(distance));
 
                 busMap.add(entryMap);
             }
@@ -216,7 +235,7 @@ public class BuildingItemProcessor implements ItemProcessor<BuildingEntity, Buil
 
                 Map<String, Object> entryMap = new HashMap<>();
                 entryMap.put("name", stationName + "("  + lineName + ")");
-                entryMap.put("distance", distance.longValue());
+                entryMap.put("distance", convertKm(distance));
 
                 subwayMap.add(entryMap);
             }
@@ -233,7 +252,7 @@ public class BuildingItemProcessor implements ItemProcessor<BuildingEntity, Buil
 
                 Map<String, Object> entryMap = new HashMap<>();
                 entryMap.put("name", hospitalName);
-                entryMap.put("distance", distance.longValue());
+                entryMap.put("distance", convertKm(distance));
 
                 hospitalMap.add(entryMap);
             }
@@ -250,7 +269,7 @@ public class BuildingItemProcessor implements ItemProcessor<BuildingEntity, Buil
 
                 Map<String, Object> entryMap = new HashMap<>();
                 entryMap.put("name", libraryName);
-                entryMap.put("distance", distance.longValue());
+                entryMap.put("distance", convertKm(distance));
 
                 libraryMap.add(entryMap);
             }
@@ -267,7 +286,7 @@ public class BuildingItemProcessor implements ItemProcessor<BuildingEntity, Buil
 
                 Map<String, Object> entryMap = new HashMap<>();
                 entryMap.put("name", parkName);
-                entryMap.put("distance", distance.longValue());
+                entryMap.put("distance", convertKm(distance));
 
                 parkMap.add(entryMap);
             }
@@ -283,7 +302,7 @@ public class BuildingItemProcessor implements ItemProcessor<BuildingEntity, Buil
 
                 Map<String, Object> entryMap = new HashMap<>();
                 entryMap.put("name", schoolName);
-                entryMap.put("distance", distance.longValue());
+                entryMap.put("distance", convertKm(distance));
 
                 schoolMap.add(entryMap);
             }
@@ -299,11 +318,32 @@ public class BuildingItemProcessor implements ItemProcessor<BuildingEntity, Buil
 
                 Map<String, Object> entryMap = new HashMap<>();
                 entryMap.put("name", storeName);
-                entryMap.put("distance", distance.longValue());
+                entryMap.put("distance", convertKm(distance));
 
                 storeMap.add(entryMap);
             }
         }
         return storeMap;
+    }
+
+    private List<Map<String, Object>> getLaundryMap(List<Object[]> laundry) {
+        List<Map<String, Object>> laundryMap = new ArrayList<>();
+        if(laundry != null && !laundry.isEmpty()){
+            for (Object[] data : laundry) {
+                String laundryName = (String) data[2];
+                Double distance = (Double) data[6];
+
+                Map<String, Object> entryMap = new HashMap<>();
+                entryMap.put("name", laundryName);
+                entryMap.put("distance", convertKm(distance));
+
+                laundryMap.add(entryMap);
+            }
+        }
+        return laundryMap;
+    }
+
+    private static Double convertKm(Double km){
+        return km / 1000;
     }
 }
