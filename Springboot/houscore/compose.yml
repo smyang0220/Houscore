@@ -7,7 +7,7 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=prod
 #  ai_service:
-#    build: ./ai
 #    image: houscore-fastapi-app
 #    ports:
 #      - "8000:8000"
+
