@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:houscore/common/layout/default_layout.dart';
 import 'package:remedi_kopo/remedi_kopo.dart';
 import '../../common/const/color.dart';
+import '../../residence/model/location_model.dart';
+import '../../residence/repository/naver_map_repository.dart';
 import 'create_reviewdetail.dart';
 
 class CreateReview extends StatefulWidget {
@@ -13,6 +16,8 @@ class CreateReview extends StatefulWidget {
 
 class _CreateReviewState extends State<CreateReview> {
   String? selectedAddress;
+  double? lat;
+  double? lng;
   String? typeValue;
   String? yearValue;
   String? floorValue;
@@ -114,6 +119,8 @@ class _CreateReviewState extends State<CreateReview> {
                         ? () {
                             ReviewData reviewData = ReviewData(
                               selectedAddress: selectedAddress,
+                              lat: lat,
+                              lng: lng,
                               typeValue: typeValue,
                               yearValue: yearValue,
                               floorValue: floorValue,
@@ -153,6 +160,8 @@ class _CreateReviewState extends State<CreateReview> {
 
 class ReviewData {
   String? selectedAddress;
+  double? lat;
+  double? lng;
   String? nameValue;
   String? typeValue;
   String? yearValue;
@@ -161,6 +170,8 @@ class ReviewData {
 
   ReviewData({
     this.selectedAddress,
+    this.lat,
+    this.lng,
     this.nameValue,
     this.typeValue,
     this.yearValue,
@@ -170,18 +181,20 @@ class ReviewData {
 }
 
 //리뷰할 주소 검색
-class SearchResidence extends StatefulWidget {
+class SearchResidence extends ConsumerStatefulWidget {
   final String? value;
   final ValueChanged<String?> onChanged;
 
   const SearchResidence({this.value, required this.onChanged});
 
   @override
-  State<SearchResidence> createState() => _SearchResidenceState();
+  ConsumerState<SearchResidence> createState() => _SearchResidenceState();
 }
 
-class _SearchResidenceState extends State<SearchResidence> {
+class _SearchResidenceState extends ConsumerState<SearchResidence> {
   String? selectedAddress;
+  double? selectedLat;
+  double? selectedLng;
 
   @override
   void initState() {
@@ -194,6 +207,13 @@ class _SearchResidenceState extends State<SearchResidence> {
       selectedAddress = address;
     });
     widget.onChanged(address); // 상위 위젯의 selectedAddress 업데이트
+  }
+
+  void setLatLng(double lat, double lng) {
+    setState(() {
+      selectedLat = lat;
+      selectedLng = lng;
+    });
   }
 
   @override
@@ -241,21 +261,41 @@ class _SearchResidenceState extends State<SearchResidence> {
     );
   }
 
+  Future<Map<String, double>?> _fetchLatLng(String address, WidgetRef ref) async {
+    try {
+      final response = await ref.read(naverMapRepositoryProvider).getLatLngFromAddress(address);
+      if (response.data.isNotEmpty) {
+        final responseData = response.data;
+        if (responseData['status'] == 'OK' && responseData['addresses'].isNotEmpty) {
+          final addressInfo = responseData['addresses'][0];
+          final latitude = double.parse(addressInfo['y']);
+          final longitude = double.parse(addressInfo['x']);
+          return {'latitude': latitude, 'longitude': longitude};
+        }
+      }
+    } catch (e) {
+      print('Error fetching lat/lng: $e');
+    }
+    return null;
+  }
+
+
   Future<void> _navigateAndDisplaySelection(BuildContext context) async {
-    //결과를 RemediKopo 페이지에서 받아옴
     final result = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => RemediKopo()),
     );
 
-    //결과가 null인지 확인
     if (result != null && result is KopoModel) {
       setAddress('${result.address!}');
+
+      final latLng = await _fetchLatLng(result.address!, ref);
+      if (latLng != null) {
+        setLatLng(latLng['latitude']!, latLng['longitude']!);
+      }
     }
   }
 }
-
-// 드롭다운
 
 class DropdownType extends StatefulWidget {
   final String? value;
@@ -418,17 +458,18 @@ class ReviewRating extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: categories
-          .map((category) => ListTile(
-                title: Container(
-                  child: Center(
-                    child: Text(category, textAlign: TextAlign.center),
-                  ),
+          .map(
+            (category) => ListTile(
+              title: Container(
+                child: Center(
+                  child: Text(category, textAlign: TextAlign.center),
                 ),
-                trailing: RatingWidget(
-                  onRatingChanged: (rating) =>
-                      onRatingUpdated(category, rating),
-                ),
-              ))
+              ),
+              trailing: RatingWidget(
+                onRatingChanged: (rating) => onRatingUpdated(category, rating),
+              ),
+            ),
+          )
           .toList(),
     );
   }
