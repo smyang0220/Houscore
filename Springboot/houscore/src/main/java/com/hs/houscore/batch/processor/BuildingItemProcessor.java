@@ -141,9 +141,8 @@ public class BuildingItemProcessor implements ItemProcessor<BuildingEntity, Buil
                 individualPrices[i] = individualPubliclyAnnouncedPriceEntityList.get(i).getOfficialPrice();
             }
         }else {
-            individualPrices = null;
+            individualPrices = new Long[0];
         }
-
 
         return BuildingEntity.PriceInfo.builder()
                 .leaseAvg(leaseAvg)

@@ -1,5 +1,6 @@
 package com.hs.houscore.postgre.service;
 
+import com.hs.houscore.dto.MyInfoDTO;
 import com.hs.houscore.postgre.entity.MyInterestedAreaEntity;
 import com.hs.houscore.postgre.entity.ReviewEntity;
 import com.hs.houscore.postgre.repository.MyInterestedAreaRepository;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -17,12 +19,20 @@ import java.util.List;
 public class MyInterestedAreaService {
     private final MyInterestedAreaRepository myInterestedAreaRepository;
 
-    public List<MyInterestedAreaEntity> getMyInterestedAreaList(String memberEmail){
-        return myInterestedAreaRepository.findByMemberEmail(memberEmail);
+    public List<MyInfoDTO> getMyInterestedAreaList(String memberEmail){
+        List<MyInterestedAreaEntity> myInterestedAreaEntities = myInterestedAreaRepository.findByMemberEmail(memberEmail);
+        List<MyInfoDTO> myInfoDTOS = new ArrayList<>();
+        for(MyInterestedAreaEntity myInterestedAreaEntity : myInterestedAreaEntities){
+            myInfoDTOS.add(MyInfoDTO.builder()
+                            .areaId(myInterestedAreaEntity.getAreaId())
+                            .address(myInterestedAreaEntity.getAddress())
+                    .build());
+        }
+        return myInfoDTOS;
     }
 
-    public void setMyInterestedArea(MyInterestedAreaEntity myInterestedArea){
-        myInterestedAreaRepository.save(myInterestedArea);
+    public void setMyInterestedArea(String address){
+        myInterestedAreaRepository.save(MyInterestedAreaEntity.builder().address(address).build());
     }
 
     public void deleteMyInterestedArea(Long areaId, String memberEmail){
