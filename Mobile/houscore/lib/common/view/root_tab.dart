@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:houscore/common/const/color.dart';
 import 'package:houscore/review/view/create_review.dart';
-import 'package:houscore/review/view/my_review_list.dart';
 import '../../myinfo/view/my_page.dart';
 import 'home_screen.dart';
 
@@ -55,7 +54,7 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
         unselectedItemColor: BODY_TEXT_COLOR,
         selectedFontSize: 10,
         unselectedFontSize: 10,
-        type: BottomNavigationBarType.shifting, 
+        type: BottomNavigationBarType.fixed,
         onTap: (int index){
           setState(() {
             this.index = index;
