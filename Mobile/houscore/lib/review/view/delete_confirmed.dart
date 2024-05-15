@@ -25,12 +25,6 @@ class _DeleteConfirmedState extends State<DeleteConfirmed> {
     super.dispose();
   }
 
-  Future<void> _navigateAfter() async {
-    if (mounted) {
-      await Future.delayed(const Duration(seconds: 15), navigateToHome);
-    }
-  }
-
   Future<bool> navigateToHome() async {
     return true;
   }
@@ -111,7 +105,9 @@ class _DeleteConfirmedState extends State<DeleteConfirmed> {
                   ),
                   OutlinedButton(
                     onPressed: () {
-                      Navigator.pop(context);
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => MyReviewList()),
+                      );
                     },
                     style: OutlinedButton.styleFrom(
                       foregroundColor: Colors.white,

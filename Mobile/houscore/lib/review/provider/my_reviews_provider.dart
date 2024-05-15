@@ -4,7 +4,7 @@ import '../repository/review_repository.dart';
 
 final residenceDetailIndicatorProvider = StateNotifierProvider.family<
     MyReviewsIndicatorNotifier, DataStateBase, String>((ref, mail) {
-  final repository = ref.watch(ReviewRepositoryProvider);
+  final repository = ref.watch(reviewRepositoryProvider);
   return MyReviewsIndicatorNotifier(repository: repository, mail: mail);
 });
 
