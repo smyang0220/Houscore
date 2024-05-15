@@ -1,16 +1,20 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'review_model.dart';
+part of 'my_review_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-ReviewModel _$ReviewModelFromJson(Map<String, dynamic> json) => ReviewModel(
+MyReviewModel _$MyReviewModelFromJson(Map<String, dynamic> json) =>
+    MyReviewModel(
+      createdAt: json['createdAt'] as String,
+      updatedAt: json['updatedAt'] as String,
+      id: json['id'],
+      memberId: json['memberId'] as String,
       address: json['address'] as String,
-      lat: (json['lat'] as num).toDouble(),
-      lng: (json['lng'] as num).toDouble(),
       residenceType: json['residenceType'] as String,
+      year: json['year'] as String,
       residenceFloor: json['residenceFloor'] as String,
       starRating:
           StarRating.fromJson(json['starRating'] as Map<String, dynamic>),
@@ -18,20 +22,23 @@ ReviewModel _$ReviewModelFromJson(Map<String, dynamic> json) => ReviewModel(
       cons: json['cons'] as String,
       maintenanceCost: json['maintenanceCost'] as String,
       images: json['images'] as String?,
-      residenceYear: json['residenceYear'] as String,
+      starRatingAverage: (json['starRatingAverage'] as num).toDouble(),
     );
 
-Map<String, dynamic> _$ReviewModelToJson(ReviewModel instance) =>
+Map<String, dynamic> _$MyReviewModelToJson(MyReviewModel instance) =>
     <String, dynamic>{
+      'createdAt': instance.createdAt,
+      'updatedAt': instance.updatedAt,
+      'id': instance.id,
+      'memberId': instance.memberId,
       'address': instance.address,
-      'lat': instance.lat,
-      'lng': instance.lng,
       'residenceType': instance.residenceType,
+      'year': instance.year,
       'residenceFloor': instance.residenceFloor,
       'starRating': instance.starRating,
       'pros': instance.pros,
       'cons': instance.cons,
       'maintenanceCost': instance.maintenanceCost,
       'images': instance.images,
-      'residenceYear': instance.residenceYear,
+      'starRatingAverage': instance.starRatingAverage,
     };

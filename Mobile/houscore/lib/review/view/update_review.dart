@@ -1,22 +1,22 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:houscore/common/layout/default_layout.dart';
-import 'package:remedi_kopo/remedi_kopo.dart';
+import 'package:houscore/review/view/update_reviewdetail.dart';
 import '../../common/const/color.dart';
-import '../../residence/repository/naver_map_repository.dart';
-import 'create_reviewdetail.dart';
+import '../model/review_to_update_model.dart';
 
-class CreateReview extends StatefulWidget {
+class UpdateReview extends StatefulWidget {
+
+  final ReviewToUpdateModel reviewToUpdate;
+  UpdateReview({required this.reviewToUpdate});
+
   @override
-  _CreateReviewState createState() => _CreateReviewState();
+  _UpdateReviewState createState() => _UpdateReviewState();
 }
 
-class _CreateReviewState extends State<CreateReview> {
+class _UpdateReviewState extends State<UpdateReview> {
   String? selectedAddress;
-  double? lat;
-  double? lng;
   String? typeValue;
   String? yearValue;
   String? floorValue;
@@ -29,12 +29,6 @@ class _CreateReviewState extends State<CreateReview> {
       floorValue != null &&
       ratings.length == categories.length &&
       ratings.values.every((rating) => rating != 0);
-
-  void _updateSelectedAddress(String? newValue) {
-    setState(() {
-      selectedAddress = newValue;
-    });
-  }
 
   void _updateTypeValue(String? newValue) {
     setState(() {
@@ -70,7 +64,7 @@ class _CreateReviewState extends State<CreateReview> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                '리뷰 작성하기 (1/2)',
+                '리뷰 수정하기 (1/2)',
                 style: TextStyle(
                   fontFamily: 'NotoSans',
                   fontSize: 20,
@@ -78,10 +72,7 @@ class _CreateReviewState extends State<CreateReview> {
                   color: Colors.black,
                 ),
               ),
-              SearchResidence(
-                value: selectedAddress,
-                onChanged: _updateSelectedAddress,
-              ),
+              Text(widget.reviewToUpdate.address),
               DropdownType(
                 value: typeValue,
                 onChanged: _updateTypeValue,
@@ -116,20 +107,11 @@ class _CreateReviewState extends State<CreateReview> {
                   ElevatedButton(
                     onPressed: isButtonEnabled
                         ? () {
-                            ReviewData reviewData = ReviewData(
-                              selectedAddress: selectedAddress,
-                              lat: lat,
-                              lng: lng,
-                              typeValue: typeValue,
-                              yearValue: yearValue,
-                              floorValue: floorValue,
-                              ratings: ratings,
-                            );
                             Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) =>
-                                    CreateReviewDetail(reviewData: reviewData),
+                                    UpdateReviewDetail(reviewToUpdate: widget.reviewToUpdate),
                               ),
                             );
                           }
@@ -154,144 +136,6 @@ class _CreateReviewState extends State<CreateReview> {
         ),
       ),
     );
-  }
-}
-
-class ReviewData {
-  String? selectedAddress;
-  double? lat;
-  double? lng;
-  String? nameValue;
-  String? typeValue;
-  String? yearValue;
-  String? floorValue;
-  Map<String, double> ratings;
-
-  ReviewData({
-    this.selectedAddress,
-    this.lat,
-    this.lng,
-    this.nameValue,
-    this.typeValue,
-    this.yearValue,
-    this.floorValue,
-    required this.ratings,
-  });
-}
-
-//리뷰할 주소 검색
-class SearchResidence extends ConsumerStatefulWidget {
-  final String? value;
-  final ValueChanged<String?> onChanged;
-
-  const SearchResidence({this.value, required this.onChanged});
-
-  @override
-  ConsumerState<SearchResidence> createState() => _SearchResidenceState();
-}
-
-class _SearchResidenceState extends ConsumerState<SearchResidence> {
-  String? selectedAddress;
-  double? selectedLat;
-  double? selectedLng;
-
-  @override
-  void initState() {
-    super.initState();
-    selectedAddress = widget.value; // 초기 값 설정
-  }
-
-  void setAddress(String address) {
-    setState(() {
-      selectedAddress = address;
-    });
-    widget.onChanged(address); // 상위 위젯의 selectedAddress 업데이트
-  }
-
-  void setLatLng(double lat, double lng) {
-    setState(() {
-      selectedLat = lat;
-      selectedLng = lng;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      //TODO 위젯 크기 통일시키기
-      //TODO 주소 너무 길면 잘림
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            '주소',
-            style: TextStyle(
-              fontFamily: 'NotoSans',
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-            ),
-          ),
-        ),
-        GestureDetector(
-          onTap: () {
-            _navigateAndDisplaySelection(context);
-          },
-          child: Container(
-            height: 60,
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            decoration: BoxDecoration(
-              color: INPUT_BORDER_COLOR,
-              borderRadius: BorderRadius.circular(8.0),
-              border: Border.all(color: INPUT_BORDER_COLOR),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(selectedAddress ?? "실제 거주했던 집의 주소를 검색해주세요.",
-                    style: TextStyle(fontSize: 16, color: Colors.black)),
-                Icon(Icons.search, color: PRIMARY_COLOR),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Future<Map<String, double>?> _fetchLatLng(String address, WidgetRef ref) async {
-    try {
-      final response = await ref.read(naverMapRepositoryProvider).getLatLngFromAddress(address);
-      if (response.data.isNotEmpty) {
-        final responseData = response.data;
-        if (responseData['status'] == 'OK' && responseData['addresses'].isNotEmpty) {
-          final addressInfo = responseData['addresses'][0];
-          final latitude = double.parse(addressInfo['y']);
-          final longitude = double.parse(addressInfo['x']);
-          return {'latitude': latitude, 'longitude': longitude};
-        }
-      }
-    } catch (e) {
-      print('Error fetching lat/lng: $e');
-    }
-    return null;
-  }
-
-  Future<void> _navigateAndDisplaySelection(BuildContext context) async {
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => RemediKopo()),
-    );
-
-    if (result != null && result is KopoModel) {
-      setAddress('${result.address!}');
-
-      final latLng = await _fetchLatLng(result.address!, ref);
-      if (latLng != null) {
-        setLatLng(latLng['latitude']!, latLng['longitude']!);
-      }
-    }
   }
 }
 

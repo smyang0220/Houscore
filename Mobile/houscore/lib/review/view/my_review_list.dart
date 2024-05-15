@@ -1,27 +1,53 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:houscore/common/layout/default_layout.dart';
-import 'package:houscore/review/view/create_review.dart';
 import 'package:houscore/review/view/delete_confirmed.dart';
 import 'package:blurry/blurry.dart';
+import 'package:houscore/review/view/update_review.dart';
+import '../model/my_review_model.dart';
+import '../model/review_to_update_model.dart';
+import '../repository/review_repository.dart';
 
-import '../../common/const/data.dart';
-import '../../myinfo/model/myinfo_model.dart';
-
-class MyReviewList extends StatefulWidget {
+class MyReviewList extends ConsumerStatefulWidget {
   const MyReviewList({Key? key}) : super(key: key);
 
   @override
-  State<MyReviewList> createState() => _MyReviewListState();
+  ConsumerState<MyReviewList> createState() => _MyReviewListState();
 }
 
-class _MyReviewListState extends State<MyReviewList> {
+class _MyReviewListState extends ConsumerState<MyReviewList> {
+  final List<MyReviewModel> reviewsToShow = [];
 
-  //TODO 이미지 업로드 안 했으면 기본 이미지 표시
-  // final List<Map<String, dynamic>> reviewsToShow;
+  @override
+  void initState() {
+    super.initState();
+    _fetchReviews();
+  }
+
+  void _fetchReviews() async {
+    print('Fetching reviews...');
+    final repository = ref.read(reviewRepositoryProvider);
+    List<MyReviewModel> data = await repository.readMyReviews();
+    updateList(data);
+  }
+
+  void updateList(List<MyReviewModel> newReviews) {
+    setState(() {
+      reviewsToShow.clear();
+      reviewsToShow.addAll(newReviews);
+    });
+  }
+
+  void deleteReview(int id) async {
+    final repository = ref.read(reviewRepositoryProvider);
+    await repository.deleteReview(id: id);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => DeleteConfirmed()),
+    );
+    _fetchReviews();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,20 +75,17 @@ class _MyReviewListState extends State<MyReviewList> {
                 ),
               ),
               SizedBox(height: 15),
-              // Column(
-              //   children: reviewsToShow
-              //       .map(
-              //         (review) => MyReviewCard(
-              //           address: review['address'],
-              //           userRating: review['userRating'],
-              //           aiRating: review['aiRating'],
-              //           like: review['like'],
-              //           dislike: review['dislike'],
-              //           imageUrl: review['imageUrl'],
-              //         ),
-              //       )
-              //       .toList(),
-              // ),
+              if(reviewsToShow.isEmpty)
+                Container(child: Text('아직 작성된 리뷰가 없어요.'),)
+              else
+                ...reviewsToShow
+                    .map(
+                      (review) => MyReviewCard(
+                        review: review,
+                        deleteReview: deleteReview,
+                      ),
+                    )
+                    .toList(),
             ],
           ),
         ),
@@ -71,24 +94,14 @@ class _MyReviewListState extends State<MyReviewList> {
   }
 }
 
-// my review 카드
-
 class MyReviewCard extends StatelessWidget {
-  final String address;
-  final double userRating;
-  final double aiRating;
-  final String like;
-  final String dislike;
-  final String imageUrl;
+  final MyReviewModel review;
+  final Function(int) deleteReview;
 
   const MyReviewCard({
     Key? key,
-    required this.address,
-    required this.userRating,
-    required this.aiRating,
-    required this.like,
-    required this.dislike,
-    required this.imageUrl,
+    required this.review,
+    required this.deleteReview,
   }) : super(key: key);
 
   @override
@@ -110,21 +123,20 @@ class MyReviewCard extends StatelessWidget {
               children: [
                 Container(
                   child: Text(
-                    address,
+                    review.address,
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 SizedBox(width: 10),
-                // 평점 관련 부분
-                _buildRatingSection(userRating, aiRating),
+                _buildRatingSection(review.starRatingAverage),
               ],
             ),
             SizedBox(height: 10),
             Row(
               children: [
                 Image.asset(
-                  'asset/img/logo/main_logo.png',
+                  review.images!.isEmpty ? 'asset/img/logo/main_logo.png' : review.images!,
                   width: MediaQuery.of(context).size.width * 0.2,
                 ),
                 SizedBox(width: 15),
@@ -137,13 +149,11 @@ class MyReviewCard extends StatelessWidget {
                           children: [
                             TextSpan(
                               text: '추천해요 : ',
-                              style:
-                              TextStyle(fontSize: 13, color: Colors.blue),
+                              style: TextStyle(fontSize: 13, color: Colors.blue),
                             ),
                             TextSpan(
-                              text: like,
-                              style:
-                              TextStyle(fontSize: 13, color: Colors.black),
+                              text: review.pros,
+                              style: TextStyle(fontSize: 13, color: Colors.black),
                             ),
                           ],
                         ),
@@ -157,9 +167,8 @@ class MyReviewCard extends StatelessWidget {
                               style: TextStyle(fontSize: 13, color: Colors.red),
                             ),
                             TextSpan(
-                              text: dislike,
-                              style:
-                              TextStyle(fontSize: 13, color: Colors.black),
+                              text: review.cons,
+                              style: TextStyle(fontSize: 13, color: Colors.black),
                             ),
                           ],
                         ),
@@ -180,35 +189,41 @@ class MyReviewCard extends StatelessWidget {
                     flex: 1,
                     child: TextButton(
                       onPressed: () {
+                        ReviewToUpdateModel reviewToUpdate = ReviewToUpdateModel(
+                          id: review.id,
+                          address: review.address,
+                          residenceType: review.residenceFloor,
+                          residenceFloor: review.residenceFloor,
+                          starRating: review.starRating,
+                          pros: review.pros,
+                          cons: review.cons,
+                          maintenanceCost: review.maintenanceCost,
+                          images: review.images,
+                          residenceYear: review.year,
+                        );
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => CreateReview()),
-                          //TODO update로 바꾸기
+                            builder: (context) => UpdateReview(reviewToUpdate: reviewToUpdate),
+                          ),
                         );
                       },
                       child: Text('수정'),
                     ),
                   ),
                 ),
-                VerticalDivider(),
                 Container(
                   child: Expanded(
                     flex: 1,
                     child: TextButton(
                       onPressed: () {
                         Blurry.info(
-                          title: '건물 이름 또는 주소',
+                          title: review.address,
                           cancelButtonText: '취소',
-                          description:
-                          '리뷰를 삭제하시겠습니까?',
+                          description: '리뷰를 삭제하시겠습니까?',
                           confirmButtonText: '삭제',
                           onConfirmButtonPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => DeleteConfirmed()),
-                            );
+                            deleteReview(review.id);
                           },
                         ).show(context);
                       },
@@ -224,7 +239,7 @@ class MyReviewCard extends StatelessWidget {
     );
   }
 
-  Widget _buildRatingSection(double userRating, double aiRating) {
+  Widget _buildRatingSection(double userRating) {
     return Row(
       children: [
         Icon(

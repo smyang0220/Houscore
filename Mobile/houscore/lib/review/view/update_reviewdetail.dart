@@ -5,25 +5,25 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:houscore/common/const/color.dart';
 import 'package:houscore/common/layout/default_layout.dart';
+import 'package:houscore/review/model/star_rating_model.dart';
 import 'package:houscore/review/view/create_confirmed.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import '../model/review_model.dart';
-import '../model/star_rating_model.dart';
+import '../model/review_to_update_model.dart';
 import '../repository/review_repository.dart';
 import 'create_review.dart';
 
-class CreateReviewDetail extends ConsumerStatefulWidget {
-  final ReviewData reviewData;
-  //이전 페이지에서 받아온 데이터
+class UpdateReviewDetail extends ConsumerStatefulWidget {
+  final ReviewToUpdateModel reviewToUpdate;
 
-  CreateReviewDetail({required this.reviewData});
+  UpdateReviewDetail({required this.reviewToUpdate});
 
   @override
   ConsumerState createState() => _CreateReviewDetailState();
 }
 
-class _CreateReviewDetailState extends ConsumerState<CreateReviewDetail> {
+class _CreateReviewDetailState extends ConsumerState<UpdateReviewDetail> {
   final TextEditingController _recommendController = TextEditingController();
   final TextEditingController _dislikeController = TextEditingController();
   final TextEditingController _maintenanceController = TextEditingController();
@@ -64,65 +64,35 @@ class _CreateReviewDetailState extends ConsumerState<CreateReviewDetail> {
   void submitReview() async {
     List<int> imageBytes = await images[0]!.readAsBytes();
     String base64String = base64Encode(imageBytes);
-    print(base64String);
     await File('output_base64.txt').writeAsString(base64String);
-    print("나와욧");
 
-    // ReviewModel reviewModel = ReviewModel(
-    //   address: widget.reviewData.selectedAddress!,
-    //   lat: widget.reviewData.lat!,
-    //   lng: widget.reviewData.lng!,
-    //   residenceType: widget.reviewData.typeValue!,
-    //   residenceFloor: widget.reviewData.floorValue!,
-    //   starRating: StarRating(
-    //     traffic: widget.reviewData.ratings['교통']!.toDouble(),
-    //     building: widget.reviewData.ratings['건물']!.toDouble(),
-    //     inside: widget.reviewData.ratings['내부']!.toDouble(),
-    //     infra: widget.reviewData.ratings['인프라']!.toDouble(),
-    //     security: widget.reviewData.ratings['치안']!.toDouble(),
-    //   ),
-    //   pros: _recommendController.text,
-    //   cons: _dislikeController.text,
-    //   maintenanceCost: _maintenanceController.text,
-    //   images: base64String,
-    //   residenceYear: widget.reviewData.yearValue!,
-    // );
-
-    ReviewModel reviewModel = ReviewModel(
-      address: '서울특별시 강남구 개포동 12',
-      lat: 37.4935,
-      lng: 127.0654,
-      residenceType: '아파트',
-      residenceFloor: '1층',
+    ReviewToUpdateModel reviewModel = ReviewToUpdateModel(
+      id: widget.reviewToUpdate.id,
+      address: widget.reviewToUpdate.address,
+      residenceType: widget.reviewToUpdate.residenceType,
+      residenceFloor: widget.reviewToUpdate.residenceFloor,
       starRating: StarRating(
-        traffic: 1.0,
-        building: 2.0,
-        inside: 3.0,
-        infra: 4.0,
-        security: 5.0,
+        traffic: widget.reviewToUpdate.starRating.traffic,
+        building: widget.reviewToUpdate.starRating.building,
+        inside: widget.reviewToUpdate.starRating.inside,
+        infra: widget.reviewToUpdate.starRating.infra,
+        security: widget.reviewToUpdate.starRating.security,
       ),
-      pros: '넘 깨끗해요',
-      cons: '부엌이 좁아요',
-      maintenanceCost: '한 달에 10만원',
-    images: base64String,
-    residenceYear: '2024년',
+      pros: _recommendController.text,
+      cons: _dislikeController.text,
+      maintenanceCost: _maintenanceController.text,
+      images: base64String,
+      residenceYear: widget.reviewToUpdate.residenceYear,
     );
 
     try {
     final repository = ref.read(reviewRepositoryProvider);
-    print(reviewModel);
-    print("레포지토리생성후임");
-    final resp = await repository.createOneReview(
-        imageName: "123123",
-        reviewModel: reviewModel
-    );
-    print(resp);
-
+    await repository.updateReview(reviewModel: widget.reviewToUpdate);
     Navigator.push(
           context, MaterialPageRoute(builder: (_) => CreateConfirmed(reviewAddress: reviewModel.address,)));
     } catch (e) {
-      // print(reviewModel.toJson());
-      // print("Error submitting review: $e");
+      print(reviewModel.toJson());
+      print("Error submitting review: $e");
     }
   }
 
