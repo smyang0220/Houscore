@@ -4,10 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:confirmation_success/confirmation_success.dart';
 import 'package:go_router/go_router.dart';
 import 'package:houscore/myinfo/view/my_page.dart';
-
-import '../component/recent_review_button.dart';
+import 'package:houscore/review/view/my_review_list.dart';
 
 class CreateConfirmed extends StatefulWidget {
+  final String reviewAddress;
+
+  CreateConfirmed({required this.reviewAddress});
+
   @override
   State<CreateConfirmed> createState() => _CreateConfirmedState();
 }
@@ -25,16 +28,6 @@ class _CreateConfirmedState extends State<CreateConfirmed> {
   void dispose() {
     _sub?.cancel();
     super.dispose();
-  }
-
-  Future<void> _navigateAfter() async {
-    if (mounted) {
-      await Future.delayed(const Duration(seconds: 15), navigateToHome);
-    }
-  }
-
-  Future<bool> navigateToHome() async {
-    return true;
   }
 
   @override
@@ -93,7 +86,12 @@ class _CreateConfirmedState extends State<CreateConfirmed> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   OutlinedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      if (widget.reviewAddress != '') {
+                        // GoRouter를 사용하여 ResidenceDetail로 라우팅
+                        context.push('/residence/${widget.reviewAddress}');
+                      }
+                    },
                     style: OutlinedButton.styleFrom(
                       foregroundColor: Colors.black,
                       backgroundColor: Colors.white,
@@ -113,7 +111,7 @@ class _CreateConfirmedState extends State<CreateConfirmed> {
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
-                              MyPage(),
+                              MyReviewList(),
                         ),
                       );
                     },
@@ -129,23 +127,6 @@ class _CreateConfirmedState extends State<CreateConfirmed> {
                       ),
                     ),
                     child: Text('확인'),
-                  ),
-                  OutlinedButton(
-                    onPressed: () {
-                      RecentReviewButton();
-                    },
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: Colors.blue,
-                      side: BorderSide(
-                        color: Colors.blue,
-                        width: 2,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5.0),
-                      ),
-                    ),
-                    child: Text('최근리뷰 테스트'),
                   ),
                 ],
               ),

@@ -10,6 +10,7 @@ import 'package:houscore/member/provider/user_me_provider.dart';
 import 'package:houscore/residence/utils/place_utils.dart';
 import 'package:remedi_kopo/remedi_kopo.dart';
 import '../../common/model/data_state_model.dart';
+import '../../review/view/my_review_list.dart';
 import '../component/my_info.dart';
 import '../model/interested_area.dart';
 import '../provider/interested_area_provider.dart';
@@ -111,7 +112,9 @@ class _MyPageState extends ConsumerState<MyPage> {
                 children: [
                   InkWell(
                     onTap: () {
-                      context.go('/myReviews');
+                      // context.go('/myReviews');
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (_) => MyReviewList()));
                     },
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),

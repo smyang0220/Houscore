@@ -1,37 +1,44 @@
 import 'package:houscore/review/model/star_rating_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'review_model.g.dart';
+part 'my_review_model.g.dart';
 
 @JsonSerializable()
-class ReviewModel {
+class MyReviewModel {
+  final String createdAt;
+  final String updatedAt;
+  final dynamic id;
+  final String memberId;
   final String address;
-  final double lat;
-  final double lng;
   final String residenceType;
+  final String year;
   final String residenceFloor;
   final StarRating starRating;
   final String pros;
   final String cons;
   final String maintenanceCost;
   final String? images;
-  final String residenceYear;
+  final double starRatingAverage;
 
-  ReviewModel({
+  MyReviewModel({
+    required this.createdAt,
+    required this.updatedAt,
+    required this.id,
+    required this.memberId,
     required this.address,
-    required this.lat,
-    required this.lng,
     required this.residenceType,
+    required this.year,
     required this.residenceFloor,
     required this.starRating,
     required this.pros,
     required this.cons,
     required this.maintenanceCost,
     this.images,
-    required this.residenceYear,
-});
+    required this.starRatingAverage,
 
-  factory ReviewModel.fromJson(Map<String, dynamic> json) => _$ReviewModelFromJson(json);
+  });
 
-  Map<String, dynamic> toJson() => _$ReviewModelToJson(this);
+  factory MyReviewModel.fromJson(Map<String, dynamic> json) => _$MyReviewModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$MyReviewModelToJson(this);
 }

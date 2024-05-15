@@ -47,47 +47,15 @@ class _ReviewRepository implements ReviewRepository {
   }
 
   @override
-  Future<ReviewModel> updateReview({required ReviewModel reviewModel}) async {
+  Future<void> updateReview({required ReviewToUpdateModel reviewModel}) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{r'accessToken': 'true'};
     _headers.removeWhere((k, v) => v == null);
     final _data = <String, dynamic>{};
     _data.addAll(reviewModel.toJson());
-    final _result = await _dio
-        .fetch<Map<String, dynamic>>(_setStreamType<ReviewModel>(Options(
-      method: 'PUT',
-      headers: _headers,
-      extra: _extra,
-    )
-            .compose(
-              _dio.options,
-              '',
-              queryParameters: queryParameters,
-              data: _data,
-            )
-            .copyWith(
-                baseUrl: _combineBaseUrls(
-              _dio.options.baseUrl,
-              baseUrl,
-            ))));
-    final value = ReviewModel.fromJson(_result.data!);
-    return value;
-  }
-
-  @override
-  Future<void> createOneReview({
-    required String imageName,
-    required ReviewModel reviewModel,
-  }) async {
-    final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{r'imageName': imageName};
-    final _headers = <String, dynamic>{r'accessToken': 'true'};
-    _headers.removeWhere((k, v) => v == null);
-    final _data = <String, dynamic>{};
-    _data.addAll(reviewModel.toJson());
     await _dio.fetch<void>(_setStreamType<void>(Options(
-      method: 'POST',
+      method: 'PUT',
       headers: _headers,
       extra: _extra,
     )
@@ -102,6 +70,38 @@ class _ReviewRepository implements ReviewRepository {
           _dio.options.baseUrl,
           baseUrl,
         ))));
+  }
+
+  @override
+  Future<UserValidation> createOneReview({
+    required String imageName,
+    required ReviewModel reviewModel,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'imageName': imageName};
+    final _headers = <String, dynamic>{r'accessToken': 'true'};
+    _headers.removeWhere((k, v) => v == null);
+    final _data = <String, dynamic>{};
+    _data.addAll(reviewModel.toJson());
+    final _result = await _dio
+        .fetch<Map<String, dynamic>>(_setStreamType<UserValidation>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = UserValidation.fromJson(_result.data!);
+    return value;
   }
 
   @override
@@ -133,14 +133,14 @@ class _ReviewRepository implements ReviewRepository {
   }
 
   @override
-  Future<ReviewModel> readMyReviews() async {
+  Future<List<MyReviewModel>> readMyReviews() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{r'accessToken': 'true'};
     _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
     final _result = await _dio
-        .fetch<Map<String, dynamic>>(_setStreamType<ReviewModel>(Options(
+        .fetch<List<dynamic>>(_setStreamType<List<MyReviewModel>>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
@@ -156,19 +156,21 @@ class _ReviewRepository implements ReviewRepository {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    final value = ReviewModel.fromJson(_result.data!);
+    var value = _result.data!
+        .map((dynamic i) => MyReviewModel.fromJson(i as Map<String, dynamic>))
+        .toList();
     return value;
   }
 
   @override
-  Future<ReviewModel> recentReviews() async {
+  Future<List<MyReviewModel>> recentReviews() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{r'accessToken': 'true'};
     _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
     final _result = await _dio
-        .fetch<Map<String, dynamic>>(_setStreamType<ReviewModel>(Options(
+        .fetch<List<dynamic>>(_setStreamType<List<MyReviewModel>>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
@@ -184,7 +186,9 @@ class _ReviewRepository implements ReviewRepository {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    final value = ReviewModel.fromJson(_result.data!);
+    var value = _result.data!
+        .map((dynamic i) => MyReviewModel.fromJson(i as Map<String, dynamic>))
+        .toList();
     return value;
   }
 
