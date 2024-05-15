@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface IndividualPubliclyAnnouncedPriceRepository extends JpaRepository<IndividualPubliclyAnnouncedPriceEntity, Long>{
-    List<IndividualPubliclyAnnouncedPriceEntity> findByPlatPlac(String address);
+    List<IndividualPubliclyAnnouncedPriceEntity> findByPlatPlc(String address);
 }
