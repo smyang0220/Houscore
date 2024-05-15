@@ -1,11 +1,16 @@
 import 'package:dio/dio.dart' hide Headers;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:houscore/review/model/review_to_update_model.dart';
 import '../../common/const/data.dart';
 import '../../common/dio/dio.dart';
 import 'package:houscore/review/model/review_model.dart';
 import 'package:retrofit/retrofit.dart';
+
+import '../model/my_review_model.dart';
+import '../model/user_validation.dart';
 part 'review_repository.g.dart';
-final ReviewRepositoryProvider = Provider<ReviewRepository>(
+
+final reviewRepositoryProvider = Provider<ReviewRepository>(
       (ref) {
     final dio = ref.watch(dioProvider);
     final repository = ReviewRepository(dio, baseUrl: 'http://$ip/api/review');
@@ -26,35 +31,35 @@ abstract class ReviewRepository {
     'accessToken': 'true',
   })
   Future<ReviewModel> reviewDetail({
+    //TODO return 타입 확인 필요
     @Query("id") required int id,
   });
 
   /*
-   거주지 리뷰 수정
+   리뷰 수정
    */
   @PUT('')
   @Headers({
     'accessToken': 'true',
   })
-  Future<ReviewModel> updateReview({
-    @Body() required ReviewModel reviewModel,
+  Future<void> updateReview({
+    @Body() required ReviewToUpdateModel reviewModel,
   });
 
   /*
-   거주지 리뷰 등록
+   리뷰 등록
    */
   @POST('')
   @Headers({
     'accessToken': 'true',
   })
-
-  Future<void> createOneReview({
+  Future<UserValidation> createOneReview({
     @Query("imageName") required String imageName,
     @Body() required ReviewModel reviewModel,
   });
 
   /*
-   리뷰 상세 내용 조회
+   리뷰 삭제
    */
   @DELETE('')
   @Headers({
@@ -71,14 +76,14 @@ abstract class ReviewRepository {
   @Headers({
     'accessToken': 'true',
   })
-  Future<ReviewModel> readMyReviews();
+  Future<List<MyReviewModel>> readMyReviews();
 
   /*
-   리뷰 상세 내용 조회
+   최근 리뷰 조회
    */
   @GET('/recent')
   @Headers({
     'accessToken': 'true',
   })
-  Future<ReviewModel> recentReviews();
+  Future<List<MyReviewModel>> recentReviews();
 }

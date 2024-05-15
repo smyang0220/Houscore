@@ -1,13 +1,12 @@
 import 'package:houscore/review/model/star_rating_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'review_model.g.dart';
+part 'review_to_update_model.g.dart';
 
 @JsonSerializable()
-class ReviewModel {
+class ReviewToUpdateModel {
+  final int id;
   final String address;
-  final double lat;
-  final double lng;
   final String residenceType;
   final String residenceFloor;
   final StarRating starRating;
@@ -17,10 +16,9 @@ class ReviewModel {
   final String? images;
   final String residenceYear;
 
-  ReviewModel({
+  ReviewToUpdateModel({
+    required this.id,
     required this.address,
-    required this.lat,
-    required this.lng,
     required this.residenceType,
     required this.residenceFloor,
     required this.starRating,
@@ -31,7 +29,7 @@ class ReviewModel {
     required this.residenceYear,
 });
 
-  factory ReviewModel.fromJson(Map<String, dynamic> json) => _$ReviewModelFromJson(json);
+  factory ReviewToUpdateModel.fromJson(Map<String, dynamic> json) => _$ReviewToUpdateModelFromJson(json);
 
-  Map<String, dynamic> toJson() => _$ReviewModelToJson(this);
+  Map<String, dynamic> toJson() => _$ReviewToUpdateModelToJson(this);
 }

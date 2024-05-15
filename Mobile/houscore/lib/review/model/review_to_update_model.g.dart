@@ -1,15 +1,15 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'review_model.dart';
+part of 'review_to_update_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-ReviewModel _$ReviewModelFromJson(Map<String, dynamic> json) => ReviewModel(
+ReviewToUpdateModel _$ReviewToUpdateModelFromJson(Map<String, dynamic> json) =>
+    ReviewToUpdateModel(
+      id: (json['id'] as num).toInt(),
       address: json['address'] as String,
-      lat: (json['lat'] as num).toDouble(),
-      lng: (json['lng'] as num).toDouble(),
       residenceType: json['residenceType'] as String,
       residenceFloor: json['residenceFloor'] as String,
       starRating:
@@ -21,11 +21,11 @@ ReviewModel _$ReviewModelFromJson(Map<String, dynamic> json) => ReviewModel(
       residenceYear: json['residenceYear'] as String,
     );
 
-Map<String, dynamic> _$ReviewModelToJson(ReviewModel instance) =>
+Map<String, dynamic> _$ReviewToUpdateModelToJson(
+        ReviewToUpdateModel instance) =>
     <String, dynamic>{
+      'id': instance.id,
       'address': instance.address,
-      'lat': instance.lat,
-      'lng': instance.lng,
       'residenceType': instance.residenceType,
       'residenceFloor': instance.residenceFloor,
       'starRating': instance.starRating,
