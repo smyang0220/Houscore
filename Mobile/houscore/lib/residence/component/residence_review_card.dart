@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:houscore/common/utils/data_utils.dart';
 import '../model/residence_review_model.dart';
 
 
@@ -53,58 +54,87 @@ class ResidenceReviewCard extends StatelessWidget{
     return Container(
       child: Column(
 children: [
-  Row(
-    children: [
-      Text("사진위치"),
-      Column(
-        children: [
-          Row(
-            children: [
-
-              Text("익명"),
-              // Text("리뷰아이디 $id}"),
-              Text(avg.toString()),
-              ...List.generate(5, (index) => Icon(
-                index < avg ? Icons.star : Icons.star_border_outlined,
-                color: Colors.yellow,
-              )),
-              Text(avg.toString())
-      ]
-          ),
-          Text("${residenceYear}까지 거주")
-        ],
-    )
-    ],
-  ),
-
-
-  Column(
-    mainAxisAlignment: MainAxisAlignment.start,
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text("장점", style: TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.bold,
-      ),),
-      Text(pros),
-  Text(id.toString()),
-      Text("단점", style: TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.bold,
-      ),),
-      Text(cons),
-
-      Text("관리비", style: TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.bold,
-      ),),
-      Text(maintenanceCost),
-    ],
-  ),
-
-
+  _Header(residenceFloor: residenceFloor, residenceYear: residenceYear, avg: avg,),
+  _Body(title: '장점', content: pros,),
+  _Body(title: '단점', content: cons,),
+  _Body(title: '관리비', content: maintenanceCost,),
 ],
       ),
     );
   }
 }
+
+class _Header extends StatelessWidget {
+  final String residenceFloor;
+  final String residenceYear;
+  final int avg;
+
+  const _Header({super.key,
+    required this.residenceFloor,
+    required this.residenceYear,
+    required this.avg});
+
+  @override
+  Widget build(BuildContext context) {
+    String floorText = DataUtils.floorDescription(residenceFloor);
+
+    return Row(
+        children: [
+          Text("사진"),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                  children: [
+                    Text(" ${floorText} : "),
+                    Text("${residenceYear}까지 거주"),
+                  ]
+              ),
+              Row(
+                children: [
+                  ...List.generate(5, (index) => Icon(
+                    index < avg ? Icons.star : Icons.star_border_outlined,
+                    color: Colors.yellow,
+                  )),
+                ],
+              )
+
+            ],
+          )
+        ],
+      );
+  }
+}
+
+class _Body extends StatelessWidget {
+  final String title;
+  final String content;
+  const _Body({super.key, required this.title, required this.content});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: Flexible(
+              child: Text(content,
+                softWrap: true,),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
