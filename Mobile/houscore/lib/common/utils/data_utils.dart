@@ -77,4 +77,20 @@ class DataUtils{
 
     return base64String;
   }
+
+  static String floorDescription(String residenceFloor) {
+    switch (residenceFloor) {
+      case 'HIGH':
+        return '16층 이상';
+      case 'MEDIUM':
+        return '5-15층';
+      case 'LOW':
+        return '2-5층';
+      case 'BOTTOM':
+        return '1층';
+      default:
+        return '알 수 없는 층';
+    }
+  }
+
 }
