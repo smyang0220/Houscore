@@ -1,12 +1,13 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'review_model.g.dart';
+import '../../common/model/model_with_id.dart';
+
+part 'residence_review_model.g.dart';
 
 @JsonSerializable()
-class ReviewModel {
+class ResidenceReviewModel implements IModelWithId{
+  final int id;
   final String address;
-  final double lat;
-  final double lng;
   final String residenceType;
   final String residenceFloor;
   final StarRating starRating;
@@ -16,10 +17,9 @@ class ReviewModel {
   final String? images;
   final String residenceYear;
 
-  ReviewModel({
+  ResidenceReviewModel({
+    required this.id,
     required this.address,
-    required this.lat,
-    required this.lng,
     required this.residenceType,
     required this.residenceFloor,
     required this.starRating,
@@ -30,9 +30,8 @@ class ReviewModel {
     required this.residenceYear,
   });
 
-  factory ReviewModel.fromJson(Map<String, dynamic> json) => _$ReviewModelFromJson(json);
-
-  Map<String, dynamic> toJson() => _$ReviewModelToJson(this);
+  factory ResidenceReviewModel.fromJson(Map<String, dynamic> json) => _$ResidenceReviewModelFromJson(json);
+  Map<String, dynamic> toJson() => _$ResidenceReviewModelToJson(this);
 }
 
 @JsonSerializable()
@@ -44,14 +43,13 @@ class StarRating {
   final double security;
 
   StarRating({
-    required this.building,
-    required this.infra,
-    required this.inside,
-    required this.security,
     required this.traffic,
+    required this.building,
+    required this.inside,
+    required this.infra,
+    required this.security,
   });
 
   factory StarRating.fromJson(Map<String, dynamic> json) => _$StarRatingFromJson(json);
-
   Map<String, dynamic> toJson() => _$StarRatingToJson(this);
 }

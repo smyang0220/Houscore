@@ -20,7 +20,7 @@ class ResidenceDetail extends StatefulWidget {
 class _ResidenceDetailState extends State<ResidenceDetail>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-
+  final ScrollController controller = ScrollController();
   @override
   void initState() {
     super.initState();
@@ -101,7 +101,7 @@ class _ResidenceDetailState extends State<ResidenceDetail>
                 // 첫 번째 탭 '상세 정보'의 내용
                 NearbyIndicators(address: widget.address),
                 // 두 번째 탭 '주변 시설'의 내용
-                ScoreAndReview(),
+                ScoreAndReview(address: widget.address, controller: controller,),
               ],
             ),
           ),
