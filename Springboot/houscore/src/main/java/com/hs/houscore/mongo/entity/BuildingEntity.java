@@ -24,6 +24,7 @@ public class BuildingEntity {
 
     @Id
     private ObjectId id;
+    @Setter
     private Double score;
     private GeoJsonPoint location;
 //    private Double lat;
@@ -79,7 +80,7 @@ public class BuildingEntity {
         private List<Map<String, Object>> medicalFacilities;
         private List<Map<String, Object>> parks;
         private List<Map<String, Object>> schools;
-        private List<Map<String, Object>> Libraries;
+        private List<Map<String, Object>> libraries;
         private List<Map<String, Object>> supermarkets;
         private List<Map<String, Object>> laundry;
     }
@@ -114,4 +115,5 @@ public class BuildingEntity {
         private Long saleAvg;         //평균 매매가
         private Long[] individualPubliclyAnnouncedPrice; //공시지가
     }
+
 }
