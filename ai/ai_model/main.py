@@ -9,8 +9,20 @@ import os
 from dotenv import load_dotenv
 import traceback
 import sys
-from typing import List
+from typing import List, Optional
 import numpy as np
+
+
+class Location(BaseModel):
+    x: float
+    y: float
+    type: str
+    coordinates: List[float]
+
+
+class IdField(BaseModel):
+    timestamp: int
+    date: int
 
 
 class BuildingInfo(BaseModel):
@@ -27,21 +39,29 @@ class BuildingInfo(BaseModel):
     totPkngCnt: int
     sigunguCd: str
     bjdongCd: str
-    bldNm: str
+    bldNm: Optional[str] = None
     pnuCode: str
 
 
+class Facility(BaseModel):
+    distance: float
+    name: str
+
+
 class InfraInfo(BaseModel):
-    medicalFacilities: List[dict]
-    parks: List[dict]
-    schools: List[dict]
-    Libraries: List[dict]
-    supermarkets: List[dict]
-    laundry: List[dict]
+    medicalFacilities: List[Facility] = []
+    parks: List[Facility] = []
+    schools: List[Facility] = []
+    libraries: List[Facility] = []
+    supermarkets: List[Facility] = []
+    laundry: List[Facility] = []
 
 
 class PriceInfo(BaseModel):
-    individualPubliclyAnnouncedPrice: List
+    leaseAvg: int
+    rentAvg: str
+    saleAvg: int
+    individualPubliclyAnnouncedPrice: List[int] = []
 
 
 class SecurityInfo(BaseModel):
@@ -49,8 +69,8 @@ class SecurityInfo(BaseModel):
 
 
 class TrafficInfo(BaseModel):
-    bus: List[dict]
-    subway: List[dict]
+    bus: List[Facility]
+    subway: List[Facility]
 
 
 class Information(BaseModel):
@@ -62,6 +82,12 @@ class Information(BaseModel):
 
 
 class PredictionRequest(BaseModel):
+    id: IdField
+    score: Optional[float] = None
+    location: Location
+    platPlc: str
+    newPlatPlc: str
+    batchYn: str
     information: Information
 
 
@@ -96,6 +122,7 @@ feature_names.remove('label')
 @app.post("/predict")
 async def predict(request: PredictionRequest):
     try:
+        send_mattermost_notification(request)
         info = request.information
 
         official_price = info.priceInfo.individualPubliclyAnnouncedPrice
@@ -103,13 +130,13 @@ async def predict(request: PredictionRequest):
         if 'official_price' in feature_names and official_price:
             official_price = official_price[0]
         else:
-            return {"ai_score": float(-1)}
+            return float(-1)
 
         if (info.buildingInfo.bcRat == 0 or
                 info.buildingInfo.vlRat == 0 or
                 info.buildingInfo.hhldCnt == 0 or
                 info.securityInfo.safetyGrade == 0):
-            return {"ai_score": float(-1)}
+            return float(-1)
 
         df = pd.DataFrame([{
             "plat_area": info.buildingInfo.platArea,
@@ -137,7 +164,7 @@ async def predict(request: PredictionRequest):
         prediction = model.predict(filtered_df)
 
         # 정상적인 처리 또는 다른 계산 진행
-        return {"ai_score": float(prediction[0])}
+        return float(prediction[0])
 
     except Exception as e:
         exc_type, exc_value, exc_traceback = sys.exc_info()
@@ -146,7 +173,7 @@ async def predict(request: PredictionRequest):
         logging.error(error_message, exc_info=True)
         send_mattermost_notification(error_message)
         # raise HTTPException(status_code=500, detail=str(e))
-        return {"ai_score": float(-1)}
+        return float(-1)
 
 
 if __name__ == '__main__':
