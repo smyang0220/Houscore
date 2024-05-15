@@ -6,38 +6,26 @@ import 'package:houscore/residence/component/residence_review_card.dart';
 import 'package:houscore/residence/model/residence_review_model.dart';
 import 'package:skeletons/skeletons.dart';
 
-import '../../common/provider/number_provider.dart';
-import '../../common/provider/parameter_provider.dart';
 import '../../common/utils/pagination_utils.dart';
-import '../model/pagination_params.dart';
-import '../provider/residence_review_provider.dart';
+import '../../residence/provider/residence_review_provider.dart';
 
-class ScoreAndReview extends ConsumerStatefulWidget {
+class tmpScreen extends ConsumerStatefulWidget {
   final String address;
-  final ScrollController controller;
 
-  const ScoreAndReview ({
+  const tmpScreen ({
     required this.address,
-    required this.controller,
     Key? key}) : super (key: key);
 
   @override
-  ConsumerState<ScoreAndReview> createState() => _ScoreAndReviewState();
+  ConsumerState<tmpScreen> createState() => _ScoreAndReviewState();
 }
 
-class _ScoreAndReviewState extends ConsumerState<ScoreAndReview> {
+class _ScoreAndReviewState extends ConsumerState<tmpScreen> {
   // final ScrollController controller = ScrollController();
-  late final ScrollController controller;
+   final ScrollController controller = ScrollController();
   @override
   void initState() {
     super.initState();
-    controller = widget.controller;
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(numberProvider.notifier).state = 0;
-      ref.read(paginationParameterProvider.notifier).updateParams(address: '서울특별시 강남구 개포동 12', page: 0);
-    });
-
 
     ref.read(residenceReviewProvider.notifier);
 
@@ -45,11 +33,11 @@ class _ScoreAndReviewState extends ConsumerState<ScoreAndReview> {
   }
 
   void listener() {
-    PaginationUtils.paginate(
-      controller: controller,
-      provider: ref.read(residenceReviewProvider.notifier),
-      numberprovider: ref.read(numberProvider.notifier),
-    );
+    // PaginationUtils.paginate(
+    //     controller: controller,
+    //     provider: ref.read(residenceReviewProvider.notifier),
+    //     page: 1,
+    // );
   }
 
 
@@ -71,17 +59,30 @@ class _ScoreAndReviewState extends ConsumerState<ScoreAndReview> {
 
     final cp = reviewState as CursorPagination<ResidenceReviewModel>;
 
-    return CustomScrollView(
+    return DefaultLayout(
+      title: "제발되라",
+      child: CustomScrollView(
         controller: controller,
         slivers:
         [
           // ScoreByReview(),
           // ScoreByAi(),
           renderLabel(),
-          renderRatings(models: cp),
+          if(reviewState is CursorPaginationRefetching<ResidenceReviewModel>)
+            indicatorLabel(),
+
+          if(reviewState is CursorPagination<ResidenceReviewModel>)
+            renderRatings(models: cp),
+
+          if(reviewState is CursorPaginationFetchingMore<ResidenceReviewModel>)
+            renderRatings(models: cp),
+
+
+
         ],
-      );
-      
+      ),
+    );
+
   }
 }
 
@@ -96,11 +97,6 @@ SliverPadding renderRatings({
             (_, index) {
           // 리스트의 마지막 아이템인 경우 로딩 인디케이터를 렌더링
           if (models is CursorPaginationFetchingMore && index == models.data.length) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          if (models is CursorPaginationRefetching && index == 0) {
             return Center(
               child: CircularProgressIndicator(),
             );
@@ -149,7 +145,7 @@ SliverPadding renderLabel() {
   return SliverPadding(
     padding: EdgeInsets.symmetric(horizontal: 16.0),
     sliver: SliverToBoxAdapter(
-      child: Row(
+      child: Column(
         children: [
           Text(
             '실 거주 리뷰',
@@ -158,7 +154,6 @@ SliverPadding renderLabel() {
               fontWeight: FontWeight.w500,
             ),
           ),
-          Expanded(child: SizedBox())
         ],
       ),
     ),

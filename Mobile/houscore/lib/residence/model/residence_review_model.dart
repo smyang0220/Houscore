@@ -2,43 +2,36 @@ import 'package:json_annotation/json_annotation.dart';
 
 import '../../common/model/model_with_id.dart';
 
-part 'review_model.g.dart';
+part 'residence_review_model.g.dart';
 
 @JsonSerializable()
-class ReviewModel implements IModelWithId{
-  final String createdAt;
-  final String updatedAt;
+class ResidenceReviewModel implements IModelWithId{
   final int id;
-  final String memberId;
-  final int buildingId;
   final String address;
-  final int year;
+  final String residenceType;
   final String residenceFloor;
   final StarRating starRating;
   final String pros;
   final String cons;
   final String maintenanceCost;
-  final String images;
+  final String? images;
+  final String residenceYear;
 
-  ReviewModel({
-    required this.createdAt,
-    required this.updatedAt,
+  ResidenceReviewModel({
     required this.id,
-    required this.memberId,
-    required this.buildingId,
     required this.address,
-    required this.year,
+    required this.residenceType,
     required this.residenceFloor,
     required this.starRating,
     required this.pros,
     required this.cons,
     required this.maintenanceCost,
-    required this.images,
-});
+    this.images,
+    required this.residenceYear,
+  });
 
-  factory ReviewModel.fromJson(Map<String, dynamic> json) => _$ReviewModelFromJson(json);
-
-  Map<String, dynamic> toJson() => _$ReviewModelToJson(this);
+  factory ResidenceReviewModel.fromJson(Map<String, dynamic> json) => _$ResidenceReviewModelFromJson(json);
+  Map<String, dynamic> toJson() => _$ResidenceReviewModelToJson(this);
 }
 
 @JsonSerializable()
@@ -50,14 +43,13 @@ class StarRating {
   final double security;
 
   StarRating({
-   required this.building,
-   required this.infra,
-   required this.inside,
-   required this.security,
-   required this.traffic,
-});
+    required this.traffic,
+    required this.building,
+    required this.inside,
+    required this.infra,
+    required this.security,
+  });
 
   factory StarRating.fromJson(Map<String, dynamic> json) => _$StarRatingFromJson(json);
-
   Map<String, dynamic> toJson() => _$StarRatingToJson(this);
 }

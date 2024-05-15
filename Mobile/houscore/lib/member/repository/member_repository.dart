@@ -1,7 +1,5 @@
 import 'package:dio/dio.dart' hide Headers;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:houscore/building/model/building_detail_model.dart';
-import 'package:houscore/common/model/cursor_pagination_model.dart';
 import 'package:retrofit/retrofit.dart';
 import '../../common/const/data.dart';
 import '../../common/dio/dio.dart';

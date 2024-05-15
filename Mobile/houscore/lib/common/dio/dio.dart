@@ -87,7 +87,7 @@ class CustomInterceptor extends Interceptor {
 
     // 요청 방식과 url 로깅 with ERR sign
     print('[ERR] [${err.requestOptions.method}] ${err.requestOptions.uri}');
-
+    print('[ERR] [${err.response?.statusCode}]');
     final refreshToken = await storage.read(key: REFRESH_TOKEN_KEY);
     print("에러떴을때의 리프레시 토큰값 : $refreshToken");
     // refreshToken 아예 없으면 당연히 에러를 던진다

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:houscore/common/const/color.dart';
-import '../../building/view/api_test_screen.dart';
+import 'package:houscore/common/view/tmp_screen.dart';
 import 'package:houscore/review/view/create_review.dart';
 import 'package:houscore/review/view/my_review_list.dart';
 import '../../myinfo/view/my_page.dart';
@@ -49,7 +49,7 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
           HomeScreen(),
           CreateReview(),
           MyPage(),
-          ApiTestScreen(),
+          tmpScreen(address: "강원도 동해시 쇄운동")
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -69,7 +69,7 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
           BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
           BottomNavigationBarItem(icon: Icon(Icons.rate_review_rounded), label: '리뷰'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'My'),
-          BottomNavigationBarItem(icon: Icon(Icons.telegram_sharp), label: '통신테스트')
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'My'),
         ],
       ),
     );
