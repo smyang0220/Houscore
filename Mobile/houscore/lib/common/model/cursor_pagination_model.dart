@@ -1,5 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
+import 'package:houscore/residence/model/residence_review_model.dart';
+
 part 'cursor_pagination_model.g.dart';
 
 abstract class CursorPaginationBase {}
@@ -19,17 +21,21 @@ class CursorPaginationLoading extends CursorPaginationBase {}
   genericArgumentFactories: true,
 )
 class CursorPagination<T> extends CursorPaginationBase {
+  final CursorPaginationMeta meta;
   final List<T> data;
 
   CursorPagination({
+    required this.meta,
     required this.data,
   });
 
   // 객체의 불변성 유지를 위한 부분
   CursorPagination copyWith({
+    CursorPaginationMeta? meta,
     List<T>? data,
   }) {
-    return CursorPagination(
+    return CursorPagination<T>(
+      meta: meta ?? this.meta,
       data: data ?? this.data,
     );
   }
@@ -39,9 +45,30 @@ class CursorPagination<T> extends CursorPaginationBase {
       _$CursorPaginationFromJson(json, fromJsonT);
 }
 
+@JsonSerializable()
+class CursorPaginationMeta {
+  final int count;
+
+  CursorPaginationMeta({
+    required this.count,
+  });
+
+  CursorPaginationMeta copyWith({
+    int? count,
+  }) {
+    return CursorPaginationMeta(
+      count: count ?? this.count,
+    );
+  }
+
+  factory CursorPaginationMeta.fromJson(Map<String, dynamic> json) =>
+      _$CursorPaginationMetaFromJson(json);
+}
+
 // 새로고침 할때
 class CursorPaginationRefetching<T> extends CursorPagination<T> {
   CursorPaginationRefetching({
+    required super.meta,
     required super.data,
   });
 }
@@ -50,6 +77,7 @@ class CursorPaginationRefetching<T> extends CursorPagination<T> {
 // 추가 데이터를 요청하는중
 class CursorPaginationFetchingMore<T> extends CursorPagination<T> {
   CursorPaginationFetchingMore({
+    required super.meta,
     required super.data,
   });
 }

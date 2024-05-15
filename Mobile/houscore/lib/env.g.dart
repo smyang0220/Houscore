@@ -37,7 +37,7 @@ final class _Env {
 
   static final String API_KEY_ID = String.fromCharCodes(List<int>.generate(
     _envieddataAPI_KEY_ID.length,
-    (int i) => i,
+        (int i) => i,
     growable: false,
   ).map((int i) => _envieddataAPI_KEY_ID[i] ^ _enviedkeyAPI_KEY_ID[i]));
 
@@ -129,7 +129,8 @@ final class _Env {
 
   static final String API_KEY = String.fromCharCodes(List<int>.generate(
     _envieddataAPI_KEY.length,
-    (int i) => i,
+        (int i) => i,
     growable: false,
   ).map((int i) => _envieddataAPI_KEY[i] ^ _enviedkeyAPI_KEY[i]));
 }
+
