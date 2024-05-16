@@ -1,8 +1,10 @@
 import 'dart:convert';
 
+import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../const/data.dart';
+import '../provider/data_list_param_provider.dart';
 
 
 class DataUtils{
@@ -91,6 +93,33 @@ class DataUtils{
       default:
         return '알 수 없는 층';
     }
+  }
+
+  // ReviewList provider한테 알려 주는 함수야
+  // 알려주려면 param에 대한 provider가 필요해
+  // provider를 받고 걔한테 이제 현재 위치 가져와버려서
+  // 그걸 알려줘.
+  // 그러면 걔가 이제 그걸로 param을 업데이트 시켜
+  // 그러면 이제 얘를 보고 있던 놈이 아 얘 바꼈네
+  // 아 바꼈으니깐 나도 api요청 보내야지
+  //
+  static Future<void> getLocation({
+    required DataListParamsNotifier provider,
+  }) async {
+    // 위치 받아와
+    Position position = await Geolocator.getCurrentPosition();
+
+    // 설정해
+    final double lat = position.latitude;
+    final double lng = position.longitude;
+
+    // 야호
+    print("야호");
+    print("lat $lat lng $lng 얌");
+
+    // 그걸로 매개변수 업데이트
+    provider.updateParams(lng: lng, lat: lat);
+
   }
 
 }

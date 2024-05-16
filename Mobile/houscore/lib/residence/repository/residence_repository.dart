@@ -6,11 +6,9 @@ import 'package:houscore/common/model/data_list_state_model.dart';
 import 'package:houscore/residence/model/ai_recommended_residence_model.dart';
 import 'package:houscore/residence/model/residence_detail_info_model.dart';
 import '../../review/model/homescreen_review_model.dart';
-import 'package:houscore/residence/model/residence_main_photo_model.dart';
 import '../model/residence_detail_indicators_model.dart';
 import 'package:houscore/common/model/cursor_pagination_model.dart';
 import 'package:retrofit/retrofit.dart';
-
 import '../../common/const/data.dart';
 import '../../common/dio/dio.dart';
 
@@ -83,6 +81,6 @@ abstract class ResidenceRepository {
     'accessToken': 'true',
   })
   // get 함수 // 비동기적 통신을 위한 Future 반환
-  Future<DataListState<ResidenceMainPhotoModel>> getResidenceMainPhoto();
+  Future<DataListState<HomescreenReviewModel>> getResidenceMainPhoto();
 
 }
