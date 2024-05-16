@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:houscore/common/model/data_state_model.dart';
 import 'package:houscore/review/component/review_card.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../residence/model/location_model.dart';
 import '../../residence/repository/naver_map_repository.dart';
+import '../model/homescreen_review_model.dart';
+import '../provider/nearby_recent_reviews_provider.dart';
 
 class NearbyResidencesReview extends ConsumerStatefulWidget {
-  final List<Map<String, dynamic>> reviewsWithImages;
   final VoidCallback onViewAll; // 전체보기
 
   const NearbyResidencesReview({
     Key? key,
-    required this.reviewsWithImages,
     required this.onViewAll,
   }) : super(key: key);
 
@@ -18,22 +20,21 @@ class NearbyResidencesReview extends ConsumerStatefulWidget {
   _NearbyResidencesReviewState createState() => _NearbyResidencesReviewState();
 }
 
-class _NearbyResidencesReviewState
-    extends ConsumerState<NearbyResidencesReview> {
-  // 현재 위치 문자열 // 초기 값 설정
+class _NearbyResidencesReviewState extends ConsumerState<NearbyResidencesReview> {
+  double? _latitude;
+  double? _longitude;
   String _currentLocation = '위치 정보를 불러오는 중...';
+  bool _hasFetchedReviews = false;
 
   @override
   void initState() {
     super.initState();
-    // geolocator를 활용 위치를 불러온 후 해당 position을 가지고 현재 위치 문자열 설정하여 재렌더링
     _determinePosition();
   }
 
-  // 위치 불러오기 (비동기)
   Future<void> _determinePosition() async {
-    bool serviceEnabled; // 위치 서비스 활성화 여부
-    LocationPermission permission; // 위치 권한 설정
+    bool serviceEnabled;
+    LocationPermission permission;
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
@@ -47,47 +48,98 @@ class _NearbyResidencesReviewState
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
     }
-    if (permission == LocationPermission.denied ||
-        permission == LocationPermission.deniedForever) {
+    if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) {
       setState(() {
         _currentLocation = '위치 권한이 거부되었습니다.';
       });
       return;
     }
 
-    // 현재 위치(위,경도 값인 상태)
     Position position = await Geolocator.getCurrentPosition();
 
-    // 현재 위치의 위,경도 값으로 도로명 주소 가져오기 by Naver api
-    _fetchAddress(position);
+    if (_latitude != position.latitude || _longitude != position.longitude) {
+      setState(() {
+        _latitude = position.latitude;
+        _longitude = position.longitude;
+        _hasFetchedReviews = false;
+      });
+      _fetchAddress(position);
+      _fetchReviews();
+    }
   }
 
   Future<void> _fetchAddress(Position position) async {
     try {
-      final response =
-          await ref.read(naverMapRepositoryProvider).getAddressFromLatLng({
+      final response = await ref.read(naverMapRepositoryProvider).getAddressFromLatLng({
         'coords': '${position.longitude},${position.latitude}',
-        // 'coords': '0,0',
         'sourcecrs': 'epsg:4326',
         'orders': 'roadaddr',
         'output': 'json'
       });
-      var addressData =
-          response.data['results'][0]['land']['addition0']['value'] as String?;
+      var addressData = response.data['results'][0]['land']['addition0']['value'] as String?;
       setState(() {
-        // addressData가 null이 아닐 경우 '현재 위치: [주소]', null일 경우 '상세 주소 정보를 찾을 수 없습니다.'로 설정
-        _currentLocation = addressData != null
-            ? "현재 위치: $addressData"
-            : '상세 주소 정보를 찾을 수 없습니다.';
+        _currentLocation = addressData != null ? "현재 위치: $addressData" : '상세 주소 정보를 찾을 수 없습니다.';
       });
     } catch (e) {
-      // setState(() => _currentLocation = '주소 정보를 불러오는데 실패했습니다: $e');
       setState(() => _currentLocation = '현재 위치 불러오기 실패');
+    }
+  }
+
+  void _fetchReviews() {
+    if (_latitude != null && _longitude != null && !_hasFetchedReviews) {
+      final initNotifier = ref.read(nearbyRecentReviewsProvider(LatLng(latitude: _latitude!, longitude: _longitude!)).notifier);
+      initNotifier.fetchNearbyRecentReviews();
+      setState(() {
+        _hasFetchedReviews = true;
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final reviewState = ref.watch(nearbyRecentReviewsProvider(LatLng(latitude: _latitude ?? 0, longitude: _longitude ?? 0)));
+
+    Widget _buildReviewContent(DataStateBase reviewState) {
+      if (reviewState is DataStateLoading) {
+        return Center(child: CircularProgressIndicator());
+      } else if (reviewState is DataStateError) {
+        return Center(child: Text('리뷰를 불러오는데 실패했습니다: ${reviewState.message}'));
+      } else if (reviewState is DataState) {
+        final reviews = reviewState.data as List<HomescreenReviewModel>;
+        if (reviews.isEmpty) {
+          return Center(child: Text('근처에 리뷰가 없습니다.'));
+        }
+        return Column(
+          children: reviews.map((review) {
+            return ReviewCard(
+              address: review.address,
+              userRating: review.reviewScore,
+              aiRating: review.aiScore,
+              like: review.pros,
+              dislike: review.cons,
+              imageUrl: review.imageUrl,
+            );
+          }).toList(),
+        );
+      } else if (reviewState is DataStateRefetching) {
+        final reviews = reviewState.data as List<HomescreenReviewModel>;
+        return Column(
+          children: reviews.map((review) {
+            return ReviewCard(
+              address: review.address,
+              userRating: review.reviewScore,
+              aiRating: review.aiScore,
+              like: review.pros,
+              dislike: review.cons,
+              imageUrl: review.imageUrl,
+            );
+          }).toList(),
+        );
+      } else {
+        return Container();
+      }
+    }
+
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 2),
       child: Column(
@@ -112,12 +164,12 @@ class _NearbyResidencesReviewState
                     ),
                   ],
                 ),
-                TextButton(
-                    onPressed: widget.onViewAll,
-                    child: Text(
-                      '전체보기',
-                      style: TextStyle(color: Colors.grey),
-                    )),
+                // TextButton(
+                //     onPressed: widget.onViewAll,
+                //     child: Text(
+                //       '전체보기',
+                //       style: TextStyle(color: Colors.grey),
+                //     )),
               ],
             ),
           ),
@@ -130,39 +182,9 @@ class _NearbyResidencesReviewState
               ],
             ),
           ),
-          Column(
-            children: widget.reviewsWithImages
-                .map((review) => ReviewCard(
-                      address: review['address'],
-                      userRating: review['userRating'],
-                      aiRating: review['aiRating'],
-                      like: review['like'],
-                      dislike: review['dislike'],
-                      imageUrl: review['imageUrl'],
-                    ))
-                .toList(),
-          ),
+          _buildReviewContent(reviewState),
         ],
       ),
     );
   }
 }
-
-/*
-    position 객체에서 설정 가능한 값들
-
-    const Position({
-    required this.longitude, // 경도
-    required this.latitude, // 위도
-    required this.timestamp, // UTC 시간 of 데이터 기록 (신선도 파악)
-    required this.accuracy, // 정확도
-    required this.altitude, // 고도
-    required this.altitudeAccuracy, // 고도 정확도
-    required this.heading, // 방향
-    required this.headingAccuracy, // 방향 정확도
-    required this.speed, // 속도 (기기의 이동속도)
-    required this.speedAccuracy, // 속도 정확도
-    this.floor, // 층
-    this.isMocked = false, // 모의위치이니 아닌지
-  });
-   */
