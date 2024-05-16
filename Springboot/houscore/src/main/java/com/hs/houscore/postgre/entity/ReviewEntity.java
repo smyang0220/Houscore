@@ -14,7 +14,7 @@ import java.io.Serializable;
 @Data
 @Builder
 @Table(name = "review")
-@SequenceGenerator(name="review_seq", sequenceName="review_seq", initialValue=1, allocationSize=50)
+@SequenceGenerator(name="review_seq", sequenceName="review_seq", initialValue=1, allocationSize=1)
 public class ReviewEntity extends BaseTimeEntity{
     @Id
     @GeneratedValue (strategy = GenerationType.SEQUENCE)
