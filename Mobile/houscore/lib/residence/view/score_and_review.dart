@@ -111,7 +111,7 @@ SliverPadding renderRatings({
           return Padding(
             padding: const EdgeInsets.only(bottom: 16.0),
             child: ResidenceReviewCard.fromModel(
-              model: models.data[index],
+              model: models.data[index], isDetail: true,
             ),
           );
         },

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:houscore/common/utils/data_utils.dart';
+import '../../common/const/design.dart';
 import '../model/residence_review_model.dart';
 
 class ResidenceReviewCard extends StatelessWidget {
@@ -14,6 +15,7 @@ class ResidenceReviewCard extends StatelessWidget {
   final String maintenanceCost;
   final String? images;
   final String residenceYear;
+  final bool isDetail;
 
   const ResidenceReviewCard({
     required this.id,
@@ -26,11 +28,13 @@ class ResidenceReviewCard extends StatelessWidget {
     required this.maintenanceCost,
     this.images,
     required this.residenceYear,
+    required this.isDetail,
     Key? key,
   }) : super(key: key);
 
   factory ResidenceReviewCard.fromModel({
     required ResidenceReviewModel model,
+    required bool isDetail,
   }) {
     return ResidenceReviewCard(
         id: model.id,
@@ -42,7 +46,8 @@ class ResidenceReviewCard extends StatelessWidget {
         cons: model.cons,
         maintenanceCost: model.maintenanceCost,
         images: model.images,
-        residenceYear: model.residenceYear);
+        residenceYear: model.residenceYear,
+         isDetail: isDetail,);
   }
 
   @override
@@ -54,26 +59,33 @@ class ResidenceReviewCard extends StatelessWidget {
             starRating.building) ~/
         5;
     return Container(
-      child: Column(
-        children: [
-          _Header(
-            residenceFloor: residenceFloor,
-            residenceYear: residenceYear,
-            avg: avg,
-          ),
-          _Body(
-            title: '장점',
-            content: pros,
-          ),
-          _Body(
-            title: '단점',
-            content: cons,
-          ),
-          _Body(
-            title: '관리비',
-            content: maintenanceCost,
-          ),
-        ],
+      decoration: isDetail ? null : boxStyle,
+      child: Padding(
+        padding: isDetail ? EdgeInsets.all(0) : EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            _Header(
+              residenceFloor: residenceFloor,
+              residenceYear: residenceYear,
+              avg: avg,
+              isDetail: isDetail,
+              address: address,
+            ),
+            _Body(
+              title: '장점',
+              content: pros,
+            ),
+            _Body(
+              title: '단점',
+              content: cons,
+            ),
+            if(isDetail)
+            _Body(
+              title: '관리비',
+              content: maintenanceCost,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -83,12 +95,16 @@ class _Header extends StatelessWidget {
   final String residenceFloor;
   final String residenceYear;
   final int avg;
+  final bool isDetail;
+  final String address;
 
   const _Header(
       {super.key,
       required this.residenceFloor,
       required this.residenceYear,
-      required this.avg});
+      required this.avg,
+        required this.isDetail,
+        required this.address});
 
   @override
   Widget build(BuildContext context) {
@@ -96,23 +112,36 @@ class _Header extends StatelessWidget {
 
     return Row(
       children: [
-        Text("사진"),
         Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(children: [
-              Text(" ${floorText} : "),
-              Text("${residenceYear}까지 거주"),
+              if(isDetail)
+                Text(
+                  " ${floorText} : ",
+                  style: myTextStyle, // 정의한 TextStyle 사용
+                ),
+              if(isDetail)
+                Text(
+                  "${residenceYear}까지 거주",
+                  style: myTextStyle, // 같은 TextStyle 재사용
+                ),
+              if(!isDetail)
+                Text(
+                  "${address}",
+                  style: myTextStyle, // 같은 TextStyle 재사용
+                ),
             ]),
             Row(
               children: [
                 ...List.generate(
                     5,
-                    (index) => Icon(
-                          index < avg ? Icons.star : Icons.star_border_outlined,
-                          color: Colors.yellow,
-                        )),
+                        (index) => Icon(
+                      index < avg ? Icons.star : Icons.star_border_outlined,
+                      color: Colors.yellow,
+                      size: 16,
+                    )),
               ],
             )
           ],
@@ -121,6 +150,7 @@ class _Header extends StatelessWidget {
     );
   }
 }
+
 
 class _Body extends StatelessWidget {
   final String title;
@@ -136,10 +166,14 @@ class _Body extends StatelessWidget {
         children: [
           Text(
             title,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
+              style: title == "장점"
+                  ? bodyTextColorStyle
+                  : (title == "단점"
+                  ? bodyTextColorStyle2
+                  : (title == "관리비"
+                  ? bodyTextColorStyle3
+                  : null)),
+
           ),
           Padding(
             padding: const EdgeInsets.only(left: 8.0),
@@ -147,6 +181,7 @@ class _Body extends StatelessWidget {
               child: Text(
                 content,
                 softWrap: true,
+                style: bodyTextStyle,
               ),
             ),
           )

@@ -4,46 +4,55 @@ import 'package:houscore/common/layout/default_layout.dart';
 import 'package:houscore/common/model/cursor_pagination_model.dart';
 import 'package:houscore/residence/component/residence_review_card.dart';
 import 'package:houscore/residence/model/residence_review_model.dart';
+import 'package:houscore/residence/utils/place_utils.dart';
 import 'package:skeletons/skeletons.dart';
 
+import '../../common/provider/number_provider.dart';
+import '../../common/provider/parameter_provider.dart';
 import '../../common/utils/pagination_utils.dart';
 import '../../residence/provider/residence_review_provider.dart';
+import '../provider/entire_review_provider.dart';
 
-class tmpScreen extends ConsumerStatefulWidget {
-  final String address;
+class EntireReviewScreen extends ConsumerStatefulWidget {
 
-  const tmpScreen ({
-    required this.address,
+  const EntireReviewScreen ({
     Key? key}) : super (key: key);
 
   @override
-  ConsumerState<tmpScreen> createState() => _ScoreAndReviewState();
+  ConsumerState<EntireReviewScreen> createState() => _ScoreAndReviewState();
 }
 
-class _ScoreAndReviewState extends ConsumerState<tmpScreen> {
+class _ScoreAndReviewState extends ConsumerState<EntireReviewScreen> {
   // final ScrollController controller = ScrollController();
-   final ScrollController controller = ScrollController();
+  final ScrollController controller = ScrollController();
+
   @override
   void initState() {
     super.initState();
 
-    ref.read(residenceReviewProvider.notifier);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(numberProvider.notifier).state = 0;
+      ref.read(paginationParameterProvider.notifier).updateParams(page: 0);
+    });
+
+
+    ref.read(entireReviewProvider.notifier);
 
     controller.addListener(listener);
   }
 
   void listener() {
-    // PaginationUtils.paginate(
-    //     controller: controller,
-    //     provider: ref.read(residenceReviewProvider.notifier),
-    //     page: 1,
-    // );
+    PaginationUtils.paginate(
+      controller: controller,
+      provider: ref.read(entireReviewProvider.notifier),
+      numberprovider: ref.read(numberProvider.notifier),
+    );
   }
 
 
   @override
   Widget build(BuildContext context) {
-    final reviewState = ref.watch(residenceReviewProvider);
+    final reviewState = ref.watch(entireReviewProvider);
 
     if (reviewState is CursorPaginationLoading) {
       return DefaultLayout(
@@ -60,25 +69,12 @@ class _ScoreAndReviewState extends ConsumerState<tmpScreen> {
     final cp = reviewState as CursorPagination<ResidenceReviewModel>;
 
     return DefaultLayout(
-      title: "제발되라",
+      title: "전체리뷰보기",
       child: CustomScrollView(
         controller: controller,
         slivers:
         [
-          // ScoreByReview(),
-          // ScoreByAi(),
-          renderLabel(),
-          if(reviewState is CursorPaginationRefetching<ResidenceReviewModel>)
-            indicatorLabel(),
-
-          if(reviewState is CursorPagination<ResidenceReviewModel>)
-            renderRatings(models: cp),
-
-          if(reviewState is CursorPaginationFetchingMore<ResidenceReviewModel>)
-            renderRatings(models: cp),
-
-
-
+          renderRatings(models: cp),
         ],
       ),
     );
@@ -101,11 +97,16 @@ SliverPadding renderRatings({
               child: CircularProgressIndicator(),
             );
           }
+          if (models is CursorPaginationRefetching && index == 0) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
           // 그 외의 경우에는 ResidenceReviewCard를 렌더링
           return Padding(
             padding: const EdgeInsets.only(bottom: 16.0),
             child: ResidenceReviewCard.fromModel(
-              model: models.data[index],
+              model: models.data[index], isDetail: false,
             ),
           );
         },
@@ -141,24 +142,6 @@ SliverPadding renderLoading() {
   );
 }
 
-SliverPadding renderLabel() {
-  return SliverPadding(
-    padding: EdgeInsets.symmetric(horizontal: 16.0),
-    sliver: SliverToBoxAdapter(
-      child: Column(
-        children: [
-          Text(
-            '실 거주 리뷰',
-            style: TextStyle(
-              fontSize: 18.0,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
-}
 
 SliverPadding errorLabel() {
   return SliverPadding(

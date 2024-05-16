@@ -116,15 +116,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             borderRadius: BorderRadius.all(Radius.circular(50))),
         child: Icon(Icons.create_rounded),
       ),
-      child:CustomScrollView(
-        slivers: [
-          renderLogo(),
-          renderSearchResidences(),
-          renderAiRecommendation(),
-          renderNearbyResidencesReview(),
-          renderLabel(),
-          renderPhotos(models : photo),
-        ],
+      child:SafeArea(
+        child: CustomScrollView(
+          slivers: [
+            renderLogo(),
+            renderSearchResidences(),
+            renderAiRecommendation(),
+            renderNearbyResidencesReview(),
+            renderLabel(),
+            renderPhotos(models : photo),
+          ],
+        ),
       )
 
     );
