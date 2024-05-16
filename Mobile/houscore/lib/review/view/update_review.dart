@@ -1,14 +1,12 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:houscore/common/layout/default_layout.dart';
 import 'package:houscore/review/view/update_reviewdetail.dart';
 import '../../common/const/color.dart';
 import '../model/review_to_update_model.dart';
 
 class UpdateReview extends StatefulWidget {
-
   final ReviewToUpdateModel reviewToUpdate;
+
   UpdateReview({required this.reviewToUpdate});
 
   @override
@@ -22,13 +20,29 @@ class _UpdateReviewState extends State<UpdateReview> {
   String? floorValue;
   Map<String, double> ratings = {};
 
+  @override
+  void initState() {
+    super.initState();
+    selectedAddress = widget.reviewToUpdate.address;
+    typeValue = widget.reviewToUpdate.residenceType;
+    yearValue = widget.reviewToUpdate.residenceYear;
+    floorValue = widget.reviewToUpdate.residenceFloor;
+    ratings = {
+      '교통': widget.reviewToUpdate.starRating.traffic,
+      '건물': widget.reviewToUpdate.starRating.building,
+      '내부': widget.reviewToUpdate.starRating.inside,
+      '인프라': widget.reviewToUpdate.starRating.infra,
+      '치안': widget.reviewToUpdate.starRating.security,
+    };
+  }
+
   bool get isButtonEnabled =>
       selectedAddress != null &&
-      typeValue != null &&
-      yearValue != null &&
-      floorValue != null &&
-      ratings.length == categories.length &&
-      ratings.values.every((rating) => rating != 0);
+          typeValue != null &&
+          yearValue != null &&
+          floorValue != null &&
+          ratings.length == categories.length &&
+          ratings.values.every((rating) => rating != 0);
 
   void _updateTypeValue(String? newValue) {
     setState(() {
@@ -72,7 +86,12 @@ class _UpdateReviewState extends State<UpdateReview> {
                   color: Colors.black,
                 ),
               ),
-              Text(widget.reviewToUpdate.address),
+              SizedBox(height: 10),
+              Text(
+                widget.reviewToUpdate.address,
+                style: TextStyle(fontSize: 20),
+              ),
+              SizedBox(height: 10),
               DropdownType(
                 value: typeValue,
                 onChanged: _updateTypeValue,
@@ -98,6 +117,7 @@ class _UpdateReviewState extends State<UpdateReview> {
                 ),
               ),
               ReviewRating(
+                ratings: ratings,
                 onRatingUpdated: _updateRating,
               ),
               Row(
@@ -107,25 +127,25 @@ class _UpdateReviewState extends State<UpdateReview> {
                   ElevatedButton(
                     onPressed: isButtonEnabled
                         ? () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    UpdateReviewDetail(reviewToUpdate: widget.reviewToUpdate),
-                              ),
-                            );
-                          }
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => UpdateReviewDetail(
+                              reviewToUpdate: widget.reviewToUpdate),
+                        ),
+                      );
+                    }
                         : null,
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                        (Set<MaterialState> states) {
+                            (Set<MaterialState> states) {
                           if (states.contains(MaterialState.disabled))
                             return Colors.grey;
                           return Colors.blue; // Default enabled color
                         },
                       ),
                       foregroundColor:
-                          MaterialStateProperty.all<Color>(Colors.white),
+                      MaterialStateProperty.all<Color>(Colors.white),
                     ),
                     child: Text('다음'),
                   ),
@@ -265,7 +285,7 @@ Widget dropdownWidget({
             ),
             focusedBorder: OutlineInputBorder(
               borderSide:
-                  BorderSide(color: INPUT_BORDER_COLOR), // 포커스 받았을 때의 색상
+              BorderSide(color: INPUT_BORDER_COLOR), // 포커스 받았을 때의 색상
               borderRadius: BorderRadius.circular(8.0),
             ),
           ),
@@ -292,9 +312,10 @@ Widget dropdownWidget({
 final List<String> categories = ['교통', '건물', '내부', '인프라', '치안'];
 
 class ReviewRating extends StatelessWidget {
+  final Map<String, double> ratings;
   final Function(String, double) onRatingUpdated;
 
-  ReviewRating({required this.onRatingUpdated});
+  ReviewRating({required this.ratings, required this.onRatingUpdated});
 
   @override
   Widget build(BuildContext context) {
@@ -302,32 +323,41 @@ class ReviewRating extends StatelessWidget {
       children: categories
           .map(
             (category) => ListTile(
-              title: Container(
-                child: Center(
-                  child: Text(category, textAlign: TextAlign.center),
-                ),
-              ),
-              trailing: RatingWidget(
-                onRatingChanged: (rating) => onRatingUpdated(category, rating),
-              ),
+          title: Container(
+            width: MediaQuery.of(context).size.width * 0.3,
+            child: Center(
+              child: Text(category, textAlign: TextAlign.center),
             ),
-          )
+          ),
+          trailing: RatingWidget(
+            initialRating: ratings[category] ?? 0,
+            onRatingChanged: (rating) => onRatingUpdated(category, rating),
+          ),
+        ),
+      )
           .toList(),
     );
   }
 }
 
 class RatingWidget extends StatefulWidget {
+  final double initialRating;
   final Function(double) onRatingChanged;
 
-  RatingWidget({required this.onRatingChanged});
+  RatingWidget({required this.initialRating, required this.onRatingChanged});
 
   @override
   _RatingWidgetState createState() => _RatingWidgetState();
 }
 
 class _RatingWidgetState extends State<RatingWidget> {
-  double _currentRating = 0;
+  late double _currentRating;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentRating = widget.initialRating;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -335,22 +365,23 @@ class _RatingWidgetState extends State<RatingWidget> {
       mainAxisSize: MainAxisSize.min,
       children: [
         ...List.generate(
-            5,
-            (index) => IconButton(
-                  icon: Icon(
-                    index < _currentRating
-                        ? Icons.star_rounded
-                        : Icons.star_border_rounded,
-                    color: index < _currentRating ? Colors.amber : Colors.amber,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      _currentRating = index + 1;
-                    });
-                    widget.onRatingChanged(_currentRating);
-                  },
-                  iconSize: 30,
-                )),
+          5,
+              (index) => IconButton(
+            icon: Icon(
+              index < _currentRating
+                  ? Icons.star_rounded
+                  : Icons.star_border_rounded,
+              color: index < _currentRating ? Colors.amber : Colors.amber,
+            ),
+            onPressed: () {
+              setState(() {
+                _currentRating = index + 1;
+              });
+              widget.onRatingChanged(_currentRating);
+            },
+            iconSize: 30,
+          ),
+        ),
         SizedBox(width: 3),
         Text('$_currentRating / 5', style: TextStyle(fontSize: 16))
       ],

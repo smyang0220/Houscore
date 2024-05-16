@@ -7,12 +7,11 @@ import 'package:houscore/common/const/color.dart';
 import 'package:houscore/common/layout/default_layout.dart';
 import 'package:houscore/review/model/star_rating_model.dart';
 import 'package:houscore/review/view/create_confirmed.dart';
+import 'package:houscore/review/view/update_confirmed.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import '../model/review_model.dart';
 import '../model/review_to_update_model.dart';
 import '../repository/review_repository.dart';
-import 'create_review.dart';
 
 class UpdateReviewDetail extends ConsumerStatefulWidget {
   final ReviewToUpdateModel reviewToUpdate;
@@ -89,7 +88,7 @@ class _CreateReviewDetailState extends ConsumerState<UpdateReviewDetail> {
     final repository = ref.read(reviewRepositoryProvider);
     await repository.updateReview(reviewModel: widget.reviewToUpdate);
     Navigator.push(
-          context, MaterialPageRoute(builder: (_) => CreateConfirmed(reviewAddress: reviewModel.address,)));
+          context, MaterialPageRoute(builder: (_) => UpdateConfirmed(reviewAddress: reviewModel.address,)));
     } catch (e) {
       print(reviewModel.toJson());
       print("Error submitting review: $e");
@@ -108,7 +107,7 @@ class _CreateReviewDetailState extends ConsumerState<UpdateReviewDetail> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 2),
                 child: Text(
-                  '리뷰 작성하기 (2/2)',
+                  '리뷰 수정하기 (2/2)',
                   style: TextStyle(
                     fontFamily: 'NotoSans',
                     fontSize: 20,
@@ -260,7 +259,7 @@ class ImageUploadState extends State<ImageUpload> {
             SizedBox(
               width: 10,
             ),
-            Text('최대 10장'),
+            Text('최대 1장'),
           ],
         ),
         SizedBox(
