@@ -104,7 +104,7 @@ class _CreateReviewDetailState extends ConsumerState<CreateReviewDetail> {
       pros: '넘 깨끗해요',
       cons: '부엌이 좁아요',
       maintenanceCost: '한 달에 10만원',
-    images: base64String,
+    images: '7687687687',
     residenceYear: '2024년',
     );
 

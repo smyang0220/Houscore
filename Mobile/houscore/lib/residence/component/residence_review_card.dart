@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:houscore/common/utils/data_utils.dart';
 import '../model/residence_review_model.dart';
 
-
-class ResidenceReviewCard extends StatelessWidget{
+class ResidenceReviewCard extends StatelessWidget {
   final int id;
   final String address;
   final String residenceType;
@@ -28,11 +27,11 @@ class ResidenceReviewCard extends StatelessWidget{
     this.images,
     required this.residenceYear,
     Key? key,
-}) : super(key: key);
+  }) : super(key: key);
 
   factory ResidenceReviewCard.fromModel({
     required ResidenceReviewModel model,
-}) {
+  }) {
     return ResidenceReviewCard(
         id: model.id,
         address: model.address,
@@ -46,19 +45,35 @@ class ResidenceReviewCard extends StatelessWidget{
         residenceYear: model.residenceYear);
   }
 
-
-
   @override
   Widget build(BuildContext context) {
-    int avg = (starRating.traffic + starRating.security + starRating.inside + starRating.infra + starRating.building) ~/ 5;
+    int avg = (starRating.traffic +
+            starRating.security +
+            starRating.inside +
+            starRating.infra +
+            starRating.building) ~/
+        5;
     return Container(
       child: Column(
-children: [
-  _Header(residenceFloor: residenceFloor, residenceYear: residenceYear, avg: avg,),
-  _Body(title: '장점', content: pros,),
-  _Body(title: '단점', content: cons,),
-  _Body(title: '관리비', content: maintenanceCost,),
-],
+        children: [
+          _Header(
+            residenceFloor: residenceFloor,
+            residenceYear: residenceYear,
+            avg: avg,
+          ),
+          _Body(
+            title: '장점',
+            content: pros,
+          ),
+          _Body(
+            title: '단점',
+            content: cons,
+          ),
+          _Body(
+            title: '관리비',
+            content: maintenanceCost,
+          ),
+        ],
       ),
     );
   }
@@ -69,41 +84,41 @@ class _Header extends StatelessWidget {
   final String residenceYear;
   final int avg;
 
-  const _Header({super.key,
-    required this.residenceFloor,
-    required this.residenceYear,
-    required this.avg});
+  const _Header(
+      {super.key,
+      required this.residenceFloor,
+      required this.residenceYear,
+      required this.avg});
 
   @override
   Widget build(BuildContext context) {
     String floorText = DataUtils.floorDescription(residenceFloor);
 
     return Row(
-        children: [
-          Text("사진"),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                  children: [
-                    Text(" ${floorText} : "),
-                    Text("${residenceYear}까지 거주"),
-                  ]
-              ),
-              Row(
-                children: [
-                  ...List.generate(5, (index) => Icon(
-                    index < avg ? Icons.star : Icons.star_border_outlined,
-                    color: Colors.yellow,
-                  )),
-                ],
-              )
-
-            ],
-          )
-        ],
-      );
+      children: [
+        Text("사진"),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(children: [
+              Text(" ${floorText} : "),
+              Text("${residenceYear}까지 거주"),
+            ]),
+            Row(
+              children: [
+                ...List.generate(
+                    5,
+                    (index) => Icon(
+                          index < avg ? Icons.star : Icons.star_border_outlined,
+                          color: Colors.yellow,
+                        )),
+              ],
+            )
+          ],
+        )
+      ],
+    );
   }
 }
 
@@ -119,7 +134,8 @@ class _Body extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title,
+          Text(
+            title,
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -128,8 +144,10 @@ class _Body extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(left: 8.0),
             child: Flexible(
-              child: Text(content,
-                softWrap: true,),
+              child: Text(
+                content,
+                softWrap: true,
+              ),
             ),
           )
         ],
@@ -137,4 +155,3 @@ class _Body extends StatelessWidget {
     );
   }
 }
-
