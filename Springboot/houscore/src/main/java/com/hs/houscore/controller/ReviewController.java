@@ -22,11 +22,26 @@ public class ReviewController {
 
     private final ReviewService reviewService;
     private final S3UploadService s3UploadService;
+    private int index = 0;
 
     @Autowired
     public ReviewController(ReviewService reviewService, S3UploadService s3UploadService) {
         this.reviewService = reviewService;
         this.s3UploadService = s3UploadService;
+    }
+
+    @GetMapping("/list")
+    @Operation(summary = "리뷰 전체 리스트", description = "리뷰 전체 리스트 반환")
+    public ResponseEntity<?> getReviewList(@RequestParam(name = "page")Integer page, @RequestParam(name = "size")Integer size) {
+        try {
+            BuildingReviewDTO buildingReviewDTO = reviewService.getReviewList(page, size);
+            if(buildingReviewDTO == null) {
+                return ResponseEntity.badRequest().body(new ErrorResponse("ReviewController getReview NullException"));
+            }
+            return ResponseEntity.ok(buildingReviewDTO);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ErrorResponse("ReviewController getReview failure"));
+        }
     }
 
     @GetMapping("")
@@ -83,22 +98,29 @@ public class ReviewController {
     @PostMapping("")
     @Operation(summary = "거주지 리뷰 등록", description = "거주지 리뷰 등록")
     public ResponseEntity<?> addReview(@RequestBody CreateReviewDTO review,
-                                       @AuthenticationPrincipal String memberEmail,
-                                       @RequestParam @Parameter(description = "imageName : 이미지 이름(임의로 지정)") String imageName) {
+                                       @AuthenticationPrincipal String memberEmail) {
+        System.out.println("일단 들어왔구연");
         try{
+            System.out.println("good");
             //유저 검증
             if(memberEmail == null || memberEmail.equals("anonymousUser")){
                 return ResponseEntity.badRequest().body(new ErrorResponse("사용자 검증 필요"));
             }
+
+            if(index > 2100000000) index = 1;
+
+            String imageName = memberEmail.split("@")[0]+ index++ +".jpeg";
+            System.out.println(imageName);
+
             // FileUploadDTO 세팅
             FileUploadDTO fileUploadDTO = new FileUploadDTO();
             fileUploadDTO.setImageBase64(review.getImages());
             fileUploadDTO.setImageName(imageName);
-
+            System.out.println("DTO 세팅 이슈 아님");
             // S3 이미지 업로드
             String result = s3UploadService.saveImage(fileUploadDTO);
             review.setImages(result);
-
+            //이미지
             reviewService.setReview(review, memberEmail);
             return ResponseEntity.status(HttpStatus.CREATED).body("리뷰 등록 성공");
         }catch (IllegalArgumentException e) {
@@ -111,12 +133,22 @@ public class ReviewController {
     @PutMapping("")
     @Operation(summary = "거주지 리뷰 수정", description = "거주지 리뷰 수정")
     public ResponseEntity<?> updateReview(@RequestBody ReviewDTO review,
-                                          @AuthenticationPrincipal String memberEmail) {
+                                          @AuthenticationPrincipal String memberEmail,
+                                          @RequestParam @Parameter(description = "imageName : 이미지 이름(임의로 지정)") String imageName) {
         try{
             //유저 검증
             if(memberEmail == null || memberEmail.equals("anonymousUser")){
                 return ResponseEntity.badRequest().body(new ErrorResponse("사용자 검증 필요"));
             }
+
+            // FileUploadDTO 세팅
+            FileUploadDTO fileUploadDTO = new FileUploadDTO();
+            fileUploadDTO.setImageBase64(review.getImages());
+            fileUploadDTO.setImageName(imageName);
+
+            // S3 이미지 업로드
+            String result = s3UploadService.saveImage(fileUploadDTO);
+            review.setImages(result);
 
             reviewService.updateReview(review, memberEmail);
             return ResponseEntity.status(HttpStatus.CREATED).body("리뷰 수정 성공");
