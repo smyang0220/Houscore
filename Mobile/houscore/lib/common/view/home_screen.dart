@@ -32,17 +32,17 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Map<String, dynamic>> reviews = [
     {
       'address': '서울 강남구 개포동 12',
-      'userRating': 4.0,
-      'aiRating': 2.8,
-      'like': '사람이 별로 없어서 조용합니다.',
-      'dislike': '배달음식을 시켜먹을 곳이 별로 없습니다.'
+      'reviewScore': 4.0,
+      'aiScore': 2.8,
+      'pros': '사람이 별로 없어서 조용합니다.',
+      'cons': '배달음식을 시켜먹을 곳이 별로 없습니다.'
     },
     {
       'address': '서울 강동구 길동 454-1',
-      'userRating': 3.0,
-      'aiRating': 3.5,
-      'like': '회사촌이 가까워서 좋습니다.',
-      'dislike': '주변에 맛집이 별로 없습니다.'
+      'reviewScore': 3.0,
+      'aiScore': 3.5,
+      'pros': '회사촌이 가까워서 좋습니다.',
+      'cons': '주변에 맛집이 별로 없습니다.'
     },
   ];
 
@@ -50,42 +50,42 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Map<String, dynamic>> reviewsWithImages = [
     {
       'address': '서울 강남구 개포동 12',
-      'userRating': 4.0,
-      'aiRating': 2.8,
-      'like': '사람이 별로 없어서 조용합니다.',
-      'dislike': '배달음식을 시켜먹을 곳이 별로 없습니다.',
+      'reviewScore': 4.0,
+      'aiScore': 2.8,
+      'pros': '사람이 별로 없어서 조용합니다.',
+      'cons': '배달음식을 시켜먹을 곳이 별로 없습니다.',
       'imageUrl': 'https://example.com/images/review1.jpg'
     },
     {
       'address': '서울 강동구 길동 454-1',
-      'userRating': 3.0,
-      'aiRating': 3.5,
-      'like': '회사촌이 가까워서 좋습니다.',
-      'dislike': '주변에 맛집이 별로 없습니다.',
+      'reviewScore': 3.0,
+      'aiScore': 3.5,
+      'pros': '회사촌이 가까워서 좋습니다.',
+      'cons': '주변에 맛집이 별로 없습니다.',
       'imageUrl': 'https://example.com/images/review2.jpg'
     },
     {
       'address': '대전 유성구 덕명동 522-1',
-      'userRating': 4.5,
-      'aiRating': 4.2,
-      'like': '온오프 피자가 훌륭합니다.',
-      'dislike': '방학시즌에 썰렁합니다.',
+      'reviewScore': 4.5,
+      'aiScore': 4.2,
+      'pros': '온오프 피자가 훌륭합니다.',
+      'cons': '방학시즌에 썰렁합니다.',
       'imageUrl': 'https://example.com/images/review3.jpg'
     },
     // {
     //   'address': '경기도 성남시 분당구 판교역 로데오',
-    //   'userRating': 3.5,
-    //   'aiRating': 3.0,
-    //   'like': '기술 회사들이 많아 접근성이 좋습니다.',
-    //   'dislike': '출퇴근 시간대에 교통이 혼잡합니다.',
+    //   'reviewScore': 3.5,
+    //   'aiScore': 3.0,
+    //   'pros': '기술 회사들이 많아 접근성이 좋습니다.',
+    //   'cons': '출퇴근 시간대에 교통이 혼잡합니다.',
     //   'imageUrl': 'https://example.com/images/review4.jpg'
     // },
     // {
     //   'address': '제주도 서귀포시 중문관광단지',
-    //   'userRating': 5.0,
-    //   'aiRating': 4.8,
-    //   'like': '자연 경관이 아름답고 평화롭습니다.',
-    //   'dislike': '겨울철에는 날씨가 다소 쌀쌀합니다.',
+    //   'reviewScore': 5.0,
+    //   'aiScore': 4.8,
+    //   'pros': '자연 경관이 아름답고 평화롭습니다.',
+    //   'cons': '겨울철에는 날씨가 다소 쌀쌀합니다.',
     //   'imageUrl': 'https://example.com/images/review5.jpg'
     // },
   ];
@@ -135,7 +135,6 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(height: VERTICAL_GAP),
               // 근처 거주지 리뷰
               NearbyResidencesReview(
-                reviewsWithImages: reviewsWithImages,
                 onViewAll: () {
                   // 전체 보기 시 다른 화면
                 },

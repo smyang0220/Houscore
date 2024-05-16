@@ -86,7 +86,9 @@ class _NearbyIndicatorsState extends ConsumerState<NearbyIndicators> {
   }
 
   // 전체 카테고리에서 가까운 곳들 찾아서 리스트화
-  List<Infra> getClosestInfras(ResidenceDetailIndicatorsModel model) {
+  List<Infra>? getClosestInfras(ResidenceDetailIndicatorsModel? model) {
+    if (model == null) return null;
+
     List<Infra> closestInfras = [];
 
     // 각 유형별로 최소 거리 인프라 찾기
@@ -116,8 +118,10 @@ class _NearbyIndicatorsState extends ConsumerState<NearbyIndicators> {
     return closestInfras;
   }
 
-  List<Infra> getInfrasByTypes(
-      List<InfraType> types, ResidenceDetailIndicatorsModel data) {
+  List<Infra>? getInfrasByTypes(
+      List<InfraType> types, ResidenceDetailIndicatorsModel? data) {
+    if (data == null) return null;
+
     List<Infra> selectedInfras = [];
     int maxCount = 4; // 항목별 최대 갯수
     for (InfraType type in types) {
@@ -162,18 +166,21 @@ class _NearbyIndicatorsState extends ConsumerState<NearbyIndicators> {
     if (data is DataStateLoading) {
       // 로딩 중 상태
       return Lottie.asset('asset/img/logo/loading_lottie_animation.json');
-    } else if (data is DataStateError) {
+    }
+    // else if (data is DataStateError) {
       // 에러 상태
-      return const Text('주변 지표에 대한 데이터를 불러오는데 실패했습니다.');
-    } else if (data is DataState<ResidenceDetailIndicatorsModel>) {
+      // return const Text('주변 지표에 대한 데이터를 불러오는데 실패했습니다.');
+    // }
+    // else if (data is DataState<ResidenceDetailIndicatorsModel>) {
+    else  {
       // 성공적으로 데이터를 불러온 상태
-      final residenceData = data.data;
+      final residenceData = data is DataState<ResidenceDetailIndicatorsModel> ? data.data : null;
 
       // 다음 함수들을 호출할 때 residenceData를 사용
-      List<Infra> nearbyInfras = getInfrasByTypes(
+      List<Infra>? nearbyInfras = getInfrasByTypes(
           [InfraType.medicalFacilities, InfraType.park, InfraType.school],
           residenceData);
-      List<Infra> nearbyPublicTransportation =
+      List<Infra>? nearbyPublicTransportation =
           getInfrasByTypes([InfraType.bus, InfraType.subway], residenceData);
 
       return Padding(
@@ -186,20 +193,21 @@ class _NearbyIndicatorsState extends ConsumerState<NearbyIndicators> {
               // Text('현재 위경도는 ${_currentLatLng?.latitude} , ${_currentLatLng?.longitude}'),
               NearbyLivingFacilities(
                   closestInfras: getClosestInfras(residenceData)),
-              NearbyInfra(infras: nearbyInfras),
+              NearbyInfra(infras: nearbyInfras ?? []),
               NearbyPublicTransportation(
-                  transportItems: nearbyPublicTransportation),
+                  transportItems: nearbyPublicTransportation ?? []),
               ResidencePriceSafety(
-                  realCost: residenceData.realCost,
-                  pricePerPyeong: residenceData.pricePerPyeong,
-                  safetyGrade: residenceData.safetyGrade),
+                  realCost: residenceData?.realCost,
+                  pricePerPyeong: residenceData?.pricePerPyeong,
+                  safetyGrade: residenceData?.safetyGrade),
               ResidenceDetailInfo(location: _currentLocation),
             ],
           ),
         ),
       );
-    } else {
-      return Text('오류입니다.');
     }
+    // else {
+    //   return Text('오류입니다.');
+    // }
   }
 }

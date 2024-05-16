@@ -63,10 +63,10 @@ class PhotoReviews extends StatelessWidget {
                 final review = reviewsWithImages[index];
                 return ReviewCardWithPhoto(
                   address: review['address'],
-                  userRating: review['userRating'],
-                  aiRating: review['aiRating'],
-                  like: review['like'],
-                  dislike: review['dislike'],
+                  userRating: review['reviewScore'],
+                  aiRating: review['aiScore'],
+                  like: review['pros'],
+                  dislike: review['cons'],
                   imageUrl: review['imageUrl'],
                 );
               },
