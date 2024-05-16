@@ -121,20 +121,6 @@ class _NearbyResidencesReviewState extends ConsumerState<NearbyResidencesReview>
             );
           }).toList(),
         );
-      } else if (reviewState is DataStateRefetching) {
-        final reviews = reviewState.data as List<HomescreenReviewModel>;
-        return Column(
-          children: reviews.map((review) {
-            return ReviewCard(
-              address: review.address,
-              userRating: review.reviewScore,
-              aiRating: review.aiScore,
-              like: review.pros,
-              dislike: review.cons,
-              imageUrl: review.imageUrl,
-            );
-          }).toList(),
-        );
       } else {
         return Container();
       }

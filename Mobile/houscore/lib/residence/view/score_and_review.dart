@@ -4,6 +4,7 @@ import 'package:houscore/common/layout/default_layout.dart';
 import 'package:houscore/common/model/cursor_pagination_model.dart';
 import 'package:houscore/residence/component/residence_review_card.dart';
 import 'package:houscore/residence/model/residence_review_model.dart';
+import 'package:houscore/residence/utils/place_utils.dart';
 import 'package:skeletons/skeletons.dart';
 
 import '../../common/provider/number_provider.dart';
@@ -35,7 +36,8 @@ class _ScoreAndReviewState extends ConsumerState<ScoreAndReview> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(numberProvider.notifier).state = 0;
-      ref.read(paginationParameterProvider.notifier).updateParams(address: '서울특별시 강남구 개포동 12', page: 0);
+      String result = PlaceUtils.mapAddressForAPI(widget.address);
+      ref.read(paginationParameterProvider.notifier).updateParams(address: result, page: 0);
     });
 
 
