@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ReviewRepository extends JpaRepository<ReviewEntity, Long> {
+    Page<ReviewEntity> findAll(Pageable pageable);
+    Long countAllBy();
     List<ReviewEntity> findListByAddress(@Param("address")String address);
     Page<ReviewEntity> findPageByAddress(@Param("address")String address, Pageable pageable);
     Optional<ReviewEntity> findById(Long id);

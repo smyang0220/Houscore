@@ -30,6 +30,20 @@ public class ReviewController {
         this.s3UploadService = s3UploadService;
     }
 
+    @GetMapping("/list")
+    @Operation(summary = "리뷰 전체 리스트", description = "리뷰 전체 리스트 반환")
+    public ResponseEntity<?> getReviewList(@RequestParam(name = "page")Integer page, @RequestParam(name = "size")Integer size) {
+        try {
+            BuildingReviewDTO buildingReviewDTO = reviewService.getReviewList(page, size);
+            if(buildingReviewDTO == null) {
+                return ResponseEntity.badRequest().body(new ErrorResponse("ReviewController getReview NullException"));
+            }
+            return ResponseEntity.ok(buildingReviewDTO);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ErrorResponse("ReviewController getReview failure"));
+        }
+    }
+
     @GetMapping("")
     @Operation(summary = "리뷰 상세 내용", description = "리뷰 상세 내용 조회")
     public ResponseEntity<?> getReview(@RequestParam Long id) {
