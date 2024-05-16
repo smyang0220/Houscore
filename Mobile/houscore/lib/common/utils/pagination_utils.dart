@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:houscore/common/provider/data_list_param_provider.dart';
 import 'package:houscore/residence/model/pagination_params.dart';
 
 import '../provider/pagination_provider.dart';
 import '../provider/parameter_provider.dart';
 
 class PaginationUtils {
+
   static Future<void> paginate({
     required StateController<int> numberprovider,
     required ScrollController controller,
@@ -27,6 +30,6 @@ class PaginationUtils {
         forceRefetch : true,
       );
     }
-
   }
+
 }

@@ -1,11 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:houscore/common/utils/data_utils.dart';
-import 'package:houscore/residence/model/residence_main_photo_model.dart';
+import 'package:houscore/review/model/homescreen_review_model.dart';
 import '../model/residence_review_model.dart';
 
 class ResidencePhotoReviewCard extends StatelessWidget {
-  final String buildingName;
+  final String? buildingName;
   final String address;
   final String pros;
   final String cons;
@@ -14,7 +13,7 @@ class ResidencePhotoReviewCard extends StatelessWidget {
   final String imageUrl;
 
   const ResidencePhotoReviewCard({
-    required this.buildingName,
+    this.buildingName,
     required this.address,
     required this.pros,
     required this.cons,
@@ -25,7 +24,7 @@ class ResidencePhotoReviewCard extends StatelessWidget {
   }) : super(key: key);
 
   factory ResidencePhotoReviewCard.fromModel({
-    required ResidenceMainPhotoModel model,
+    required HomescreenReviewModel model,
   }) {
     return ResidencePhotoReviewCard(
         buildingName : model.buildingName,
@@ -43,7 +42,7 @@ class ResidencePhotoReviewCard extends StatelessWidget {
       child: Column(
         children: [
           Text("사진들어가요"),
-          Text(buildingName),
+          Text(buildingName ?? ''),
           Text(pros),
           Text(cons),
         ],
