@@ -60,8 +60,8 @@ public class BuildingController {
 
     @GetMapping("/review")
     @Operation(summary = "건물 리뷰 정보", description = "건물 리뷰 정보 검색")
-    public ResponseEntity<?> getBuildingReview(@RequestParam String address
-            , Integer page, Integer size){
+    public ResponseEntity<?> getBuildingReview(@RequestParam(name = "address") String address
+            , @RequestParam(name = "page")Integer page, @RequestParam(name = "size")Integer size){
         try {
             BuildingReviewDTO buildingReviewDTO = buildingService.getBuildingReviewList(address, page, size);
             if(buildingReviewDTO == null) {

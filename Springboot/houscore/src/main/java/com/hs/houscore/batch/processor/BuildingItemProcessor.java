@@ -9,7 +9,9 @@ import com.hs.houscore.mongo.entity.BuildingEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemProcessor;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.http.MediaType;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,6 +22,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class BuildingItemProcessor implements ItemProcessor<BuildingEntity, BuildingEntity> {
 
+    private final WebClient webClient;
     private final MasterRegisterRepository masterRegisterRepository;
     private final RealTransactionPriceRepository realTransactionPriceRepository;
     private final BusRepository busRepository;
@@ -36,10 +39,8 @@ public class BuildingItemProcessor implements ItemProcessor<BuildingEntity, Buil
     @Override
     public BuildingEntity process(BuildingEntity building) throws Exception {
         //배치를 처리할 로직이 들어가는 부분
-
-        return BuildingEntity.builder()
+        BuildingEntity buildingEntity = BuildingEntity.builder()
                 .id(building.getId())
-                .score(building.getScore())
                 .location(building.getLocation())
                 .platPlc(building.getPlatPlc())
                 .newPlatPlc(building.getNewPlatPlc())
@@ -52,6 +53,15 @@ public class BuildingItemProcessor implements ItemProcessor<BuildingEntity, Buil
                         .trafficInfo(setTrafficInfo(building))
                         .build())
                 .build();
+        // FastAPI 서버에 POST 요청을 보내고, float 타입의 점수를 받음
+        Mono<Double> responseMono = webClient.post()
+                .uri("/predict")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(buildingEntity)
+                .retrieve()
+                .bodyToMono(Double.class);
+        buildingEntity.setScore(responseMono.block());
+        return buildingEntity;
     }
 
     //표제부 데이터
@@ -134,7 +144,7 @@ public class BuildingItemProcessor implements ItemProcessor<BuildingEntity, Buil
             saleAvg = saleTot / saleList.size();
         }
         //공시지가
-        List<IndividualPubliclyAnnouncedPriceEntity> individualPubliclyAnnouncedPriceEntityList = individualPubliclyAnnouncedPriceRepository.findByPlatPlac(building.getPlatPlc());
+        List<IndividualPubliclyAnnouncedPriceEntity> individualPubliclyAnnouncedPriceEntityList = individualPubliclyAnnouncedPriceRepository.findByPlatPlc(building.getPlatPlc());
         Long[] individualPrices = new Long[individualPubliclyAnnouncedPriceEntityList.size()];
         if(!individualPubliclyAnnouncedPriceEntityList.isEmpty()){
             for(int i = 0; i < individualPubliclyAnnouncedPriceEntityList.size(); i++){
@@ -199,7 +209,7 @@ public class BuildingItemProcessor implements ItemProcessor<BuildingEntity, Buil
 
         return BuildingEntity.InfraInfo.builder()
                 .parks(parkMap)
-                .Libraries(libraryMap)
+                .libraries(libraryMap)
                 .medicalFacilities(hospitalMap)
                 .schools(schoolMap)
                 .supermarkets(storeMap)
