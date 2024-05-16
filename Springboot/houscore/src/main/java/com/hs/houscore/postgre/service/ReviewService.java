@@ -1,5 +1,6 @@
 package com.hs.houscore.postgre.service;
 
+import com.hs.houscore.dto.BuildingReviewDTO;
 import com.hs.houscore.dto.CreateReviewDTO;
 import com.hs.houscore.dto.ReviewDTO;
 import com.hs.houscore.mongo.entity.BuildingEntity;
@@ -7,10 +8,16 @@ import com.hs.houscore.mongo.repository.BuildingRepository;
 import com.hs.houscore.mongo.service.BuildingService;
 import com.hs.houscore.postgre.entity.ReviewEntity;
 import com.hs.houscore.postgre.repository.ReviewRepository;
+import com.hs.houscore.s3.S3UploadService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.hs.houscore.postgre.entity.ReviewEntity.ResidenceFloor.fromFloorNumber;
@@ -23,6 +30,45 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final BuildingRepository buildingRepository;
     private final BuildingService buildingService;
+    private final S3UploadService s3UploadService;
+
+    //리뷰 전체 조회
+    public BuildingReviewDTO getReviewList(int page, int size){
+        System.out.println("dd");
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "createdAt"));
+        Page<ReviewEntity> reviewEntities = reviewRepository.findAll(pageable);
+        Long reviewAllCnt = reviewRepository.countAllBy();
+
+        List<ReviewEntity> reviews = reviewEntities.getContent();
+        List<BuildingReviewDTO.Review> buildingReviewDTOS = new ArrayList<>();
+        for(ReviewEntity review : reviews){
+            buildingReviewDTOS.add(BuildingReviewDTO.Review.builder()
+                    .id(review.getId())
+                    .address(review.getAddress())
+                    .residenceType(review.getResidenceType().toString())
+                    .residenceFloor(review.getResidenceFloor().toString())
+                    .starRating(BuildingReviewDTO.Review.StarRating.builder()
+                            .infra(review.getStarRating().getInfra())
+                            .building(review.getStarRating().getBuilding())
+                            .inside(review.getStarRating().getInside())
+                            .traffic(review.getStarRating().getTraffic())
+                            .security(review.getStarRating().getSecurity())
+                            .build())
+                    .pros(review.getPros())
+                    .cons(review.getCons())
+                    .maintenanceCost(review.getMaintenanceCost())
+                    .images(review.getImages())
+                    .residenceYear(review.getYear())
+                    .build());
+        }
+
+        return BuildingReviewDTO.builder()
+                .meta(BuildingReviewDTO.Meta.builder()
+                        .count(reviewAllCnt)
+                        .build())
+                .data(buildingReviewDTOS)
+                .build();
+    }
 
     //리뷰 상세
     public ReviewEntity getDetailReview(Long id){
@@ -86,6 +132,10 @@ public class ReviewService {
             throw new IllegalArgumentException("수정 가능한 리뷰가 없습니다.");
         }
 
+        //기존의 이미지 삭제
+        String result = s3UploadService.deleteImage(reviewEntity.getImages());
+        System.out.println(result);
+
         ReviewEntity updateReviewEntity = ReviewEntity.builder()
                 .id(reviewEntity.getId())
                 .memberId(memberEmail)
@@ -119,6 +169,10 @@ public class ReviewService {
         //해당 리뷰를 작성한 사용자가 맞는지 검증 후 삭제
         reviewRepository.findByIdAndMemberId(id, memberEmail)
                 .map(reviewEntity -> {
+                    //기존의 이미지 삭제
+                    String result = s3UploadService.deleteImage(reviewEntity.getImages());
+                    System.out.println(result);
+
                     reviewRepository.delete(reviewEntity);
                     return reviewEntity;
                 })

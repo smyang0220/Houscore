@@ -1,6 +1,7 @@
 package com.hs.houscore.s3;
 
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.hs.houscore.dto.FileUploadDTO;
 import java.io.ByteArrayInputStream;
@@ -21,17 +22,39 @@ public class S3UploadService {
     private String bucket;
 
     public String saveImage(FileUploadDTO fileUploadDTO) {
-        String filenameWithPath = fileUploadDTO.getImageName();
-        byte[] decodedImg = Base64.getDecoder().decode(fileUploadDTO.getImageBase64().split(",")[1]);
+        String filenameWithPath = "houscore/" + fileUploadDTO.getImageName();
+        byte[] decodedImg = Base64.getDecoder().decode(fileUploadDTO.getImageBase64());
         ByteArrayInputStream inputStream = new ByteArrayInputStream(decodedImg);
 
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(decodedImg.length);
-        String mimeType = fileUploadDTO.getImageBase64().split(";")[0].split(":")[1];
-        metadata.setContentType(mimeType);
+        metadata.setContentType("image/jpeg");
 
         amazonS3Client.putObject(bucket, filenameWithPath, inputStream, metadata);
 
         return amazonS3Client.getUrl(bucket, filenameWithPath).toString();
+    }
+
+    public String deleteImage(String imgUrl) {
+        String result = "Delete success.";
+
+        try {
+            // URL에서 마지막 부분을 추출하여 keyName을 생성
+            String[] parts = imgUrl.split("/");
+            String keyName = "houscore/" + parts[parts.length - 1];
+
+            // S3 버킷에서 해당 객체 존재 여부 확인
+            boolean isObjectExist = amazonS3Client.doesObjectExist(bucket, keyName);
+            if (isObjectExist) {
+                amazonS3Client.deleteObject(bucket, keyName);
+            } else {
+                result = "file not found";
+            }
+        } catch (Exception e) {
+            log.debug("Delete File failed", e);
+            result = "Error in deleting file";
+        }
+
+        return result;
     }
 }
