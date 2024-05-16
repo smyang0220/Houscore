@@ -7,6 +7,7 @@ import com.hs.houscore.mongo.repository.BuildingRepository;
 import com.hs.houscore.mongo.service.BuildingService;
 import com.hs.houscore.postgre.entity.ReviewEntity;
 import com.hs.houscore.postgre.repository.ReviewRepository;
+import com.hs.houscore.s3.S3UploadService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final BuildingRepository buildingRepository;
     private final BuildingService buildingService;
+    private final S3UploadService s3UploadService;
 
     //리뷰 상세
     public ReviewEntity getDetailReview(Long id){
@@ -86,6 +88,10 @@ public class ReviewService {
             throw new IllegalArgumentException("수정 가능한 리뷰가 없습니다.");
         }
 
+        //기존의 이미지 삭제
+        String result = s3UploadService.deleteImage(reviewEntity.getImages());
+        System.out.println(result);
+
         ReviewEntity updateReviewEntity = ReviewEntity.builder()
                 .id(reviewEntity.getId())
                 .memberId(memberEmail)
@@ -119,6 +125,10 @@ public class ReviewService {
         //해당 리뷰를 작성한 사용자가 맞는지 검증 후 삭제
         reviewRepository.findByIdAndMemberId(id, memberEmail)
                 .map(reviewEntity -> {
+                    //기존의 이미지 삭제
+                    String result = s3UploadService.deleteImage(reviewEntity.getImages());
+                    System.out.println(result);
+
                     reviewRepository.delete(reviewEntity);
                     return reviewEntity;
                 })
