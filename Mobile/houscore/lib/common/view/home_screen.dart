@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:houscore/common/model/data_list_state_model.dart';
 import 'package:houscore/residence/model/residence_main_photo_model.dart';
+import 'package:houscore/residence/provider/main_photo_provider.dart';
 import 'package:houscore/review/component/photo_reviews.dart';
 import 'package:houscore/common/component/search_residences.dart';
 import 'package:houscore/common/const/color.dart';
@@ -25,6 +27,13 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 // 더미 최근 검색 거주지
 class _HomeScreenState extends ConsumerState<HomeScreen> {
+  
+  @override
+  void initState() {
+    super.initState();
+    ref.read(mainPhotoProvider.notifier);
+  }
+  
   final List<String> residenceNames = [
     '잠실 레이크팰리스',
     '잠실 트리지움 아파트',
@@ -97,6 +106,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final photo = ref.watch(mainPhotoProvider);
+    
     return DefaultLayout(
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
@@ -105,77 +116,100 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             borderRadius: BorderRadius.all(Radius.circular(50))),
         child: Icon(Icons.create_rounded),
       ),
-      child: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              // 메인 로고와 어플 이름
-              MainLogoAppName(),
-              // 한 줄 소개
-              SizedBox(height: 30),
-              // 검색창
-              // SearchResidences(title: null),
-              SearchResidences(),
-              SizedBox(height: VERTICAL_GAP),
-              AiRecommendation(),
-              SizedBox(height: VERTICAL_GAP),
-              // 근처 거주지 리뷰
-              NearbyResidencesReview(
-                onViewAll: () {
-                  // 전체 보기 시 다른 화면
-                },
-              ),
-              // 최근 등록 리뷰
-              SizedBox(height: VERTICAL_GAP),
+      child:CustomScrollView(
+        slivers: [
+          renderLogo(),
+          renderSearchResidences(),
+          renderAiRecommendation(),
+          renderNearbyResidencesReview(),
+          renderLabel(),
+          renderPhotos(models : photo),
+        ],
+      )
 
-            FutureBuilder<List<ResidenceMainPhotoModel>>(
-              future: ref.read(residenceRepositoryProvider).getResidenceMainPhoto(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('오류가 발생했습니다: ${snapshot.error}'));
-                } else if (snapshot.hasData) {
-                  print("출력");
-                  print(snapshot.data);
-                  return _PhotoReview(models: snapshot.data!);
-                } else {
-                  return Center(child: Text('데이터가 없습니다.'));
-                }
-              },
-            ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }
 
 
-class _PhotoReview extends StatelessWidget {
-  final List<ResidenceMainPhotoModel> models;
+class _PhotoReview extends ConsumerStatefulWidget {
 
-  const _PhotoReview({super.key, required this.models});
+  const _PhotoReview({super.key});
+
+  @override
+  ConsumerState<_PhotoReview> createState() => _PhotoReviewState();
+}
+
+class _PhotoReviewState extends ConsumerState<_PhotoReview> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    ref.read(mainPhotoProvider.notifier);
+  }
 
   @override
   Widget build(BuildContext context) {
+    final photo = ref.watch(mainPhotoProvider);
+
     print("포토리뷰위젯생성");
     return Padding(
       padding: const EdgeInsets.only(bottom: 5.0),
-      child: Flexible(
         child: CustomScrollView(
           slivers: [
             renderLabel(),
-            renderPhotos(models: models),
+            renderPhotos(models: photo),
           ],
         ),
-      ),
     );
+    return Text("야발");
   }
 }
+
+
+SliverPadding renderLogo() {
+  return SliverPadding(
+    padding: EdgeInsets.symmetric(horizontal: 16.0),
+    sliver: SliverToBoxAdapter(
+      child: MainLogoAppName(),
+    ),
+  );
+}
+
+SliverPadding renderSearchResidences() {
+  return SliverPadding(
+    padding: EdgeInsets.symmetric(horizontal: 16.0),
+    sliver: SliverToBoxAdapter(
+      child: SearchResidences(),
+    ),
+  );
+}
+
+SliverPadding renderAiRecommendation() {
+  return SliverPadding(
+    padding: EdgeInsets.symmetric(horizontal: 16.0),
+    sliver: SliverToBoxAdapter(
+      child: AiRecommendation(),
+    ),
+  );
+}
+
+SliverPadding renderNearbyResidencesReview() {
+  return SliverPadding(
+    padding: EdgeInsets.symmetric(horizontal: 16.0),
+    sliver: SliverToBoxAdapter(
+      child: NearbyResidencesReview(
+        onViewAll: () {
+          // 전체 보기 시 다른 화면
+        },
+      ),
+    ),
+  );
+}
+
+
+
+
 
 SliverPadding renderLabel() {
   return SliverPadding(
@@ -196,32 +230,31 @@ SliverPadding renderLabel() {
 
 
 SliverPadding renderPhotos({
-  required List<ResidenceMainPhotoModel> models,
+  required DataListStateBase models,
 }) {
-  final int itemCount = models.length;
-
   return SliverPadding(
     padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-    sliver: SliverList(
-      delegate: SliverChildBuilderDelegate(
-            (_, index) {
-          // 리스트의 마지막 아이템인 경우 로딩 인디케이터를 렌더링
-              if (index >= models.length) {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              } else {
-                print("된건데말야..");
-                print(itemCount);
-                return
-                  ResidencePhotoReviewCard.fromModel(
-                    model: models[index],
-                  );
-              }
-
-              // 그 외의 경우에는 ResidenceReviewCard를 렌더링
-        },
-        childCount: itemCount,
+    sliver: SliverToBoxAdapter( // SliverList 대신 SliverToBoxAdapter 사용
+      child: Container(
+        height: 200.0, // 적절한 높이 설정
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal, // 가로 스크롤 설정
+          itemCount: models is DataListState<ResidenceMainPhotoModel> ? models.data.length : 10, // itemCount 처리
+          itemBuilder: (context, index) {
+            if (models is DataListState<ResidenceMainPhotoModel>) {
+              return ResidencePhotoReviewCard.fromModel(
+                model: models.data[index],
+              );
+            } else if (models is DataListStateError) {
+              return Text("에러입니다");
+            } else {
+              // 데이터가 로딩 중이거나 불러올 데이터가 없는 경우
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+          },
+        ),
       ),
     ),
   );

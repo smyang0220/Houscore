@@ -1,7 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
 
-import '../../common/model/model_with_id.dart';
-
 part 'residence_main_photo_model.g.dart';
 
 @JsonSerializable()
