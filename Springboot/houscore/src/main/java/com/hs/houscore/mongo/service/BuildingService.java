@@ -8,6 +8,7 @@ import com.hs.houscore.postgre.entity.ReviewEntity;
 import com.hs.houscore.postgre.repository.ReviewRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class BuildingService {
 
     private final BuildingRepository buildingRepository;
@@ -292,13 +294,13 @@ public class BuildingService {
     }
 
     public List<MainPageDTO> getMainPhoto(){
-        List<ReviewEntity> reviewEntities = reviewRepository.findAll();
+        Long reviewMaxId = reviewRepository.findMaxId();
         List<MainPageDTO> mainPageDTOS = new ArrayList<>();
-        int reviewSize = reviewEntities.size();
         Random random = new Random();
-        for(int i = 0; i < reviewSize; i++){
-            int randomNumber = random.nextInt(reviewSize);
-            Optional<ReviewEntity> reviewEntity = reviewRepository.findById((long) randomNumber);
+        int index = 0;
+        while(true){
+            long randomNumber = random.nextLong(reviewMaxId);
+            Optional<ReviewEntity> reviewEntity = reviewRepository.findById(randomNumber);
 
             if(reviewEntity.isPresent()) {
                 Optional<BuildingEntity> buildingEntity = buildingRepository.findByNewPlatPlcOrPlatPlc(reviewEntity.get().getAddress(), reviewEntity.get().getAddress());
@@ -312,9 +314,11 @@ public class BuildingService {
                         .pros(reviewEntity.get().getPros())
                         .imageUrl(reviewEntity.get().getImages())
                         .build()));
+
+                index++;
             }
 
-            if(mainPageDTOS.size() >= 5) break;
+            if(index > 9) break;
         }
 
         return mainPageDTOS;
