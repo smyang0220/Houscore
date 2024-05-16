@@ -28,11 +28,6 @@ class PhotoReviews extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    // Icon(
-                    //   Icons.camera_alt_rounded,
-                    //   size: 32.0,
-                    //   color: PRIMARY_COLOR,
-                    // ),
                     Text(
                       '📷 백문이 불여일견! 사진 리뷰',
                       style: TextStyle(
@@ -44,12 +39,6 @@ class PhotoReviews extends StatelessWidget {
                     ),
                   ],
                 ),
-                // TextButton(
-                //     onPressed: onViewAll,
-                //     child: Text(
-                //       '전체보기',
-                //       style: TextStyle(color: Colors.grey),
-                //     )),
               ],
             ),
           ),
@@ -77,3 +66,4 @@ class PhotoReviews extends StatelessWidget {
     );
   }
 }
+

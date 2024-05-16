@@ -37,7 +37,7 @@ class CustomInterceptor extends Interceptor {
   void onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
     // 요청 방식과 url 로깅
-    // print('[REQ] [${options.method}] ${options.uri}');
+    print('[REQ] [${options.method}] ${options.uri}');
 
     // 인증 토큰 적용
     if (options.headers['accessToken'] == 'true') {
@@ -72,8 +72,7 @@ class CustomInterceptor extends Interceptor {
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     // 응답 방식과 url 로깅
-    // print(
-    //     '[RES] [${response.requestOptions.method}] ${response.requestOptions.uri}');
+    print('[RES] [${response.requestOptions.method}] ${response.requestOptions.uri}');
 
     return super.onResponse(response, handler);
   }
@@ -86,8 +85,8 @@ class CustomInterceptor extends Interceptor {
     // 다시 새로운 토큰으로 요청을한다.
 
     // 요청 방식과 url 로깅 with ERR sign
-    // print('[ERR] [${err.requestOptions.method}] ${err.requestOptions.uri}');
-    // print('[ERR CODE] ${err.response?.statusCode}');
+    print('[ERR] [${err.requestOptions.method}] ${err.requestOptions.uri}');
+    print('[ERR CODE] ${err.response?.statusCode}');
     final refreshToken = await storage.read(key: REFRESH_TOKEN_KEY);
     // print("에러떴을때의 리프레시 토큰값 : $refreshToken");
     // refreshToken 아예 없으면 당연히 에러를 던진다
