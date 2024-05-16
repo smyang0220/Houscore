@@ -2,7 +2,7 @@
 #LABEL authors="SSAFY"
 
 # 베이스 이미지 지정
-FROM openjdk:17.0.1
+FROM openjdk:latest
 
 # 포트 지정
 EXPOSE 8084

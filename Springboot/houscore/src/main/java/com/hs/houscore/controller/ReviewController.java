@@ -102,7 +102,7 @@ public class ReviewController {
         try{
             System.out.println("good");
             //유저 검증
-            if(memberEmail == null || memberEmail.equals("anonymousUser")){
+            if(memberEmail == null || memberEmail.equals("anonymousUser")) {
                 return ResponseEntity.badRequest().body(new ErrorResponse("사용자 검증 필요"));
             }
 
@@ -117,6 +117,7 @@ public class ReviewController {
             // S3 이미지 업로드
             String result = s3UploadService.saveImage(fileUploadDTO);
             review.setImages(result);
+            System.out.println(result + "떴냐?");
             //이미지
             reviewService.setReview(review, memberEmail);
             return ResponseEntity.status(HttpStatus.CREATED).body("리뷰 등록 성공");
