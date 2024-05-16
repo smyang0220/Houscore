@@ -13,8 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Base64;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/review")
@@ -22,7 +22,6 @@ public class ReviewController {
 
     private final ReviewService reviewService;
     private final S3UploadService s3UploadService;
-    private int index = 0;
 
     @Autowired
     public ReviewController(ReviewService reviewService, S3UploadService s3UploadService) {
@@ -93,9 +92,7 @@ public class ReviewController {
                 return ResponseEntity.badRequest().body(new ErrorResponse("사용자 검증 필요"));
             }
 
-            if(index > 2100000000) index = 1;
-
-            String imageName = memberEmail.split("@")[0]+ index++ +".jpeg";
+            String imageName = memberEmail.split("@")[0]+ UUID.randomUUID() +".jpeg";
             System.out.println(imageName);
 
             // FileUploadDTO 세팅
