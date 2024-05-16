@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.stereotype.Service;
 
@@ -156,7 +157,7 @@ public class BuildingService {
     }
 
     public BuildingReviewDTO getBuildingReviewList(String address, Integer page, Integer size){
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id"));
         Page<ReviewEntity> reviewEntities = reviewRepository.findPageByAddress(address, pageable);
         Long reviewCnt = reviewRepository.countByAddressStartingWith(address);
 

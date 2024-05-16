@@ -17,7 +17,7 @@ public class IndividualPubliclyAnnouncedPriceEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     private String pnuCode;
-    private String platPlac;
+    private String platPlc;
     private Long officialPrice;
     private Date announcedDate;
     private Date baseData;

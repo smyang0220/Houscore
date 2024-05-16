@@ -23,6 +23,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Collections;
 
@@ -50,7 +51,7 @@ public class BuildingInfoJobConfiguration {
     }
     //processor
     @Bean
-    public BuildingItemProcessor buildingItemProcessor(MasterRegisterRepository masterRegisterRepository,
+    public BuildingItemProcessor buildingItemProcessor(WebClient webClient,MasterRegisterRepository masterRegisterRepository,
                                                        RealTransactionPriceRepository realTransactionPriceRepository,
                                                        BusRepository busRepository,
                                                        SubwayRepository subwayRepository,
@@ -62,7 +63,7 @@ public class BuildingInfoJobConfiguration {
                                                        SafeRankRepository safeRankRepository,
                                                        LaundryRepository laundryRepository,
                                                        IndividualPubliclyAnnouncedPriceRepository individualPubliclyAnnouncedPriceRepository) {
-        return new BuildingItemProcessor(masterRegisterRepository, realTransactionPriceRepository,
+        return new BuildingItemProcessor(webClient,masterRegisterRepository, realTransactionPriceRepository,
                 busRepository, subwayRepository, hospitalRepository, libraryRepository, parkRepository,
                 schoolRepository, storeRepository, safeRankRepository, laundryRepository, individualPubliclyAnnouncedPriceRepository);
     }
@@ -78,7 +79,7 @@ public class BuildingInfoJobConfiguration {
     @Bean(name = "buildingStep")
     @Transactional
     public Step buildingStep(JobRepository jobRepository, PlatformTransactionManager transactionManager,
-                              RepositoryItemReader<BuildingEntity> reader, ItemProcessor<BuildingEntity, BuildingEntity> processor, RepositoryItemWriter<BuildingEntity> writer){
+                             RepositoryItemReader<BuildingEntity> reader, ItemProcessor<BuildingEntity, BuildingEntity> processor, RepositoryItemWriter<BuildingEntity> writer){
         log.info("빌딩 Step 시작!");
         return new StepBuilder("buildingStep", jobRepository)
                 .<BuildingEntity, BuildingEntity>chunk(3, transactionManager)

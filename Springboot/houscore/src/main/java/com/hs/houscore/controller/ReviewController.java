@@ -111,12 +111,22 @@ public class ReviewController {
     @PutMapping("")
     @Operation(summary = "거주지 리뷰 수정", description = "거주지 리뷰 수정")
     public ResponseEntity<?> updateReview(@RequestBody ReviewDTO review,
-                                          @AuthenticationPrincipal String memberEmail) {
+                                          @AuthenticationPrincipal String memberEmail,
+                                          @RequestParam @Parameter(description = "imageName : 이미지 이름(임의로 지정)") String imageName) {
         try{
             //유저 검증
             if(memberEmail == null || memberEmail.equals("anonymousUser")){
                 return ResponseEntity.badRequest().body(new ErrorResponse("사용자 검증 필요"));
             }
+
+            // FileUploadDTO 세팅
+            FileUploadDTO fileUploadDTO = new FileUploadDTO();
+            fileUploadDTO.setImageBase64(review.getImages());
+            fileUploadDTO.setImageName(imageName);
+
+            // S3 이미지 업로드
+            String result = s3UploadService.saveImage(fileUploadDTO);
+            review.setImages(result);
 
             reviewService.updateReview(review, memberEmail);
             return ResponseEntity.status(HttpStatus.CREATED).body("리뷰 수정 성공");
