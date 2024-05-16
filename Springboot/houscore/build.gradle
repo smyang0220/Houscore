@@ -42,7 +42,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
 	implementation 'com.okta.spring:okta-spring-boot-starter:3.0.6'
-	implementation 'org.springframework.kafka:spring-kafka'
+	implementation 'jakarta.xml.bind:jakarta.xml.bind-api:3.0.1'
+	runtimeOnly 'org.glassfish.jaxb:jaxb-runtime:4.0.0'
 
 	// S3 저장 관련 의존성
 	compileOnly 'org.springframework.cloud:spring-cloud-starter-aws:2.0.2.RELEASE'
