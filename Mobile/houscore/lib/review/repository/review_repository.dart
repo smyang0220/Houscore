@@ -54,8 +54,18 @@ abstract class ReviewRepository {
     'accessToken': 'true',
   })
   Future<UserValidation> createOneReview({
-    @Query("imageName") required String imageName,
     @Body() required ReviewModel reviewModel,
+  });
+  
+  /*
+   리뷰 등록 테스트
+   */
+  @POST('')
+  @Headers({
+    'accessToken': 'true',
+  })
+  Future<UserValidation> createTestOneReview({
+    @Body() required Map<String, dynamic> testCreate,
   });
 
   /*

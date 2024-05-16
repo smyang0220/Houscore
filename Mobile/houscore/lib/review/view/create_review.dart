@@ -459,6 +459,7 @@ class ReviewRating extends StatelessWidget {
           .map(
             (category) => ListTile(
               title: Container(
+                width: MediaQuery.of(context).size.width * 0.3,
                 child: Center(
                   child: Text(category, textAlign: TextAlign.center),
                 ),

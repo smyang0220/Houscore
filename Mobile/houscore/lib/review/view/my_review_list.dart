@@ -75,16 +75,16 @@ class _MyReviewListState extends ConsumerState<MyReviewList> {
                 ),
               ),
               SizedBox(height: 15),
-              if(reviewsToShow.isEmpty)
-                Container(child: Text('아직 작성된 리뷰가 없어요.'),)
+              if (reviewsToShow.isEmpty)
+                Container(child: Text('아직 작성된 리뷰가 없어요.'))
               else
                 ...reviewsToShow
                     .map(
                       (review) => MyReviewCard(
-                        review: review,
-                        deleteReview: deleteReview,
-                      ),
-                    )
+                    review: review,
+                    deleteReview: deleteReview,
+                  ),
+                )
                     .toList(),
             ],
           ),
@@ -135,8 +135,13 @@ class MyReviewCard extends StatelessWidget {
             SizedBox(height: 10),
             Row(
               children: [
-                Image.asset(
-                  review.images!.isEmpty ? 'asset/img/logo/main_logo.png' : review.images!,
+                review.images != null && review.images!.isNotEmpty
+                    ? Image.network(
+                  review.images!,
+                  width: MediaQuery.of(context).size.width * 0.2,
+                )
+                    : Image.asset(
+                  'asset/img/logo/main_logo.png',
                   width: MediaQuery.of(context).size.width * 0.2,
                 ),
                 SizedBox(width: 15),
@@ -192,7 +197,7 @@ class MyReviewCard extends StatelessWidget {
                         ReviewToUpdateModel reviewToUpdate = ReviewToUpdateModel(
                           id: review.id,
                           address: review.address,
-                          residenceType: review.residenceFloor,
+                          residenceType: review.residenceType,
                           residenceFloor: review.residenceFloor,
                           starRating: review.starRating,
                           pros: review.pros,
