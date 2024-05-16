@@ -10,21 +10,23 @@ import java.util.List;
 
 @Repository
 public interface HospitalRepository extends JpaRepository<HospitalEntity, Long> {
-    @Query(value = "SELECT b.*, \n" +
-            "    ST_Distance(CAST(ST_SetSRID(ST_Point(:latitude, :longitude), 4326) AS geography), \n" +
-            "    CAST(ST_SetSRID(ST_Point(b.latitude, b.longitude), 4326) AS geography)) AS distance \n" +
-            "FROM (\n" +
-            "    SELECT *\n" +
-            "    FROM hospital\n" +
-            "    WHERE ST_DWithin(CAST(ST_SetSRID(ST_Point(:latitude, :longitude), 4326) AS geography), \n" +
-            "        CAST(ST_SetSRID(ST_Point(hospital.latitude, hospital.longitude), 4326) AS geography), :distance)\n" +
-            ") AS b\n" +
-            "WHERE (b.hospital_name, b.id) IN (\n" +
-            "    SELECT hospital_name, MIN(id)\n" +
-            "    FROM hospital\n" +
-            "    GROUP BY hospital_name\n" +
-            ")" +
-            "ORDER BY distance asc",
+    @Query(value = """
+            SELECT b.*,
+            ST_Distance(CAST(ST_SetSRID(ST_Point(:latitude, :longitude), 4326) AS geography),
+            CAST(ST_SetSRID(ST_Point(b.latitude, b.longitude), 4326) AS geography)) AS distance
+            FROM (
+            SELECT *
+            FROM hospital
+            WHERE ST_DWithin(CAST(ST_SetSRID(ST_Point(:latitude, :longitude), 4326) AS geography),
+            CAST(ST_SetSRID(ST_Point(hospital.latitude, hospital.longitude), 4326) AS geography), :distance)
+            ) AS b
+            WHERE (b.hospital_name, b.id) IN (
+            SELECT hospital_name, MIN(id)
+            FROM hospital
+            GROUP BY hospital_name
+            )
+            ORDER BY distance asc
+            """,
             nativeQuery = true)
     List<Object[]> findHospitalByDistance(
             @Param("latitude") Double userLatitude,
