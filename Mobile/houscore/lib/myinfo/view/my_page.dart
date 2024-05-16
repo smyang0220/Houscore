@@ -26,10 +26,9 @@ class MyPage extends ConsumerStatefulWidget {
 class _MyPageState extends ConsumerState<MyPage> {
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final notifier = ref.watch(interestedAreaListProvider.notifier);
-    notifier.fetchInterestedAreaList();
+  void initState() {
+    super.initState();
+    ref.read(interestedAreaListProvider.notifier);
   }
 
   Future<void> _deleteInterestedArea(InterestedAreaModel area) async {
