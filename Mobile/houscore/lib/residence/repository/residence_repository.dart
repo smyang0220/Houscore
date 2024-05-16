@@ -2,6 +2,7 @@ import 'package:dio/dio.dart' hide Headers;
 // 다른 라이브러리나 모듈에서 이름 충돌 방지!
 // 이 경우에는 Retrofit과의 충돌 방지!
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:houscore/common/model/data_list_state_model.dart';
 import 'package:houscore/residence/model/ai_recommended_residence_model.dart';
 import 'package:houscore/residence/model/residence_detail_info_model.dart';
 import '../../review/model/homescreen_review_model.dart';
@@ -82,5 +83,6 @@ abstract class ResidenceRepository {
     'accessToken': 'true',
   })
   // get 함수 // 비동기적 통신을 위한 Future 반환
-  Future<List<ResidenceMainPhotoModel>> getResidenceMainPhoto();
+  Future<DataListState<ResidenceMainPhotoModel>> getResidenceMainPhoto();
+
 }

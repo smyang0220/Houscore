@@ -26,6 +26,7 @@ class MemberSearchModel extends UserModelBase{
     required this.profileImage,
   });
 
-  factory MemberSearchModel.fromJson(Map<String, dynamic> json) => _$MemberSearchModelFromJson(json);
+  factory MemberSearchModel.fromJson(Map<String, dynamic> json) =>
+      _$MemberSearchModelFromJson(json);
 
 }
