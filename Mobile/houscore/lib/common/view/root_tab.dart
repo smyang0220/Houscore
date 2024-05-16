@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:houscore/common/const/color.dart';
 import 'package:houscore/review/view/create_review.dart';
 import '../../myinfo/view/my_page.dart';
+import '../../review/view/entire_review_screen.dart';
 import 'home_screen.dart';
 
 class RootTab extends StatefulWidget {
@@ -21,7 +22,7 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    controller = TabController(length: 3, vsync: this);
+    controller = TabController(length: 4, vsync: this);
     controller.addListener(tabListener);
   }
 
@@ -47,6 +48,7 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
           HomeScreen(),
           CreateReview(),
           MyPage(),
+          EntireReviewScreen(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -65,6 +67,7 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
           BottomNavigationBarItem(icon: Icon(Icons.rate_review_rounded), label: '리뷰'),
+          BottomNavigationBarItem(icon: Icon(Icons.rate_review_sharp), label: '전체리뷰'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'My'),
         ],
       ),

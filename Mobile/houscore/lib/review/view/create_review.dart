@@ -94,7 +94,6 @@ class _CreateReviewState extends State<CreateReview> {
                 value: floorValue,
                 onChanged: _updateFloorValue,
               ),
-              SizedBox(height: 12),
               Container(
                 alignment: Alignment.centerLeft,
                 padding: EdgeInsets.all(6.0),
@@ -106,6 +105,7 @@ class _CreateReviewState extends State<CreateReview> {
                   ),
                 ),
               ),
+              // 문제의 코드
               ReviewRating(
                 onRatingUpdated: _updateRating,
               ),
@@ -444,7 +444,6 @@ Widget dropdownWidget({
   );
 }
 
-//별점 rating
 final List<String> categories = ['교통', '건물', '내부', '인프라', '치안'];
 
 class ReviewRating extends StatelessWidget {
@@ -454,30 +453,28 @@ class ReviewRating extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: categories
-          .map(
-            (category) => ListTile(
-              title: Container(
-                width: MediaQuery.of(context).size.width * 0.3,
-                child: Center(
-                  child: Text(category, textAlign: TextAlign.center),
-                ),
-              ),
-              trailing: RatingWidget(
-                onRatingChanged: (rating) => onRatingUpdated(category, rating),
-              ),
+    return SingleChildScrollView(
+      child: Column(
+        children: categories
+            .map(
+              (category) => ListTile(
+            title: Center(
+              child: Text(category, textAlign: TextAlign.center),
             ),
-          )
-          .toList(),
+            trailing: RatingWidget(
+              onRatingChanged: (rating) => onRatingUpdated(category, rating),
+            ),
+          ),
+        )
+            .toList(),
+      ),
     );
   }
 }
-
 class RatingWidget extends StatefulWidget {
   final Function(double) onRatingChanged;
 
-  RatingWidget({required this.onRatingChanged});
+  const RatingWidget({Key? key, required this.onRatingChanged}) : super(key: key);
 
   @override
   _RatingWidgetState createState() => _RatingWidgetState();
@@ -488,28 +485,34 @@ class _RatingWidgetState extends State<RatingWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
+    return Wrap(
+      crossAxisAlignment: WrapCrossAlignment.center,
       children: [
-        ...List.generate(
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: List.generate(
             5,
-            (index) => IconButton(
-                  icon: Icon(
-                    index < _currentRating
-                        ? Icons.star_rounded
-                        : Icons.star_border_rounded,
-                    color: index < _currentRating ? Colors.amber : Colors.amber,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      _currentRating = index + 1;
-                    });
-                    widget.onRatingChanged(_currentRating);
-                  },
-                  iconSize: 30,
-                )),
-        SizedBox(width: 3),
-        Text('$_currentRating / 5', style: TextStyle(fontSize: 16))
+                (index) => IconButton(
+              icon: Icon(
+                index < _currentRating
+                    ? Icons.star_rounded
+                    : Icons.star_border_rounded,
+                color: Colors.amber,
+              ),
+              onPressed: () {
+                setState(() {
+                  _currentRating = index + 1;
+                });
+                widget.onRatingChanged(_currentRating);
+              },
+              iconSize: MediaQuery.of(context).size.width * 0.08,
+            ),
+          ),
+        ),
+        Text(
+          '$_currentRating / 5',
+          style: TextStyle(fontSize: 16),
+        ),
       ],
     );
   }

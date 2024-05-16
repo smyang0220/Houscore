@@ -17,7 +17,7 @@ class DefaultLayout extends StatelessWidget {
       backgroundColor: backgroundColor ?? Colors.white,
       appBar : renderAppBar(),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(vertical:8.0),
         child: child,
       ),
       bottomNavigationBar: bottomNavigationBar,
