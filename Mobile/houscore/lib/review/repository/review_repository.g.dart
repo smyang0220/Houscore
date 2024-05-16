@@ -73,16 +73,44 @@ class _ReviewRepository implements ReviewRepository {
   }
 
   @override
-  Future<UserValidation> createOneReview({
-    required String imageName,
-    required ReviewModel reviewModel,
-  }) async {
+  Future<UserValidation> createOneReview(
+      {required ReviewModel reviewModel}) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{r'imageName': imageName};
+    final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{r'accessToken': 'true'};
     _headers.removeWhere((k, v) => v == null);
     final _data = <String, dynamic>{};
     _data.addAll(reviewModel.toJson());
+    final _result = await _dio
+        .fetch<Map<String, dynamic>>(_setStreamType<UserValidation>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = UserValidation.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<UserValidation> createTestOneReview(
+      {required Map<String, dynamic> testCreate}) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'accessToken': 'true'};
+    _headers.removeWhere((k, v) => v == null);
+    final _data = <String, dynamic>{};
+    _data.addAll(testCreate);
     final _result = await _dio
         .fetch<Map<String, dynamic>>(_setStreamType<UserValidation>(Options(
       method: 'POST',
