@@ -19,6 +19,7 @@ ReviewToUpdateModel _$ReviewToUpdateModelFromJson(Map<String, dynamic> json) =>
       maintenanceCost: json['maintenanceCost'] as String,
       images: json['images'] as String?,
       residenceYear: json['residenceYear'] as String,
+      imageChange: json['imageChange'] as String,
     );
 
 Map<String, dynamic> _$ReviewToUpdateModelToJson(
@@ -34,4 +35,5 @@ Map<String, dynamic> _$ReviewToUpdateModelToJson(
       'maintenanceCost': instance.maintenanceCost,
       'images': instance.images,
       'residenceYear': instance.residenceYear,
+      'imageChange': instance.imageChange,
     };

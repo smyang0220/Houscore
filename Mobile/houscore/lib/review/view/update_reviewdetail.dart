@@ -28,8 +28,10 @@ class _UpdateReviewDetailState extends ConsumerState<UpdateReviewDetail> {
   bool _isRecommendRequired = true;
   bool _isDislikeRequired = true;
   bool _isMaintenanceRequired = true;
+  bool _isButtonEnabled = false;
 
   String? image;
+  String imageChange = ''; // 추가된 부분
 
   @override
   void initState() {
@@ -38,13 +40,21 @@ class _UpdateReviewDetailState extends ConsumerState<UpdateReviewDetail> {
     _dislikeController.text = widget.reviewToUpdate.cons ?? '';
     _maintenanceController.text = widget.reviewToUpdate.maintenanceCost ?? '';
     image = widget.reviewToUpdate.images!;
+    _updateButtonState();
   }
 
-  bool get isButtonEnabled =>
-      _recommendController.text.length >= 100 &&
-      _dislikeController.text.length >= 100 &&
-      _maintenanceController.text.length >= 10 &&
-      image!.isNotEmpty;
+  void _updateButtonState() {
+    setState(() {
+      _isRecommendRequired = _recommendController.text.length < 100;
+      _isDislikeRequired = _dislikeController.text.length < 100;
+      _isMaintenanceRequired = _maintenanceController.text.length < 10;
+
+      _isButtonEnabled = _recommendController.text.length >= 100 &&
+          _dislikeController.text.length >= 100 &&
+          _maintenanceController.text.length >= 10 &&
+          image!.isNotEmpty;
+    });
+  }
 
   @override
   void dispose() {
@@ -60,9 +70,24 @@ class _UpdateReviewDetailState extends ConsumerState<UpdateReviewDetail> {
     });
   }
 
+  void _updateImageChange(String status) {
+    setState(() {
+      imageChange = status;
+    });
+  }
+
   void updateReview() async {
+    String convertedImage = '';
+
+    String base64String ='';
+    if(imageChange == 'y') {
+
     List<int> imageBytes = await images[0]!.readAsBytes();
     String base64String = base64Encode(imageBytes);
+    convertedImage = base64String;
+    } else {
+      widget.reviewToUpdate.images!;
+    }
 
     ReviewToUpdateModel reviewModel = ReviewToUpdateModel(
       id: widget.reviewToUpdate.id,
@@ -73,8 +98,9 @@ class _UpdateReviewDetailState extends ConsumerState<UpdateReviewDetail> {
       pros: _recommendController.text,
       cons: _dislikeController.text,
       maintenanceCost: _maintenanceController.text,
-      images: base64String,
+      images: convertedImage,
       residenceYear: widget.reviewToUpdate.residenceYear,
+      imageChange: imageChange, // 추가된 부분
     );
 
     try {
@@ -90,6 +116,14 @@ class _UpdateReviewDetailState extends ConsumerState<UpdateReviewDetail> {
       );
     } catch (e) {
       print("Error submitting review: $e");
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(
+      //     builder: (_) => UpdateConfirmed(
+      //       reviewAddress: reviewModel.address,
+      //     ),
+      //   ),
+      // );
     }
   }
 
@@ -140,6 +174,7 @@ class _UpdateReviewDetailState extends ConsumerState<UpdateReviewDetail> {
               SizedBox(height: 5),
               ImageUpload(
                 onImageChanged: _updateImage,
+                onImageDeleted: _updateImageChange, // 추가된 부분
                 initialImage: image,
               ),
               Row(
@@ -152,21 +187,21 @@ class _UpdateReviewDetailState extends ConsumerState<UpdateReviewDetail> {
                     child: Text('이전으로'),
                   ),
                   ElevatedButton(
-                    onPressed: isButtonEnabled
+                    onPressed: _isButtonEnabled
                         ? () async {
-                            updateReview();
-                          }
+                      updateReview();
+                    }
                         : null,
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                        (Set<MaterialState> states) {
+                            (Set<MaterialState> states) {
                           if (states.contains(MaterialState.disabled))
                             return Colors.grey;
                           return Colors.blue; // Default enabled color
                         },
                       ),
                       foregroundColor:
-                          MaterialStateProperty.all<Color>(Colors.white),
+                      MaterialStateProperty.all<Color>(Colors.white),
                     ),
                     child: Text('완료'),
                   ),
@@ -205,6 +240,7 @@ class _UpdateReviewDetailState extends ConsumerState<UpdateReviewDetail> {
           children: [
             TextField(
               controller: controller,
+              onChanged: (text) => _updateButtonState(), // 추가된 부분
               decoration: InputDecoration(
                 filled: true,
                 fillColor: INPUT_BORDER_COLOR,
@@ -224,7 +260,7 @@ class _UpdateReviewDetailState extends ConsumerState<UpdateReviewDetail> {
                     '\n'
                     '무의미한 내용 및 문자반복, 다른 리뷰 붙여넣기 등 성의 없는 리뷰는 지양해주세요.',
                 counterStyle:
-                    TextStyle(color: isRequired ? Colors.red : Colors.black),
+                TextStyle(color: isRequired ? Colors.red : Colors.black),
               ),
               minLines: 2,
               maxLines: 10,
@@ -246,9 +282,10 @@ class _UpdateReviewDetailState extends ConsumerState<UpdateReviewDetail> {
 
 class ImageUpload extends StatefulWidget {
   final Function onImageChanged;
+  final Function(String) onImageDeleted; // 추가된 부분
   final String? initialImage;
 
-  ImageUpload({required this.onImageChanged, this.initialImage});
+  ImageUpload({required this.onImageChanged, required this.onImageDeleted, this.initialImage});
 
   @override
   State<ImageUpload> createState() => ImageUploadState();
@@ -274,9 +311,7 @@ class ImageUploadState extends State<ImageUpload> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(
-          height: 5,
-        ),
+        SizedBox(height: 5),
         Row(
           children: [
             Text(
@@ -287,15 +322,11 @@ class ImageUploadState extends State<ImageUpload> {
                 color: Colors.black,
               ),
             ),
-            SizedBox(
-              width: 10,
-            ),
+            SizedBox(width: 10),
             Text('최대 1장'),
           ],
         ),
-        SizedBox(
-          height: 5,
-        ),
+        SizedBox(height: 5),
         Visibility(
           visible: images.length < 1,
           child: Row(
@@ -310,13 +341,13 @@ class ImageUploadState extends State<ImageUpload> {
                     BoxShadow(
                       color: Colors.black.withOpacity(1),
                       spreadRadius: 2,
-                    )
+                    ),
                   ],
                 ),
                 child: IconButton(
                   onPressed: () async {
                     pickedImage =
-                        await picker.pickImage(source: ImageSource.camera);
+                    await picker.pickImage(source: ImageSource.camera);
                     if (pickedImage != null) {
                       setState(() {
                         images.add((pickedImage));
@@ -341,7 +372,7 @@ class ImageUploadState extends State<ImageUpload> {
                     BoxShadow(
                       color: Colors.black.withOpacity(1),
                       spreadRadius: 2,
-                    )
+                    ),
                   ],
                 ),
                 child: IconButton(
@@ -404,6 +435,7 @@ class ImageUploadState extends State<ImageUpload> {
                           images.remove(images[index]);
                         });
                         widget.onImageChanged();
+                        widget.onImageDeleted('y'); // 이미지 삭제 시 호출
                       },
                     ),
                   ),

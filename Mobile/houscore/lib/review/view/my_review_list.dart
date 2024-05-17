@@ -65,6 +65,7 @@ class _MyReviewListState extends ConsumerState<MyReviewList> {
       maintenanceCost: review.maintenanceCost,
       images: review.images,
       residenceYear: review.residenceYear,
+      imageChange: 'n',
     );
 
     Navigator.push(
@@ -128,8 +129,6 @@ class _MyReviewListState extends ConsumerState<MyReviewList> {
     );
   }
 }
-
-//TODO 클릭할 경우 리뷰 상세 페이지
 
 class MyReviewCard extends StatelessWidget {
   final MyReviewModel review;
@@ -254,7 +253,9 @@ class MyReviewCard extends StatelessWidget {
                                 cons: review.cons,
                                 maintenanceCost: review.maintenanceCost,
                                 images: review.images,
-                                residenceYear: review.year);
+                                residenceYear: review.year,
+                                imageChange: 'n',
+                            );
                         updateReview(reviewToUpdate);
                       },
                       child: Text('수정'),
@@ -267,6 +268,7 @@ class MyReviewCard extends StatelessWidget {
                     child: TextButton(
                       onPressed: () {
                         Blurry.info(
+                          //TODO 글자 overflow 처리
                           title: review.address,
                           cancelButtonText: '취소',
                           description: '리뷰를 삭제하시겠습니까?',
