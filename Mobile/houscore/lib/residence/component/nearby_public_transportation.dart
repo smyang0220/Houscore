@@ -34,7 +34,8 @@ class _NearbyPublicTransportationState
           children: [
             Text(
               '주변 대중교통',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+              style:TextStyle(
+                  fontFamily: 'NotoSans',fontSize: 18, fontWeight: FontWeight.w100),
             ),
           ],
         ),

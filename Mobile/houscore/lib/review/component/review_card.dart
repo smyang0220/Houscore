@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:houscore/common/const/color.dart';
+import '../../common/const/design.dart';
 import '../../residence/view/residence_detail.dart';
 
 class ReviewCard extends StatelessWidget {
@@ -89,12 +90,7 @@ class ReviewCard extends StatelessWidget {
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("장점" , style: TextStyle(
-                              fontFamily: 'NotoSans',
-                              fontSize: 12, // 글자 크기를 작게 설정합니다.
-                              color: PRIMARY_COLOR, // 글자 색상을 회색으로 설정합니다.
-                              fontWeight: FontWeight.w700,
-                            ),),
+                            Text("추천해요" , style: bodyTextColorStyle),
                             Expanded(
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -110,12 +106,7 @@ class ReviewCard extends StatelessWidget {
                         SizedBox(height: 10),
                         Row(
                           children: [
-                            Text("단점",style: TextStyle(
-                              fontFamily: 'NotoSans',
-                              fontSize: 12, // 글자 크기를 작게 설정합니다.
-                              color: Colors.purpleAccent, // 글자 색상을 회색으로 설정합니다.
-                              fontWeight: FontWeight.w700,
-                            )),
+                            Text("별로에요",style: bodyTextColorStyle2),
                             Expanded(child: Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 8),
                               child: Text(dislike, style:

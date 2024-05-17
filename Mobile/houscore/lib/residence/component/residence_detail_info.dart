@@ -29,7 +29,8 @@ class _ResidenceDetailInfoState extends ConsumerState<ResidenceDetailInfo> {
           padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: Text(
             '건물 상세 정보',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            style: TextStyle(
+                fontFamily: 'NotoSans',fontSize: 18, fontWeight: FontWeight.w100),
           ),
         ),
         SizedBox(height: 15,),

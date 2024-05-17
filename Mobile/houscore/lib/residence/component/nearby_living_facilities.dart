@@ -47,13 +47,6 @@ class FacilitiesPainter extends CustomPainter {
           RRect.fromRectAndRadius(legendBackground, Radius.circular(8));
       canvas.drawRRect(legendBackgroundRRect, legendBackgroundPaint);
 
-      // 배경 테두리
-      // Paint borderPaint = Paint()
-      //   ..color = Colors.grey.shade400
-      //   ..style = PaintingStyle.stroke
-      //   ..strokeWidth = 1.5;
-      // canvas.drawRRect(legendBackgroundRRect, borderPaint);
-
       // 도보 색상
       Paint walkPaint = Paint()..color = WALK_COLOR;
       canvas.drawRRect(
@@ -266,11 +259,13 @@ class _NearbyLivingFacilitiesState extends State<NearbyLivingFacilities> {
         children: [
           Text(
             '주변 생활 시설',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+            style: TextStyle(
+                fontFamily: 'NotoSans',fontSize: 18, fontWeight: FontWeight.w100),
           ),
           Center(
             child: Text("반경 nkm 내에 주변 생활 시설이 없습니다.",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            style: TextStyle(
+                fontFamily: 'NotoSans',fontSize: 18, fontWeight: FontWeight.normal)),
           )
         ],
       );
@@ -281,7 +276,8 @@ class _NearbyLivingFacilitiesState extends State<NearbyLivingFacilities> {
       children: [
         Text(
           '주변 생활 시설',
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+          style:  TextStyle(
+              fontFamily: 'NotoSans',fontSize: 18, fontWeight: FontWeight.w100),
         ),
         Padding(
           padding: EdgeInsets.all(8),
