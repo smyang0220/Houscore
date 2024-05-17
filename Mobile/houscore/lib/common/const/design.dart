@@ -18,6 +18,15 @@ final TextStyle bodyTextStyle = TextStyle(
   fontWeight: FontWeight.w100,
 );
 
+final TextStyle bodyTextStyle2 = TextStyle(
+
+  fontFamily: 'NotoSans',
+  fontSize: 16, // 글자 크기를 작게 설정합니다.
+  color: Colors.black, // 글자 색상을 회색으로 설정합니다.
+  fontWeight: FontWeight.normal,
+);
+
+
 final TextStyle bodyTextColorStyle = TextStyle(
   fontFamily: 'NotoSans',
   fontSize: 12, // 글자 크기를 작게 설정합니다.

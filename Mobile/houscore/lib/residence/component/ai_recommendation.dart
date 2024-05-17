@@ -154,7 +154,7 @@ class _AiRecommendationState extends ConsumerState<AiRecommendation> {
         children: [
           Padding(
             key: _headerKey,
-            padding: const EdgeInsets.only(bottom: 5.0),
+            padding: const EdgeInsets.symmetric(vertical: 8),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,

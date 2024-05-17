@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:houscore/common/const/color.dart';
 import '../../residence/view/residence_detail.dart';
 
 class ReviewCard extends StatelessWidget {
@@ -33,79 +34,102 @@ class ReviewCard extends StatelessWidget {
           ),
         );
       },
-      child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 4.0),
-        padding: const EdgeInsets.all(16.0),
-        width: MediaQuery.of(context).size.width * 0.9,
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey, width: 1),
-          borderRadius: BorderRadius.circular(8.0),
-        ),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Text(
-                    address,
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    overflow: TextOverflow.ellipsis,
+      // 카드간 패딩
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        child: Container(
+          margin: const EdgeInsets.symmetric(vertical: 4.0),
+          // 카드 내부 패딩
+          padding: const EdgeInsets.all(16.0),
+          width: MediaQuery.of(context).size.width * 0.9,
+          height: 200,
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey, width: 0.5),
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Expanded(
+                    child: Text(
+                      address,
+                      style: TextStyle(fontSize: 22, fontFamily: 'NotoSans', fontWeight: FontWeight.bold),
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
-                ),
-                SizedBox(width: 10),
-                // 평점 관련 부분
-                _buildRatingSection(userRating, aiRating),
-              ],
-            ),
-            SizedBox(height: 10),
-            Row(
-              children: [
-                Image.asset(
-                  'asset/img/logo/main_logo.png',
-                  width: MediaQuery.of(context).size.width * 0.2,
-                ),
-                SizedBox(width: 15),
-                Flexible(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      RichText(
-                        text: TextSpan(
+                  // 평점 관련 부분
+                  _buildRatingSection(userRating, aiRating),
+                ],
+              ),
+              SizedBox(height: 20),
+              Row(
+                children: [
+                  imageUrl == ""
+                      ? Image.asset(
+                    'assets/img/logo/main_logo.png',
+                    width: MediaQuery.of(context).size.width * 0.28,
+                    height: MediaQuery.of(context).size.width * 0.28,
+                  )
+                      : Image.network(
+                    imageUrl,
+                    width: MediaQuery.of(context).size.width * 0.28,
+                    height: MediaQuery.of(context).size.width * 0.28,
+                  ),
+
+                  SizedBox(width: 15),
+                  Flexible(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            TextSpan(
-                              text: '추천해요 : ',
-                              style: TextStyle(fontSize: 13, color: Colors.blue),
-                            ),
-                            TextSpan(
-                              text: like,
-                              style: TextStyle(fontSize: 13, color: Colors.black),
+                            Text("장점" , style: TextStyle(
+                              fontFamily: 'NotoSans',
+                              fontSize: 12, // 글자 크기를 작게 설정합니다.
+                              color: PRIMARY_COLOR, // 글자 색상을 회색으로 설정합니다.
+                              fontWeight: FontWeight.w700,
+                            ),),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 8),
+                                child: Text(like, style:
+                                TextStyle(
+                                    fontFamily: 'NotoSans',fontSize: 12, color: Colors.black),
+                                maxLines: 2, overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
                             ),
                           ],
                         ),
-                      ),
-                      SizedBox(height: 10),
-                      RichText(
-                        text: TextSpan(
+                        SizedBox(height: 10),
+                        Row(
                           children: [
-                            TextSpan(
-                              text: '별로예요 : ',
-                              style: TextStyle(fontSize: 13, color: Colors.red),
-                            ),
-                            TextSpan(
-                              text: dislike,
-                              style: TextStyle(fontSize: 13, color: Colors.black),
-                            ),
+                            Text("단점",style: TextStyle(
+                              fontFamily: 'NotoSans',
+                              fontSize: 12, // 글자 크기를 작게 설정합니다.
+                              color: Colors.purpleAccent, // 글자 색상을 회색으로 설정합니다.
+                              fontWeight: FontWeight.w700,
+                            )),
+                            Expanded(child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 8),
+                              child: Text(dislike, style:
+                              TextStyle(
+                                  fontFamily: 'NotoSans',fontSize: 12, color: Colors.black),
+                                maxLines: 2, overflow: TextOverflow.ellipsis,
+                              ), )),
                           ],
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -117,29 +141,22 @@ class ReviewCard extends StatelessWidget {
         Icon(
           Icons.star,
           color: Colors.amber,
-          size: 20.0,
+          size: 16.0,
         ),
         Text(
           userRating.toStringAsFixed(1),
           style: TextStyle(
             fontSize: 16.0,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w500,
           ),
         ),
-        SizedBox(width: 4.0),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.blue,
-            borderRadius: BorderRadius.circular(7),
-          ),
-          padding: EdgeInsets.symmetric(horizontal: 5),
-          child: Text(
-            "AI",
-            style: TextStyle(
-              fontSize: 16.0,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
+        SizedBox(width: 16.0),
+        Text(
+          "AI",
+          style: TextStyle(
+            fontSize: 16.0,
+            fontWeight: FontWeight.w500,
+            color: PRIMARY_COLOR,
           ),
         ),
         SizedBox(width: 3),
@@ -147,7 +164,7 @@ class ReviewCard extends StatelessWidget {
           aiRating.toStringAsFixed(1),
           style: TextStyle(
             fontSize: 16.0,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w500,
           ),
         ),
       ],
