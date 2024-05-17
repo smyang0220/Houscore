@@ -112,8 +112,12 @@ class _MyPageState extends ConsumerState<MyPage> {
                   InkWell(
                     onTap: () {
                       // context.go('/myReviews');
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (_) => MyReviewList()));
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MyReviewList(),
+                        ),
+                      );
                     },
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),

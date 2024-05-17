@@ -7,7 +7,7 @@ part 'my_review_model.g.dart';
 class MyReviewModel {
   final String createdAt;
   final String updatedAt;
-  final dynamic id;
+  final int id;
   final String memberId;
   final String address;
   final String residenceType;
