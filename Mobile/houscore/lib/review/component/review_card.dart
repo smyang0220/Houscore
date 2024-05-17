@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:go_router/go_router.dart';
 import 'package:houscore/common/const/color.dart';
 import '../../residence/view/residence_detail.dart';
 
@@ -26,13 +27,7 @@ class ReviewCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // print('${this.address} tapped!');
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ResidenceDetail(address: address),
-          ),
-        );
+        context.push('/residence/${address}');
       },
       // 카드간 패딩
       child: Padding(
@@ -99,7 +94,7 @@ class ReviewCard extends StatelessWidget {
                                 child: Text(like, style:
                                 TextStyle(
                                     fontFamily: 'NotoSans',fontSize: 12, color: Colors.black),
-                                maxLines: 2, overflow: TextOverflow.ellipsis,
+                                  maxLines: 2, overflow: TextOverflow.ellipsis,
                                 ),
                               ),
                             ),
