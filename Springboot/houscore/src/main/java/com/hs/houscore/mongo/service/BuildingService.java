@@ -1,5 +1,7 @@
 package com.hs.houscore.mongo.service;
 
+import com.hs.houscore.batch.entity.MasterRegisterEntity;
+import com.hs.houscore.batch.repository.MasterRegisterRepository;
 import com.hs.houscore.dto.*;
 import com.hs.houscore.mongo.entity.BuildingEntity;
 import com.hs.houscore.mongo.repository.BuildingRepository;
@@ -28,13 +30,14 @@ public class BuildingService {
     private final BuildingRepository buildingRepository;
     private final ReviewRepository reviewRepository;
     private final BuildingRepositoryCustom buildingRepositoryCustom;
+    private final MasterRegisterRepository masterRegisterRepository;
 
     public List<BuildingEntity> getBuildingList(){
         return buildingRepository.findAll();
     }
 
-    public void save(BuildingEntity buildingEntity){
-        buildingRepository.save(buildingEntity);
+    public BuildingEntity save(BuildingEntity buildingEntity){
+        return buildingRepository.save(buildingEntity);
     }
 
     public BuildingDetailDTO getBuildingByAddress(String address, Double lat, Double lng){
@@ -43,6 +46,7 @@ public class BuildingService {
         if(buildingEntity != null){
             return buildingDetailDTOMapper(buildingEntity);
         }
+
         return setBuildingInfo(address, lat, lng);
     }
 
@@ -62,10 +66,39 @@ public class BuildingService {
                         .trafficInfo(new BuildingEntity.TrafficInfo())
                         .build())
                 .build();
+        //기본 빌딩 정보 입력
+        BuildingEntity saveBuildingEntity = save(buildingEntity);
+        //저장 후 표제부 정보만 출력해 줄 수 있도록 데이터 세팅
+        MasterRegisterEntity masterRegisterEntity = masterRegisterRepository.findByNewPlatPlcOrPlatPlc(address, address).orElse(null);
+        if(masterRegisterEntity != null){
+            return BuildingDetailDTO.builder()
+                    .id(saveBuildingEntity.getId())
+                    .score(saveBuildingEntity.getScore())
+                    .lat(saveBuildingEntity.getLocation().getY())
+                    .lng(saveBuildingEntity.getLocation().getX())
+                    .platPlc(saveBuildingEntity.getPlatPlc())
+                    .newPlatPlc(saveBuildingEntity.getNewPlatPlc())
+                    .buildingInfo(BuildingDetailDTO.BuildingInfo.builder()
+                            .platArea(masterRegisterEntity.getPlatArea())
+                            .archArea(masterRegisterEntity.getArchArea())
+                            .totArea(masterRegisterEntity.getTotArea())
+                            .bcRat(masterRegisterEntity.getBcRat())
+                            .vlRat(masterRegisterEntity.getVlRat())
+                            .mainPurpsCdNm(masterRegisterEntity.getMainPurpsCdNm())
+                            .regstrKindCd(masterRegisterEntity.getRegstrKindCd())
+                            .regstrKindCdNm(masterRegisterEntity.getRegstrKindCdNm())
+                            .hhldCnt(masterRegisterEntity.getHhldCnt())
+                            .mainBldCnt(masterRegisterEntity.getMainBldCnt())
+                            .totPkngCnt(masterRegisterEntity.getTotPkngCnt())
+                            .sigunguCd(masterRegisterEntity.getSigunguCd())
+                            .bjdongCd(masterRegisterEntity.getBjdongCd())
+                            .bldNm(masterRegisterEntity.getBldNm())
+                            .pnuCode(masterRegisterEntity.getPnuCode())
+                            .build())
+                    .build();
+        }
 
-        save(buildingEntity);
-        buildingEntity = buildingRepository.findByNewPlatPlcOrPlatPlc(address, address)
-                .orElseThrow(() -> new IllegalArgumentException("건물 정보가 존재하지 않습니다."));
+
         return BuildingDetailDTO.builder()
                 .id(buildingEntity.getId())
                 .score(buildingEntity.getScore())
