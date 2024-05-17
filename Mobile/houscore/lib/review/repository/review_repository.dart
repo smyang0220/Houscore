@@ -75,7 +75,7 @@ abstract class ReviewRepository {
   @Headers({
     'accessToken': 'true',
   })
-  Future<ReviewModel> deleteReview({
+  Future<void> deleteReview({
     @Query("id") required int id,
   });
 

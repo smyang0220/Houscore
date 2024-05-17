@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:houscore/common/layout/default_layout.dart';
 import 'package:houscore/review/view/delete_confirmed.dart';
@@ -26,7 +27,6 @@ class _MyReviewListState extends ConsumerState<MyReviewList> {
   }
 
   void _fetchReviews() async {
-    print('Fetching reviews...');
     final repository = ref.read(reviewRepositoryProvider);
     List<MyReviewModel> data = await repository.readMyReviews();
     updateList(data);
@@ -42,10 +42,38 @@ class _MyReviewListState extends ConsumerState<MyReviewList> {
   void deleteReview(int id) async {
     final repository = ref.read(reviewRepositoryProvider);
     await repository.deleteReview(id: id);
-    Navigator.push(
+    await Navigator.push(
+      //TODO 뒤로가기 불가능하도록 페이지 쌓지 않기
       context,
       MaterialPageRoute(builder: (context) => DeleteConfirmed()),
     );
+    _fetchReviews();
+  }
+
+  void updateReview(ReviewToUpdateModel review) async {
+
+    print(review.toJson());
+
+    ReviewToUpdateModel reviewToUpdate = ReviewToUpdateModel(
+      id: review.id,
+      address: review.address,
+      residenceType: review.residenceType,
+      residenceFloor: review.residenceFloor,
+      starRating: review.starRating,
+      pros: review.pros,
+      cons: review.cons,
+      maintenanceCost: review.maintenanceCost,
+      images: review.images,
+      residenceYear: review.residenceYear,
+    );
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => UpdateReview(reviewToUpdate: reviewToUpdate),
+      ),
+    );
+
     _fetchReviews();
   }
 
@@ -76,13 +104,14 @@ class _MyReviewListState extends ConsumerState<MyReviewList> {
               ),
               SizedBox(height: 15),
               if (reviewsToShow.isEmpty)
-                Container(child: Text('아직 작성된 리뷰가 없어요.'))
+                Container(child: Text('아직 작성된 리뷰가 없어요.', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),))
               else
                 ...reviewsToShow
                     .map(
                       (review) => MyReviewCard(
                     review: review,
-                    deleteReview: deleteReview,
+                        deleteReview: deleteReview,
+                    updateReview: updateReview,
                   ),
                 )
                     .toList(),
@@ -94,22 +123,27 @@ class _MyReviewListState extends ConsumerState<MyReviewList> {
   }
 }
 
+//TODO 클릭할 경우 리뷰 상세 페이지
+
 class MyReviewCard extends StatelessWidget {
   final MyReviewModel review;
   final Function(int) deleteReview;
+  final Function(ReviewToUpdateModel) updateReview;
 
   const MyReviewCard({
     Key? key,
     required this.review,
     required this.deleteReview,
+    required this.updateReview,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 4.0),
-        padding: const EdgeInsets.all(16.0),
+        margin: const EdgeInsets.symmetric(vertical: 10),
+        padding: const EdgeInsets.all(16),
+        //TODO 동적으로 구성
         width: MediaQuery.of(context).size.width * 0.8,
         decoration: BoxDecoration(
           border: Border.all(color: Colors.grey, width: 1),
@@ -121,7 +155,7 @@ class MyReviewCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
+                Expanded(
                   child: Text(
                     review.address,
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -145,7 +179,7 @@ class MyReviewCard extends StatelessWidget {
                   width: MediaQuery.of(context).size.width * 0.2,
                 ),
                 SizedBox(width: 15),
-                Flexible(
+                Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -194,24 +228,8 @@ class MyReviewCard extends StatelessWidget {
                     flex: 1,
                     child: TextButton(
                       onPressed: () {
-                        ReviewToUpdateModel reviewToUpdate = ReviewToUpdateModel(
-                          id: review.id,
-                          address: review.address,
-                          residenceType: review.residenceType,
-                          residenceFloor: review.residenceFloor,
-                          starRating: review.starRating,
-                          pros: review.pros,
-                          cons: review.cons,
-                          maintenanceCost: review.maintenanceCost,
-                          images: review.images,
-                          residenceYear: review.year,
-                        );
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => UpdateReview(reviewToUpdate: reviewToUpdate),
-                          ),
-                        );
+                        // updateReview(review);
+                        //TODO The argument type 'MyReviewModel' can't be assigned to the parameter type 'ReviewToUpdateModel'.
                       },
                       child: Text('수정'),
                     ),
@@ -245,22 +263,23 @@ class MyReviewCard extends StatelessWidget {
   }
 
   Widget _buildRatingSection(double userRating) {
-    return Row(
-      children: [
-        Icon(
-          Icons.star,
-          color: Colors.amber,
-          size: 20.0,
-        ),
-        Text(
-          userRating.toStringAsFixed(1),
-          style: TextStyle(
-            fontSize: 16.0,
-            fontWeight: FontWeight.bold,
+    return Wrap(
+      crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          Icon(
+            Icons.star,
+            color: Colors.amber,
+            size: 15,
           ),
-        ),
-        SizedBox(width: 4.0),
-      ],
+          Text(
+            userRating.toStringAsFixed(1),
+            style: TextStyle(
+              fontSize: 16.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(width: 4),
+        ],
     );
   }
 }

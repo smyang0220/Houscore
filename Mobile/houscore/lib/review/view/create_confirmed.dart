@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:confirmation_success/confirmation_success.dart';
 import 'package:go_router/go_router.dart';
-import 'package:houscore/myinfo/view/my_page.dart';
 import 'package:houscore/review/view/my_review_list.dart';
 
 class CreateConfirmed extends StatefulWidget {
