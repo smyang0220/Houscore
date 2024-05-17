@@ -103,36 +103,6 @@ class _ReviewRepository implements ReviewRepository {
   }
 
   @override
-  Future<UserValidation> createTestOneReview(
-      {required Map<String, dynamic> testCreate}) async {
-    final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'accessToken': 'true'};
-    _headers.removeWhere((k, v) => v == null);
-    final _data = <String, dynamic>{};
-    _data.addAll(testCreate);
-    final _result = await _dio
-        .fetch<Map<String, dynamic>>(_setStreamType<UserValidation>(Options(
-      method: 'POST',
-      headers: _headers,
-      extra: _extra,
-    )
-            .compose(
-              _dio.options,
-              '',
-              queryParameters: queryParameters,
-              data: _data,
-            )
-            .copyWith(
-                baseUrl: _combineBaseUrls(
-              _dio.options.baseUrl,
-              baseUrl,
-            ))));
-    final value = UserValidation.fromJson(_result.data!);
-    return value;
-  }
-
-  @override
   Future<void> deleteReview({required int id}) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{r'id': id};

@@ -73,85 +73,118 @@ class _UpdateReviewState extends State<UpdateReview> {
     return DefaultLayout(
       child: SafeArea(
         child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                '리뷰 수정하기 (1/2)',
-                style: TextStyle(
-                  fontFamily: 'NotoSans',
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-              SizedBox(height: 10),
-              Text(
-                widget.reviewToUpdate.address,
-                style: TextStyle(fontSize: 20),
-              ),
-              SizedBox(height: 10),
-              DropdownType(
-                value: typeValue,
-                onChanged: _updateTypeValue,
-              ),
-              DropdownYear(
-                value: yearValue,
-                onChanged: _updateYearValue,
-              ),
-              DropdownFloor(
-                value: floorValue,
-                onChanged: _updateFloorValue,
-              ),
-              SizedBox(height: 12),
-              Container(
-                alignment: Alignment.centerLeft,
-                padding: EdgeInsets.all(6.0),
-                child: Text(
-                  '만족도 평가',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 30,
-                  ),
-                ),
-              ),
-              ReviewRating(
-                ratings: ratings,
-                onRatingUpdated: _updateRating,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(width: 20),
-                  ElevatedButton(
-                    onPressed: isButtonEnabled
-                        ? () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => UpdateReviewDetail(
-                              reviewToUpdate: widget.reviewToUpdate),
-                        ),
-                      );
-                    }
-                        : null,
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                            (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.disabled))
-                            return Colors.grey;
-                          return Colors.blue; // Default enabled color
-                        },
-                      ),
-                      foregroundColor:
-                      MaterialStateProperty.all<Color>(Colors.white),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 2),
+                  child: Text(
+                    '리뷰 수정하기 (1/2)',
+                    style: TextStyle(
+                      fontFamily: 'NotoSans',
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
                     ),
-                    child: Text('다음'),
                   ),
-                ],
-              ),
-            ],
+                ),
+                SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    '주소',
+                    style: TextStyle(
+                      fontFamily: 'NotoSans',
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+                Container(
+                  height: 60,
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  decoration: BoxDecoration(
+                    color: INPUT_BORDER_COLOR,
+                    borderRadius: BorderRadius.circular(8.0),
+                    border: Border.all(color: INPUT_BORDER_COLOR),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        selectedAddress ?? "실제 거주했던 집의 주소를 검색해주세요.",
+                        style: TextStyle(fontSize: 16, color: Colors.black),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 10),
+                DropdownType(
+                  value: typeValue,
+                  onChanged: _updateTypeValue,
+                ),
+                DropdownYear(
+                  value: yearValue,
+                  onChanged: _updateYearValue,
+                ),
+                DropdownFloor(
+                  value: floorValue,
+                  onChanged: _updateFloorValue,
+                ),
+                SizedBox(height: 12),
+                Container(
+                  alignment: Alignment.centerLeft,
+                  padding: EdgeInsets.all(6.0),
+                  child: Text(
+                    '만족도 평가',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 30,
+                    ),
+                  ),
+                ),
+                ReviewRating(
+                  ratings: ratings,
+                  onRatingUpdated: _updateRating,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(width: 20),
+                    ElevatedButton(
+                      onPressed: isButtonEnabled
+                          ? () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => UpdateReviewDetail(
+                                reviewToUpdate: widget.reviewToUpdate),
+                          ),
+                        );
+                      }
+                          : null,
+                      style: ButtonStyle(
+                        backgroundColor:
+                        MaterialStateProperty.resolveWith<Color>(
+                              (Set<MaterialState> states) {
+                            if (states.contains(MaterialState.disabled))
+                              return Colors.grey;
+                            return Colors.blue; // Default enabled color
+                          },
+                        ),
+                        foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                      ),
+                      child: Text('다음'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

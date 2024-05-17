@@ -5,8 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:houscore/common/const/color.dart';
 import 'package:houscore/common/layout/default_layout.dart';
-import 'package:houscore/review/model/star_rating_model.dart';
-import 'package:houscore/review/view/create_confirmed.dart';
 import 'package:houscore/review/view/update_confirmed.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -19,10 +17,10 @@ class UpdateReviewDetail extends ConsumerStatefulWidget {
   UpdateReviewDetail({required this.reviewToUpdate});
 
   @override
-  ConsumerState createState() => _CreateReviewDetailState();
+  ConsumerState createState() => _UpdateReviewDetailState();
 }
 
-class _CreateReviewDetailState extends ConsumerState<UpdateReviewDetail> {
+class _UpdateReviewDetailState extends ConsumerState<UpdateReviewDetail> {
   final TextEditingController _recommendController = TextEditingController();
   final TextEditingController _dislikeController = TextEditingController();
   final TextEditingController _maintenanceController = TextEditingController();
@@ -30,27 +28,23 @@ class _CreateReviewDetailState extends ConsumerState<UpdateReviewDetail> {
   bool _isRecommendRequired = true;
   bool _isDislikeRequired = true;
   bool _isMaintenanceRequired = true;
-  bool _isButtonEnabled = false;
 
-  void _updateButtonState() {
-    setState(() {
-      _isRecommendRequired = _recommendController.text.length < 100;
-      _isDislikeRequired = _dislikeController.text.length < 100;
-      _isMaintenanceRequired = _maintenanceController.text.length < 10;
-
-      _isButtonEnabled = _recommendController.text.length >= 100 &&
-          _dislikeController.text.length >= 100 &&
-          _maintenanceController.text.length >= 10;
-    });
-  }
+  String? image;
 
   @override
   void initState() {
     super.initState();
-    _recommendController.addListener(_updateButtonState);
-    _dislikeController.addListener(_updateButtonState);
-    _maintenanceController.addListener(_updateButtonState);
+    _recommendController.text = widget.reviewToUpdate.pros ?? '';
+    _dislikeController.text = widget.reviewToUpdate.cons ?? '';
+    _maintenanceController.text = widget.reviewToUpdate.maintenanceCost ?? '';
+    image = widget.reviewToUpdate.images!;
   }
+
+  bool get isButtonEnabled =>
+      _recommendController.text.length >= 100 &&
+      _dislikeController.text.length >= 100 &&
+      _maintenanceController.text.length >= 10 &&
+      image!.isNotEmpty;
 
   @override
   void dispose() {
@@ -60,23 +54,22 @@ class _CreateReviewDetailState extends ConsumerState<UpdateReviewDetail> {
     super.dispose();
   }
 
-  void submitReview() async {
+  void _updateImage(String? newImage) {
+    setState(() {
+      image = newImage;
+    });
+  }
+
+  void updateReview() async {
     List<int> imageBytes = await images[0]!.readAsBytes();
     String base64String = base64Encode(imageBytes);
-    await File('output_base64.txt').writeAsString(base64String);
 
     ReviewToUpdateModel reviewModel = ReviewToUpdateModel(
       id: widget.reviewToUpdate.id,
       address: widget.reviewToUpdate.address,
       residenceType: widget.reviewToUpdate.residenceType,
       residenceFloor: widget.reviewToUpdate.residenceFloor,
-      starRating: StarRating(
-        traffic: widget.reviewToUpdate.starRating.traffic,
-        building: widget.reviewToUpdate.starRating.building,
-        inside: widget.reviewToUpdate.starRating.inside,
-        infra: widget.reviewToUpdate.starRating.infra,
-        security: widget.reviewToUpdate.starRating.security,
-      ),
+      starRating: widget.reviewToUpdate.starRating,
       pros: _recommendController.text,
       cons: _dislikeController.text,
       maintenanceCost: _maintenanceController.text,
@@ -85,12 +78,17 @@ class _CreateReviewDetailState extends ConsumerState<UpdateReviewDetail> {
     );
 
     try {
-    final repository = ref.read(reviewRepositoryProvider);
-    await repository.updateReview(reviewModel: widget.reviewToUpdate);
-    Navigator.push(
-          context, MaterialPageRoute(builder: (_) => UpdateConfirmed(reviewAddress: reviewModel.address,)));
+      final repository = ref.read(reviewRepositoryProvider);
+      await repository.updateReview(reviewModel: reviewModel);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => UpdateConfirmed(
+            reviewAddress: reviewModel.address,
+          ),
+        ),
+      );
     } catch (e) {
-      print(reviewModel.toJson());
       print("Error submitting review: $e");
     }
   }
@@ -116,28 +114,47 @@ class _CreateReviewDetailState extends ConsumerState<UpdateReviewDetail> {
                   ),
                 ),
               ),
-              buildTextFieldSection(_recommendController, '추천해요!', Colors.blue,
-                  100, _isRecommendRequired),
+              buildTextFieldSection(
+                _recommendController,
+                '추천해요!',
+                Colors.blue,
+                100,
+                _isRecommendRequired,
+              ),
               SizedBox(height: 5),
-              buildTextFieldSection(_dislikeController, '별로예요!', Colors.red,
-                  100, _isDislikeRequired),
+              buildTextFieldSection(
+                _dislikeController,
+                '별로예요!',
+                Colors.red,
+                100,
+                _isDislikeRequired,
+              ),
               SizedBox(height: 5),
-              buildTextFieldSection(_maintenanceController, '관리비', null, 10,
-                  _isMaintenanceRequired),
+              buildTextFieldSection(
+                _maintenanceController,
+                '관리비',
+                null,
+                10,
+                _isMaintenanceRequired,
+              ),
               SizedBox(height: 5),
-              ImageUpload(),
+              ImageUpload(
+                onImageChanged: _updateImage,
+                initialImage: image,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text('이전으로')),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text('이전으로'),
+                  ),
                   ElevatedButton(
-                    onPressed: _isButtonEnabled
+                    onPressed: isButtonEnabled
                         ? () async {
-                            submitReview();
+                            updateReview();
                           }
                         : null,
                     style: ButtonStyle(
@@ -174,9 +191,10 @@ class _CreateReviewDetailState extends ConsumerState<UpdateReviewDetail> {
             Text(
               title,
               style: TextStyle(
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
-                  color: color ?? Colors.black),
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+                color: color ?? Colors.black,
+              ),
             ),
             Text('$minChars자 이상'),
           ],
@@ -191,17 +209,15 @@ class _CreateReviewDetailState extends ConsumerState<UpdateReviewDetail> {
                 filled: true,
                 fillColor: INPUT_BORDER_COLOR,
                 border: OutlineInputBorder(
-                  borderSide: BorderSide(color: INPUT_BORDER_COLOR), // 테두리 색상
+                  borderSide: BorderSide(color: INPUT_BORDER_COLOR),
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderSide:
-                      BorderSide(color: INPUT_BORDER_COLOR), // 테두리 색상을 유지
+                  borderSide: BorderSide(color: INPUT_BORDER_COLOR),
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderSide:
-                      BorderSide(color: INPUT_BORDER_COLOR), // 포커스 받았을 때의 색상
+                  borderSide: BorderSide(color: INPUT_BORDER_COLOR),
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 hintText: '작성하신 리뷰는 사용자들을 위해 노출되며,\n'
@@ -226,19 +242,33 @@ class _CreateReviewDetailState extends ConsumerState<UpdateReviewDetail> {
 
 /*
   이미지 업로드
- */
+*/
 
 class ImageUpload extends StatefulWidget {
+  final Function onImageChanged;
+  final String? initialImage;
+
+  ImageUpload({required this.onImageChanged, this.initialImage});
+
   @override
   State<ImageUpload> createState() => ImageUploadState();
 }
 
 final picker = ImagePicker();
-XFile? pickedImage; // 카메라로 촬영한 이미지를 저장할 변수
-List<XFile?> multiImage = []; // 갤러리에서 여러장의 사진을 선택해서 저장할 변수
-List<XFile?> images = []; // 가져온 사진들을 보여주기 위한 변수
+XFile? pickedImage;
+List<XFile?> multiImage = [];
+List<XFile?> images = [];
 
 class ImageUploadState extends State<ImageUpload> {
+  @override
+  void initState() {
+    super.initState();
+    images.clear();
+    if (widget.initialImage != null) {
+      images.add(XFile(widget.initialImage!));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -252,9 +282,10 @@ class ImageUploadState extends State<ImageUpload> {
             Text(
               '사진 첨부',
               style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black),
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
             ),
             SizedBox(
               width: 10,
@@ -267,10 +298,8 @@ class ImageUploadState extends State<ImageUpload> {
         ),
         Visibility(
           visible: images.length < 1,
-          //하나만 업로드 가능
           child: Row(
             children: [
-              //카메라로 촬영하기
               Container(
                 margin: EdgeInsets.all(10),
                 padding: EdgeInsets.all(5),
@@ -288,13 +317,11 @@ class ImageUploadState extends State<ImageUpload> {
                   onPressed: () async {
                     pickedImage =
                         await picker.pickImage(source: ImageSource.camera);
-                    //카메라로 촬영하지 않고 뒤로가기 버튼을 누를 경우, null값이 저장되므로 if문을 통해 null이 아닐 경우에만 images변수로 저장하도록 합니다
                     if (pickedImage != null) {
-                      setState(
-                        () {
-                          images.add((pickedImage));
-                        },
-                      );
+                      setState(() {
+                        images.add((pickedImage));
+                      });
+                      widget.onImageChanged();
                     }
                   },
                   icon: Icon(
@@ -304,7 +331,6 @@ class ImageUploadState extends State<ImageUpload> {
                   ),
                 ),
               ),
-              //갤러리에서 가져오기
               Container(
                 margin: EdgeInsets.all(10),
                 padding: EdgeInsets.all(5),
@@ -321,12 +347,10 @@ class ImageUploadState extends State<ImageUpload> {
                 child: IconButton(
                   onPressed: () async {
                     multiImage = await picker.pickMultiImage();
-                    setState(
-                      () {
-                        //갤러리에서 가지고 온 사진들은 리스트 변수에 저장되므로 addAll()을 사용해서 images와 multiImage 리스트를 합쳐줍니다.
-                        images.addAll(multiImage);
-                      },
-                    );
+                    setState(() {
+                      images.addAll(multiImage);
+                    });
+                    widget.onImageChanged();
                   },
                   icon: Icon(
                     Icons.add_photo_alternate_outlined,
@@ -343,16 +367,14 @@ class ImageUploadState extends State<ImageUpload> {
           child: GridView.builder(
             padding: EdgeInsets.all(0),
             shrinkWrap: true,
-            itemCount:
-                images.length, //보여줄 item 개수. images 리스트 변수에 담겨있는 사진 수 만큼.
+            itemCount: images.length,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3, //1 개의 행에 보여줄 사진 개수
-              childAspectRatio: 1 / 1, //사진 의 가로 세로의 비율
-              mainAxisSpacing: 10, //수평 Padding
-              crossAxisSpacing: 10, //수직 Padding
+              crossAxisCount: 3,
+              childAspectRatio: 1 / 1,
+              mainAxisSpacing: 10,
+              crossAxisSpacing: 10,
             ),
             itemBuilder: (BuildContext context, int index) {
-              // 사진 오른 쪽 위 삭제 버튼을 표시하기 위해 Stack을 사용함
               return Stack(
                 alignment: Alignment.topRight,
                 children: [
@@ -360,32 +382,28 @@ class ImageUploadState extends State<ImageUpload> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5),
                       image: DecorationImage(
-                        fit: BoxFit.cover, //사진을 크기를 상자 크기에 맞게 조절
-                        image: FileImage(
-                          File(images[index]!
-                                  .path // images 리스트 변수 안에 있는 사진들을 순서대로 표시함
-                              ),
-                        ),
+                        fit: BoxFit.cover,
+                        image: images[0] == widget.initialImage!
+                            ? FileImage(File(images[0]!.path)) as ImageProvider
+                            : NetworkImage(widget.initialImage!),
                       ),
                     ),
                   ),
+                  //이미지 삭제 버튼
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.black,
                       borderRadius: BorderRadius.circular(5),
                     ),
-                    //삭제 버튼
                     child: IconButton(
                       padding: EdgeInsets.zero,
                       constraints: BoxConstraints(),
                       icon: Icon(Icons.close, color: Colors.white, size: 15),
                       onPressed: () {
-                        //버튼을 누르면 해당 이미지가 삭제됨
-                        setState(
-                          () {
-                            images.remove(images[index]);
-                          },
-                        );
+                        setState(() {
+                          images.remove(images[index]);
+                        });
+                        widget.onImageChanged();
                       },
                     ),
                   ),

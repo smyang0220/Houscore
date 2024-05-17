@@ -4,6 +4,8 @@ import 'package:json_annotation/json_annotation.dart';
 part 'review_to_update_model.g.dart';
 
 @JsonSerializable()
+
+//리뷰 수정 시의 DTO
 class ReviewToUpdateModel {
   final int id;
   final String address;
