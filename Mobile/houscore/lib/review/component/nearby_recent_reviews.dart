@@ -123,39 +123,40 @@ class _NearbyResidencesReviewState
     final state = ref.watch(nearbyRecentReviewsProvider);
 
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 2),
+      padding: EdgeInsets.symmetric(vertical: 16.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      '🚩 근처 거주지 최근 리뷰',
-                      style: TextStyle(
-                        fontFamily: 'NotoSans',
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                children: [
+                  Text(
+                    '🚩 근처 거주지 최근 리뷰',
+                    style: TextStyle(
+                      fontFamily: 'NotoSans',
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
                     ),
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                ],
+              ),
+            ],
           ),
           Padding(
-            padding: const EdgeInsets.only(bottom: 8.0, left: 16.0),
+            padding: const EdgeInsets.only(left: 8),
             child: Row(
               children: [
                 Text(
                   '$address',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                  style: TextStyle(
+                    fontFamily: 'NotoSans',
+                    fontSize: 12, // 글자 크기를 작게 설정합니다.
+                    color: Colors.black, // 글자 색상을 회색으로 설정합니다.
+                    fontWeight: FontWeight.w500,),
                 ),
               ],
             ),

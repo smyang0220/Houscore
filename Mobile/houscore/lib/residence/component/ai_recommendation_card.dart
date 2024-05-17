@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../common/const/color.dart';
+import '../../common/const/design.dart';
 import '../model/ai_recommended_residence_model.dart';
 import '../utils/place_utils.dart';
 import '../view/residence_detail.dart';
@@ -75,9 +76,14 @@ class _AiRecommendationCardState extends State<AiRecommendationCard>
               // mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(widget.model.address,
-                    style:
-                        TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                Row(
+                  children: [
+                    Text(widget.model.address,
+                        style:
+                            TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                    Spacer()
+                  ],
+                ),
                 SizedBox(height: 4),
                 Divider(),
                 SizedBox(height: 4),
@@ -91,7 +97,10 @@ class _AiRecommendationCardState extends State<AiRecommendationCard>
                           children: [
                             Text('AI 분석 점수',
                                 style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.bold)),
+                                  fontFamily: 'NotoSans',
+                                    fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                )),
                             SizedBox(height: 5),
                             AnimatedBuilder(
                               animation: _scoreAnimation,
@@ -101,7 +110,7 @@ class _AiRecommendationCardState extends State<AiRecommendationCard>
                                   Text(
                                     '${_scoreAnimation.value.toStringAsFixed(1)}',
                                     style: TextStyle(
-                                        fontSize: 32,
+                                        fontSize: 26,
                                         color: PRIMARY_COLOR,
                                         fontWeight: FontWeight.bold),
                                   ),
@@ -127,17 +136,29 @@ class _AiRecommendationCardState extends State<AiRecommendationCard>
                           children: [
                             Text(
                                 '실거래가: ${PlaceUtils.formatPrice(widget.model.realPrice)}',
-                                style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.bold)),
+                                style:  TextStyle(
+                                  fontFamily: 'NotoSans',
+                                  fontSize: 16, // 글자 크기를 작게 설정합니다.
+                                  color: Colors.black, // 글자 색상을 회색으로 설정합니다.
+                                  fontWeight: FontWeight.w500,
+                                )),
                             SizedBox(height: 5),
                             Text(
                                 '평당가격: ${PlaceUtils.formatPrice(widget.model.pricePerPyeong)}',
                                 style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.bold)),
+                                  fontFamily: 'NotoSans',
+                                  fontSize: 16, // 글자 크기를 작게 설정합니다.
+                                  color: Colors.black, // 글자 색상을 회색으로 설정합니다.
+                                  fontWeight: FontWeight.w500,
+                                ) ),
                             SizedBox(height: 5),
                             Text('리뷰건수: ${widget.model.reviewCnt ?? '0'}건',
                                 style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.bold)),
+                                  fontFamily: 'NotoSans',
+                                  fontSize: 16, // 글자 크기를 작게 설정합니다.
+                                  color: Colors.black, // 글자 색상을 회색으로 설정합니다.
+                                  fontWeight: FontWeight.w500,
+                                )),
                           ],
                         ),
                       ],
@@ -150,7 +171,12 @@ class _AiRecommendationCardState extends State<AiRecommendationCard>
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         SizedBox(width: 15,),
-                        Text('지역 평당가격 대비 ', style: TextStyle(fontWeight: FontWeight.w600),),
+                        Text('지역 평당가격 대비 ', style: TextStyle(
+                          fontFamily: 'NotoSans',
+                          fontSize: 16, // 글자 크기를 작게 설정합니다.
+                          color: Colors.black, // 글자 색상을 회색으로 설정합니다.
+                          fontWeight: FontWeight.w500,
+                        ),),
                         SizedBox(width: 15,),
                         Text(
                           '${widget.model.pricePerRegion - 100.0 < 0 ? "" : "+"}${(widget.model.pricePerRegion - 100.0).toStringAsFixed(1)}%',
