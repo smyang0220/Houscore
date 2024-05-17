@@ -9,7 +9,7 @@ part of 'homescreen_review_model.dart';
 HomescreenReviewModel _$HomescreenReviewModelFromJson(
         Map<String, dynamic> json) =>
     HomescreenReviewModel(
-      buildingName: json['buildingName'] as String,
+      buildingName: json['buildingName'] as String?,
       address: json['address'] as String,
       pros: json['pros'] as String,
       cons: json['cons'] as String,

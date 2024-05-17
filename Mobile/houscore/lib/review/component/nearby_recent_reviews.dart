@@ -1,130 +1,126 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:houscore/common/model/data_state_model.dart';
+import 'package:houscore/common/provider/data_list_param_provider.dart';
 import 'package:houscore/review/component/review_card.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../residence/model/location_model.dart';
+import '../../common/model/data_list_state_model.dart';
 import '../../residence/repository/naver_map_repository.dart';
 import '../model/homescreen_review_model.dart';
-import '../provider/nearby_recent_reviews_provider.dart';
+import '../../residence/provider/nearby_recent_reviews_provider.dart';
 
 class NearbyResidencesReview extends ConsumerStatefulWidget {
-  final VoidCallback onViewAll; // 전체보기
-
   const NearbyResidencesReview({
     Key? key,
-    required this.onViewAll,
   }) : super(key: key);
 
   @override
   _NearbyResidencesReviewState createState() => _NearbyResidencesReviewState();
 }
 
-class _NearbyResidencesReviewState extends ConsumerState<NearbyResidencesReview> {
-  double? _latitude;
-  double? _longitude;
-  String _currentLocation = '위치 정보를 불러오는 중...';
-  bool _hasFetchedReviews = false;
+class _NearbyResidencesReviewState
+    extends ConsumerState<NearbyResidencesReview> {
+  double? lat;
+  double? lng;
+  String? address = '현재 위치와 근처 거주지의 리뷰를 불러오고 있습니다.';
 
   @override
   void initState() {
     super.initState();
-    _determinePosition();
+    _initializeLocation();
+  }
+
+  Future<void> _initializeLocation() async {
+    await _determinePosition();
+    ref.read(nearbyRecentReviewsProvider.notifier);
+    await _fetchAddress(lat, lng);
   }
 
   Future<void> _determinePosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
+    bool serviceEnabled; // 위치 서비스 활성화 여부
+    LocationPermission permission; // 위치 권한 여부
 
+    // 위치 서비스 활성화여부 불러오기
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    // 만약 비활성화 상태이고
     if (!serviceEnabled) {
+      // 현재 표시되는 부분을 위치 서비스 활성화 요청으로 설정
       setState(() {
-        _currentLocation = '위치 서비스를 활성화해주세요.';
+        address = '위치 서비스를 활성화해주세요.';
       });
       return;
     }
 
+    // 위치 권한 불러오기
     permission = await Geolocator.checkPermission();
+
+    // 위치 권한이 거부 상태라면
     if (permission == LocationPermission.denied) {
+      // 일단 요청
       permission = await Geolocator.requestPermission();
     }
+    // 2번 째도 거절이라면 거절로 간주
     if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) {
       setState(() {
-        _currentLocation = '위치 권한이 거부되었습니다.';
+        address = '위치 권한이 거부되었습니다.';
       });
       return;
     }
 
-    Position position = await Geolocator.getCurrentPosition();
+    try {
+      Position position = await Geolocator.getCurrentPosition();
 
-    if (_latitude != position.latitude || _longitude != position.longitude) {
+      if (lat != position.latitude || lng != position.longitude) {
+        setState(() {
+          lat = position.latitude;
+          lng = position.longitude;
+        });
+
+        DataListParamsNotifier notifier = await ref.read(dataListParameterProvider.notifier);
+        notifier.updateParams(lng: lng, lat: lat);
+      }
+    } catch (e) {
       setState(() {
-        _latitude = position.latitude;
-        _longitude = position.longitude;
-        _hasFetchedReviews = false;
+        address = '위치 정보를 불러오는데 실패했습니다.';
       });
-      _fetchAddress(position);
-      _fetchReviews();
     }
   }
 
-  Future<void> _fetchAddress(Position position) async {
+  Future<void> _fetchAddress(double? lat, double? lng) async {
+    if (lat == null || lng == null) {
+      // print('lat or lng is null, skipping fetch address');
+      return;
+    }
+
+    // print('Fetching address for position by lng : $lng, and lat : $lat');
+
     try {
-      final response = await ref.read(naverMapRepositoryProvider).getAddressFromLatLng({
-        'coords': '${position.longitude},${position.latitude}',
+      final response =
+      await ref.read(naverMapRepositoryProvider).getAddressFromLatLng({
+        'coords': '$lng,$lat',
         'sourcecrs': 'epsg:4326',
         'orders': 'roadaddr',
         'output': 'json'
       });
-      var addressData = response.data['results'][0]['land']['addition0']['value'] as String?;
+
+      // print('Address response: ${response.data}');
+
+      var addressData =
+      response.data['results'][0]['land']['addition0']['value'] as String?;
+
       setState(() {
-        _currentLocation = addressData != null ? "현재 위치: $addressData" : '상세 주소 정보를 찾을 수 없습니다.';
+          address = addressData != null
+              ? "현재 위치: $addressData"
+              : '상세 주소 정보를 찾을 수 없습니다.';
       });
     } catch (e) {
-      setState(() => _currentLocation = '현재 위치 불러오기 실패');
-    }
-  }
-
-  void _fetchReviews() {
-    if (_latitude != null && _longitude != null && !_hasFetchedReviews) {
-      final initNotifier = ref.read(nearbyRecentReviewsProvider(LatLng(latitude: _latitude!, longitude: _longitude!)).notifier);
-      initNotifier.fetchNearbyRecentReviews();
-      setState(() {
-        _hasFetchedReviews = true;
-      });
+      // print('Error fetching address: $e');
+      setState(() => address = '현재 위치 불러오기 실패');
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final reviewState = ref.watch(nearbyRecentReviewsProvider(LatLng(latitude: _latitude ?? 0, longitude: _longitude ?? 0)));
-
-    Widget _buildReviewContent(DataStateBase reviewState) {
-      if (reviewState is DataStateLoading) {
-        return Center(child: CircularProgressIndicator());
-      } else if (reviewState is DataStateError) {
-        return Center(child: Text('리뷰를 불러오는데 실패했습니다: ${reviewState.message}'));
-      } else if (reviewState is DataState) {
-        final reviews = reviewState.data as List<HomescreenReviewModel>;
-        if (reviews.isEmpty) {
-          return Center(child: Text('근처에 리뷰가 없습니다.'));
-        }
-        return Column(
-          children: reviews.map((review) {
-            return ReviewCard(
-              address: review.address,
-              userRating: review.reviewScore,
-              aiRating: review.aiScore,
-              like: review.pros,
-              dislike: review.cons,
-              imageUrl: review.imageUrl,
-            );
-          }).toList(),
-        );
-      } else {
-        return Container();
-      }
-    }
+    final state = ref.watch(nearbyRecentReviewsProvider);
 
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 2),
@@ -150,12 +146,6 @@ class _NearbyResidencesReviewState extends ConsumerState<NearbyResidencesReview>
                     ),
                   ],
                 ),
-                // TextButton(
-                //     onPressed: widget.onViewAll,
-                //     child: Text(
-                //       '전체보기',
-                //       style: TextStyle(color: Colors.grey),
-                //     )),
               ],
             ),
           ),
@@ -163,12 +153,26 @@ class _NearbyResidencesReviewState extends ConsumerState<NearbyResidencesReview>
             padding: const EdgeInsets.only(bottom: 8.0, left: 16.0),
             child: Row(
               children: [
-                Text(_currentLocation,
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+                Text(
+                  '$address',
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                ),
               ],
             ),
           ),
-          _buildReviewContent(reviewState),
+          if (state is DataListStateLoading)
+            CircularProgressIndicator(),
+          if (state is DataListStateError)
+            Text('데이터를 불러오지 못했습니다.'),
+          if (state is DataListState<HomescreenReviewModel>)
+            ...state.data.map((review) => ReviewCard(
+              address: review.address,
+              userRating: review.reviewScore,
+              aiRating: review.aiScore,
+              like: review.pros,
+              dislike: review.cons,
+              imageUrl: review.imageUrl,
+            )).toList(),
         ],
       ),
     );
