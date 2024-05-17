@@ -17,6 +17,7 @@ class NearbyInfra extends StatefulWidget {
 
 class _NearbyInfraState extends State<NearbyInfra> {
   InfraType? _selectedType = InfraType.medicalFacilities;
+
   List<Infra> getFilteredInfras(List<Infra> list, InfraType? selectedType) {
     if (selectedType == null) {
       return list;
@@ -27,7 +28,6 @@ class _NearbyInfraState extends State<NearbyInfra> {
 
   @override
   Widget build(BuildContext context) {
-
     // 버튼 구성
     Widget buttonContent(String iconPath, String label) {
       return Padding(
@@ -47,20 +47,22 @@ class _NearbyInfraState extends State<NearbyInfra> {
       return list.map((infra) {
         var results = PlaceUtils.convertDistance(infra.distance);
 
-        return ListTile(
-          leading: results['leadingIcon'],
-          title: Row(
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2.0), // 각 항목 사이의 간격 조정
+          child: Row(
             children: <Widget>[
+              results['leadingIcon'],
+              SizedBox(width: 8),
               Expanded(
                 child: Text(
                   infra.name,
                   style: TextStyle(
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14,
                   ),
                 ),
               ),
               Text(
-                // '${results['minute']}분 (${DataUtils.convertToKilometers(infra.distance)}km)',
                 '${results['minute']}분 (${infra.distance.toStringAsFixed(1)}km)',
                 style: TextStyle(
                   fontSize: 14,
@@ -131,8 +133,9 @@ class _NearbyInfraState extends State<NearbyInfra> {
             ),
           ],
         ),
-        SizedBox(height: 15),
+        SizedBox(height: 16),
         ...buildInfraList(filteredList),
+        SizedBox(height: 16),
         Divider(),
       ],
     );

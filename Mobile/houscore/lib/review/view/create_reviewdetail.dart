@@ -53,8 +53,6 @@ class _CreateReviewDetailState extends ConsumerState<CreateReviewDetail> {
     _maintenanceController.addListener(_updateButtonState);
   }
 
-  //TODO 뒤로가기하면 사진 없어지도록 처리
-  //TODO 사진 필수 처리
   @override
   void dispose() {
     _recommendController.dispose();
@@ -108,62 +106,75 @@ class _CreateReviewDetailState extends ConsumerState<CreateReviewDetail> {
     return DefaultLayout(
       child: SafeArea(
         child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 2),
-                child: Text(
-                  '리뷰 작성하기 (2/2)',
-                  style: TextStyle(
-                    fontFamily: 'NotoSans',
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 2),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        '리뷰 작성하기 (2/2)',
+                        style: TextStyle(
+                          fontFamily: 'NotoSans',
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ),
-              buildTextFieldSection(_recommendController, '추천해요!', Colors.blue,
-                  100, _isRecommendRequired),
-              SizedBox(height: 5),
-              buildTextFieldSection(_dislikeController, '별로예요!', Colors.red,
-                  100, _isDislikeRequired),
-              SizedBox(height: 5),
-              buildTextFieldSection(_maintenanceController, '관리비', null, 10,
-                  _isMaintenanceRequired),
-              SizedBox(height: 5),
-              ImageUpload(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text('이전으로')),
-                  ElevatedButton(
-                    onPressed: _isButtonEnabled
-                        ? () async {
-                      submitReview();
-                    }
-                        : null,
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                            (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.disabled))
-                            return Colors.grey;
-                          return Colors.blue; // Default enabled color
+                buildTextFieldSection(_recommendController, '추천해요', PRIMARY_COLOR,
+                    100, _isRecommendRequired),
+                SizedBox(height: 5),
+                buildTextFieldSection(_dislikeController, '별로예요', Colors.deepPurpleAccent,
+                    100, _isDislikeRequired),
+                SizedBox(height: 5),
+                buildTextFieldSection(_maintenanceController, '관리비', null, 10,
+                    _isMaintenanceRequired),
+                SizedBox(height: 5),
+                ImageUpload(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
                         },
-                      ),
-                      foregroundColor:
-                      MaterialStateProperty.all<Color>(Colors.white),
+                        child: Text('이전으로'),
+                        // style: ButtonStyle(
+                        //
+                        // ),
                     ),
-                    child: Text('완료'),
-                  ),
-                ],
-              ),
-            ],
+
+                    ElevatedButton(
+                      onPressed: _isButtonEnabled
+                          ? () async {
+                        submitReview();
+                      }
+                          : null,
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                              (Set<MaterialState> states) {
+                            if (states.contains(MaterialState.disabled))
+                              return Colors.grey;
+                            return Colors.blue; // Default enabled color
+                          },
+                        ),
+                        foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                      ),
+                      child: Text('완료'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

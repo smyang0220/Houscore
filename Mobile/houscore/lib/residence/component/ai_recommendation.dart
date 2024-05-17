@@ -109,6 +109,7 @@ class _AiRecommendationState extends ConsumerState<AiRecommendation>
         child: Material(
           color: Color(0xfffafafa),
           elevation: 10, // 떠있는 정도 // 0 이상으로 둘 것!
+          // borderRadius: BorderRadius.all(Radius.circular(10)),
           borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(10),
             bottomRight: Radius.circular(10),
@@ -125,7 +126,7 @@ class _AiRecommendationState extends ConsumerState<AiRecommendation>
                   ? selectedSubRegion == region
                   : selectedRegion == region)
                   ? PRIMARY_COLOR
-                  : Colors.black;
+                  : Colors.grey;
               return GestureDetector(
                 onTap: () {
                   setState(() {
@@ -149,7 +150,7 @@ class _AiRecommendationState extends ConsumerState<AiRecommendation>
                     fit: BoxFit.scaleDown,
                     child: Text(
                       region,
-                      style: TextStyle(color: selectedOrNot),
+                      style: TextStyle(color: selectedOrNot, fontSize: 10),
                     ),
                   ),
                 ),
@@ -197,7 +198,7 @@ class _AiRecommendationState extends ConsumerState<AiRecommendation>
           ),
           Container(
             key: _selectionKey,
-            width: MediaQuery.of(context).size.width * 0.8,
+            // width: MediaQuery.of(context).size.width * 0.8,
             decoration: BoxDecoration(
               border: Border.all(color: Colors.grey),
               borderRadius: BorderRadius.only(
@@ -217,7 +218,10 @@ class _AiRecommendationState extends ConsumerState<AiRecommendation>
                   // 지역 선택 버튼
                   Flexible(
                     child: _buildButton(
-                      text: selectedRegion ?? '지역 선택',
+                      child: Text(
+                        selectedRegion ?? '지역',
+                        style: TextStyle(fontSize: 12, color: selectedRegion != null ? Colors.black : Colors.grey[500]),
+                      ),
                       onTap: () => _toggleOverlay(context, regions, false),
                       isExpanded: _isRegionExpanded, // 지역 선택 버튼의 확장 상태
                     ),
@@ -229,7 +233,10 @@ class _AiRecommendationState extends ConsumerState<AiRecommendation>
                   ),
                   Flexible(
                     child: _buildButton(
-                      text: selectedSubRegion ?? '세부 지역 선택',
+                      child: Text(
+                        selectedSubRegion ?? '세부 지역',
+                        style: TextStyle(fontSize: 12, color: selectedSubRegion != null ? Colors.black : Colors.grey[500]),
+                      ),
                       onTap: () => _toggleOverlay(
                           context, subRegions[selectedRegion]!, true),
                       isExpanded: _isSubRegionExpanded, // 세부지역 선택 버튼의 확장 상태
@@ -239,6 +246,7 @@ class _AiRecommendationState extends ConsumerState<AiRecommendation>
               ),
             ),
           ),
+          SizedBox(height: 8,),
           if (residenceData != null) ...[
             if (residenceData is DataStateLoading)
               Lottie.asset('asset/img/logo/loading_lottie_animation.json'),
@@ -292,10 +300,11 @@ class _AiRecommendationState extends ConsumerState<AiRecommendation>
   }
 
   // 지역 및 세부지역 선택 버튼
-  Widget _buildButton(
-      {required String text,
-        required VoidCallback onTap,
-        required bool isExpanded}) {
+  Widget _buildButton({
+    required Widget child,
+    required VoidCallback onTap,
+    required bool isExpanded,
+  }) {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(30.0),
@@ -309,14 +318,7 @@ class _AiRecommendationState extends ConsumerState<AiRecommendation>
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Expanded(
-              child: Text(
-                text,
-                style: TextStyle(fontSize: 16, color: Colors.black),
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
+            Expanded(child: child),
             Icon(
               isExpanded
                   ? Icons.keyboard_arrow_up

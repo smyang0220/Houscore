@@ -87,21 +87,25 @@ class _ListSectionState<T extends IModelWithNameAndId>
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Text(
               widget.title,
-              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold,),
             ),
           ),
           if (itemsToShow != null && itemsToShow.isNotEmpty)
             ...itemsToShow.map((T item) => ListTile(
+              contentPadding: EdgeInsets.zero,
+              minVerticalPadding: 0,
+              dense: true,
               title: Text(
                 item.name,
                 style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w300,
+                  color: Colors.grey[900],
                 ),
               ),
               onTap: () => widget.onItemTap?.call(item),
               trailing: IconButton(
-                icon: Icon(Icons.delete),
+                icon: Icon(Icons.delete, size: 20,),
                 color: Colors.red,
                 onPressed: () => _showDeleteDialog(item),
               ),
@@ -144,11 +148,11 @@ class _ListSectionState<T extends IModelWithNameAndId>
                 ),
               ],
             ),
-          Divider(
-            thickness: 1,
-            endIndent: 8,
-            indent: 8,
-          ),
+          // Divider(
+          //   thickness: 2,
+          //   endIndent: 8,
+          //   indent: 8,
+          // ),
         ],
       ),
     );

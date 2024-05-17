@@ -23,8 +23,6 @@ class _NearbyPublicTransportationState
 
   @override
   Widget build(BuildContext context) {
-    // 필터링된 리스트: _showBuses 값에 따라 버스 또는 지하철만 표시
-    // List<PublicTransport> filteredList = widget.transportItems.where((item) => item.busOrSubway == _showBuses).toList();
     List<Infra> transportList = widget.transportItems.toList();
 
     return Column(
@@ -41,9 +39,7 @@ class _NearbyPublicTransportationState
           ],
         ),
         SizedBox(height: 15),
-        ...List.generate(transportList.length, (index) {
-          Infra transport = transportList[index];
-          String transportType;
+        ...transportList.map((transport) {
           int time = PlaceUtils.convertDistance(transport.distance)['minute'];
           Image leadingIcon = Image.asset(
             transport.type == InfraType.bus
@@ -51,26 +47,27 @@ class _NearbyPublicTransportationState
                 : 'asset/icon/subway.png',
             width: 15,
           );
-          Color color;
 
-          return ListTile(
-            leading: leadingIcon,
-            title: Row(
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2.0),
+            child: Row(
               children: <Widget>[
+                leadingIcon,
+                SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     transport.name,
                     style: TextStyle(
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w500,
                       overflow: TextOverflow.ellipsis,
+                      fontSize: 14,
                     ),
                   ),
                 ),
                 Text(
-                  // '${time}분 (${DataUtils.convertToKilometers(transport.distance)}km)',
                   '${time}분 (${transport.distance.toStringAsFixed(1)}km)',
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 14,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),
@@ -78,7 +75,8 @@ class _NearbyPublicTransportationState
               ],
             ),
           );
-        }),
+        }).toList(),
+        SizedBox(height: 16,),
         Divider(),
       ],
     );
