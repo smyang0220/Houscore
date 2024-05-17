@@ -131,23 +131,25 @@ public class ReviewController {
     @PutMapping("")
     @Operation(summary = "거주지 리뷰 수정", description = "거주지 리뷰 수정")
     public ResponseEntity<?> updateReview(@RequestBody ReviewDTO review,
-                                          @AuthenticationPrincipal String memberEmail,
-                                          @RequestParam @Parameter(description = "imageName : 이미지 이름(임의로 지정)") String imageName) {
+                                          @AuthenticationPrincipal String memberEmail) {
         try{
             //유저 검증
-            if(memberEmail == null || memberEmail.equals("anonymousUser")){
+            if(memberEmail == null || memberEmail.equals("anonymousUser")) {
                 return ResponseEntity.badRequest().body(new ErrorResponse("사용자 검증 필요"));
             }
+            if(review.getImageChange().equals("y")){
+                String imageName = memberEmail.split("@")[0]+ UUID.randomUUID() +".jpeg";
 
-            // FileUploadDTO 세팅
-            FileUploadDTO fileUploadDTO = new FileUploadDTO();
-            fileUploadDTO.setImageBase64(review.getImages());
-            fileUploadDTO.setImageName(imageName);
+                // FileUploadDTO 세팅
+                FileUploadDTO fileUploadDTO = new FileUploadDTO();
+                fileUploadDTO.setImageBase64(review.getImages());
+                fileUploadDTO.setImageName(imageName);
+                // S3 이미지 업로드
+                String result = s3UploadService.saveImage(fileUploadDTO);
+                review.setImages(result);
+            }
 
-            // S3 이미지 업로드
-            String result = s3UploadService.saveImage(fileUploadDTO);
-            review.setImages(result);
-
+            //이미지
             reviewService.updateReview(review, memberEmail);
             return ResponseEntity.status(HttpStatus.CREATED).body("리뷰 수정 성공");
         }catch (IllegalArgumentException e) {

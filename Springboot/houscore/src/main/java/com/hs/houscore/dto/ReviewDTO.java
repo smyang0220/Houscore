@@ -18,6 +18,7 @@ public class ReviewDTO {
     private String maintenanceCost;
     private String images;
     private String residenceYear;
+    private String  imageChange;
 
 
     @Data
