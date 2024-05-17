@@ -68,7 +68,7 @@ class _CreateReviewDetailState extends ConsumerState<CreateReviewDetail> {
     String base64String = base64Encode(imageBytes);
 
     String convertedAddress =
-    PlaceUtils.mapAddressForAPI(widget.reviewData.selectedAddress);
+        PlaceUtils.mapAddressForAPI(widget.reviewData.selectedAddress);
     ReviewModel reviewModel = ReviewModel(
       address: convertedAddress,
       lat: widget.reviewData.lat,
@@ -139,7 +139,7 @@ class _CreateReviewDetailState extends ConsumerState<CreateReviewDetail> {
                 buildTextFieldSection(_recommendController, '추천해요', PRIMARY_COLOR,
                     100, _isRecommendRequired),
                 SizedBox(height: 6),
-                buildTextFieldSection(_dislikeController, '별로예요', Colors.deepPurpleAccent,
+                buildTextFieldSection(_dislikeController, '별로예요', Colors.purpleAccent,
                     100, _isDislikeRequired),
                 SizedBox(height: 6),
                 buildTextFieldSection(_maintenanceController, '관리비', null, 10,
@@ -157,19 +157,19 @@ class _CreateReviewDetailState extends ConsumerState<CreateReviewDetail> {
                     ElevatedButton(
                       onPressed: _isButtonEnabled
                           ? () async {
-                        submitReview();
-                      }
+                              submitReview();
+                            }
                           : null,
                       style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                              (Set<MaterialState> states) {
+                          (Set<MaterialState> states) {
                             if (states.contains(MaterialState.disabled))
                               return Colors.grey;
                             return Colors.blue; // Default enabled color
                           },
                         ),
                         foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.white),
+                            MaterialStateProperty.all<Color>(Colors.white),
                       ),
                       child: Text('완료'),
                     ),
@@ -217,19 +217,19 @@ class _CreateReviewDetailState extends ConsumerState<CreateReviewDetail> {
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderSide:
-                  BorderSide(color: INPUT_BORDER_COLOR), // 테두리 색상을 유지
+                      BorderSide(color: INPUT_BORDER_COLOR), // 테두리 색상을 유지
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderSide:
-                  BorderSide(color: INPUT_BORDER_COLOR), // 포커스 받았을 때의 색상
+                      BorderSide(color: INPUT_BORDER_COLOR), // 포커스 받았을 때의 색상
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 hintText: '작성하신 리뷰는 사용자들을 위해 노출되며,\n'
                     '\n'
                     '무의미한 내용 및 문자반복, 다른 리뷰 붙여넣기 등 성의 없는 리뷰는 지양해주세요.',
                 counterStyle:
-                TextStyle(color: isRequired ? Colors.red : Colors.black),
+                    TextStyle(color: isRequired ? Colors.red : Colors.black),
               ),
               minLines: 2,
               maxLines: 10,
@@ -312,11 +312,11 @@ class ImageUploadState extends State<ImageUpload> {
                 child: IconButton(
                   onPressed: () async {
                     pickedImage =
-                    await picker.pickImage(source: ImageSource.camera);
+                        await picker.pickImage(source: ImageSource.camera);
                     //카메라로 촬영하지 않고 뒤로가기 버튼을 누를 경우, null값이 저장되므로 if문을 통해 null이 아닐 경우에만 images변수로 저장하도록 합니다
                     if (pickedImage != null) {
                       setState(
-                            () {
+                        () {
                           images.add((pickedImage));
                         },
                       );
@@ -348,7 +348,7 @@ class ImageUploadState extends State<ImageUpload> {
                   onPressed: () async {
                     multiImage = await picker.pickMultiImage();
                     setState(
-                          () {
+                      () {
                         //갤러리에서 가지고 온 사진들은 리스트 변수에 저장되므로 addAll()을 사용해서 images와 multiImage 리스트를 합쳐줍니다.
                         images.addAll(multiImage);
                       },
@@ -371,7 +371,7 @@ class ImageUploadState extends State<ImageUpload> {
             padding: EdgeInsets.all(0),
             shrinkWrap: true,
             itemCount:
-            images.length, //보여줄 item 개수. images 리스트 변수에 담겨있는 사진 수 만큼.
+                images.length, //보여줄 item 개수. images 리스트 변수에 담겨있는 사진 수 만큼.
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3, //1 개의 행에 보여줄 사진 개수
               childAspectRatio: 1 / 1, //사진 의 가로 세로의 비율
@@ -390,8 +390,8 @@ class ImageUploadState extends State<ImageUpload> {
                         fit: BoxFit.cover, //사진을 크기를 상자 크기에 맞게 조절
                         image: FileImage(
                           File(images[index]!
-                              .path // images 리스트 변수 안에 있는 사진들을 순서대로 표시함
-                          ),
+                                  .path // images 리스트 변수 안에 있는 사진들을 순서대로 표시함
+                              ),
                         ),
                       ),
                     ),
@@ -409,7 +409,7 @@ class ImageUploadState extends State<ImageUpload> {
                       onPressed: () {
                         //버튼을 누르면 해당 이미지가 삭제됨
                         setState(
-                              () {
+                          () {
                             images.remove(images[index]);
                           },
                         );
