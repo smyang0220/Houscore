@@ -4,7 +4,7 @@ part 'homescreen_review_model.g.dart';
 
 @JsonSerializable()
 class HomescreenReviewModel {
-  final String buildingName;
+  final String? buildingName;
   final String address;
   final String pros;
   final String cons;
@@ -12,8 +12,10 @@ class HomescreenReviewModel {
   final double aiScore;
   final String imageUrl;
 
+
   HomescreenReviewModel(
-      {required this.buildingName,
+      {
+        this.buildingName,
       required this.address,
       required this.pros,
       required this.cons,

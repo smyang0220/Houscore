@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'main_photo_repository.dart';
+part of 'nearby_recent_reviews_repository.dart';
 
 // **************************************************************************
 // RetrofitGenerator
@@ -8,8 +8,8 @@ part of 'main_photo_repository.dart';
 
 // ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers
 
-class _MainPhotoRepository implements MainPhotoRepository {
-  _MainPhotoRepository(
+class _NearbyRecentReviewsRepository implements NearbyRecentReviewsRepository {
+  _NearbyRecentReviewsRepository(
     this._dio, {
     this.baseUrl,
   });
@@ -36,7 +36,7 @@ class _MainPhotoRepository implements MainPhotoRepository {
     )
             .compose(
               _dio.options,
-              '/main/photo',
+              '/main/nearby',
               queryParameters: queryParameters,
               data: _data,
             )

@@ -153,14 +153,14 @@ class _ResidenceRepository implements ResidenceRepository {
   }
 
   @override
-  Future<DataListState<ResidenceMainPhotoModel>> getResidenceMainPhoto() async {
+  Future<DataListState<HomescreenReviewModel>> getResidenceMainPhoto() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{r'accessToken': 'true'};
     _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
     final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<DataListState<ResidenceMainPhotoModel>>(Options(
+        _setStreamType<DataListState<HomescreenReviewModel>>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
@@ -176,9 +176,9 @@ class _ResidenceRepository implements ResidenceRepository {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    final value = DataListState<ResidenceMainPhotoModel>.fromJson(
+    final value = DataListState<HomescreenReviewModel>.fromJson(
       _result.data!,
-      (json) => ResidenceMainPhotoModel.fromJson(json as Map<String, dynamic>),
+      (json) => HomescreenReviewModel.fromJson(json as Map<String, dynamic>),
     );
     return value;
   }
