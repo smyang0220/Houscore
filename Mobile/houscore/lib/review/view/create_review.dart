@@ -24,6 +24,8 @@ class _CreateReviewState extends State<CreateReview> {
 
   bool get isButtonEnabled =>
       selectedAddress != null &&
+      lat != null &&
+      lng != null &&
       typeValue != null &&
       yearValue != null &&
       floorValue != null &&
@@ -33,6 +35,13 @@ class _CreateReviewState extends State<CreateReview> {
   void _updateSelectedAddress(String? newValue) {
     setState(() {
       selectedAddress = newValue;
+    });
+  }
+
+  void _updatedLatLng(double newLat, double newLng) {
+    setState(() {
+      lat = newLat;
+      lng = newLng;
     });
   }
 
@@ -80,7 +89,8 @@ class _CreateReviewState extends State<CreateReview> {
               ),
               SearchResidence(
                 value: selectedAddress,
-                onChanged: _updateSelectedAddress,
+                onChangedAdd: _updateSelectedAddress,
+                onChangedLatLng: _updatedLatLng,
               ),
               DropdownType(
                 value: typeValue,
@@ -117,12 +127,12 @@ class _CreateReviewState extends State<CreateReview> {
                     onPressed: isButtonEnabled
                         ? () {
                             ReviewData reviewData = ReviewData(
-                              selectedAddress: selectedAddress,
-                              lat: lat,
-                              lng: lng,
-                              typeValue: typeValue,
-                              yearValue: yearValue,
-                              floorValue: floorValue,
+                              selectedAddress: selectedAddress!,
+                              lat: lat!,
+                              lng: lng!,
+                              typeValue: typeValue!,
+                              yearValue: yearValue!,
+                              floorValue: floorValue!,
                               ratings: ratings,
                             );
                             Navigator.push(
@@ -158,23 +168,21 @@ class _CreateReviewState extends State<CreateReview> {
 }
 
 class ReviewData {
-  String? selectedAddress;
-  double? lat;
-  double? lng;
-  String? nameValue;
-  String? typeValue;
-  String? yearValue;
-  String? floorValue;
+  String selectedAddress;
+  double lat;
+  double lng;
+  String typeValue;
+  String yearValue;
+  String floorValue;
   Map<String, double> ratings;
 
   ReviewData({
-    this.selectedAddress,
-    this.lat,
-    this.lng,
-    this.nameValue,
-    this.typeValue,
-    this.yearValue,
-    this.floorValue,
+    required this.selectedAddress,
+    required this.lat,
+    required this.lng,
+    required this.typeValue,
+    required this.yearValue,
+    required this.floorValue,
     required this.ratings,
   });
 }
@@ -182,9 +190,10 @@ class ReviewData {
 //리뷰할 주소 검색
 class SearchResidence extends ConsumerStatefulWidget {
   final String? value;
-  final ValueChanged<String?> onChanged;
+  final ValueChanged<String?> onChangedAdd;
+  final Function(double, double) onChangedLatLng;
 
-  const SearchResidence({this.value, required this.onChanged});
+  const SearchResidence({this.value, required this.onChangedAdd, required this.onChangedLatLng});
 
   @override
   ConsumerState<SearchResidence> createState() => _SearchResidenceState();
@@ -205,7 +214,7 @@ class _SearchResidenceState extends ConsumerState<SearchResidence> {
     setState(() {
       selectedAddress = address;
     });
-    widget.onChanged(address); // 상위 위젯의 selectedAddress 업데이트
+    widget.onChangedAdd(address); // 상위 위젯의 selectedAddress 업데이트
   }
 
   void setLatLng(double lat, double lng) {
@@ -213,6 +222,7 @@ class _SearchResidenceState extends ConsumerState<SearchResidence> {
       selectedLat = lat;
       selectedLng = lng;
     });
+    widget.onChangedLatLng(lat, lng);
   }
 
   @override
@@ -269,7 +279,8 @@ class _SearchResidenceState extends ConsumerState<SearchResidence> {
           final addressInfo = responseData['addresses'][0];
           final latitude = double.parse(addressInfo['y']);
           final longitude = double.parse(addressInfo['x']);
-          return {'latitude': latitude, 'longitude': longitude};
+          setLatLng(latitude, longitude);
+          print(longitude);
         }
       }
     } catch (e) {
@@ -286,11 +297,7 @@ class _SearchResidenceState extends ConsumerState<SearchResidence> {
 
     if (result != null && result is KopoModel) {
       setAddress('${result.address!}');
-
-      final latLng = await _fetchLatLng(result.address!, ref);
-      if (latLng != null) {
-        setLatLng(latLng['latitude']!, latLng['longitude']!);
-      }
+      await _fetchLatLng(result.address!, ref);
     }
   }
 }
@@ -477,7 +484,7 @@ class ReviewRating extends StatelessWidget {
 class RatingWidget extends StatefulWidget {
   final Function(double) onRatingChanged;
 
-  RatingWidget({required this.onRatingChanged});
+  const RatingWidget({Key? key, required this.onRatingChanged}) : super(key: key);
 
   @override
   _RatingWidgetState createState() => _RatingWidgetState();
@@ -488,28 +495,34 @@ class _RatingWidgetState extends State<RatingWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
+    return Wrap(
+      crossAxisAlignment: WrapCrossAlignment.center,
       children: [
-        ...List.generate(
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: List.generate(
             5,
-            (index) => IconButton(
-                  icon: Icon(
-                    index < _currentRating
-                        ? Icons.star_rounded
-                        : Icons.star_border_rounded,
-                    color: index < _currentRating ? Colors.amber : Colors.amber,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      _currentRating = index + 1;
-                    });
-                    widget.onRatingChanged(_currentRating);
-                  },
-                  iconSize: 30,
-                )),
-        SizedBox(width: 3),
-        Text('$_currentRating / 5', style: TextStyle(fontSize: 16))
+                (index) => IconButton(
+              icon: Icon(
+                index < _currentRating
+                    ? Icons.star_rounded
+                    : Icons.star_border_rounded,
+                color: Colors.amber,
+              ),
+              onPressed: () {
+                setState(() {
+                  _currentRating = index + 1;
+                });
+                widget.onRatingChanged(_currentRating);
+              },
+              iconSize: MediaQuery.of(context).size.width * 0.08,
+            ),
+          ),
+        ),
+        Text(
+          '$_currentRating / 5',
+          style: TextStyle(fontSize: 16),
+        ),
       ],
     );
   }
