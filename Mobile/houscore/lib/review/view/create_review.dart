@@ -228,8 +228,6 @@ class _SearchResidenceState extends ConsumerState<SearchResidence> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      //TODO 위젯 크기 통일시키기
-      //TODO 주소 너무 길면 잘림
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
@@ -478,6 +476,7 @@ class ReviewRating extends StatelessWidget {
     );
   }
 }
+
 class RatingWidget extends StatefulWidget {
   final Function(double) onRatingChanged;
 

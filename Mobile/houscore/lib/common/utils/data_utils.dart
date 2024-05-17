@@ -95,6 +95,19 @@ class DataUtils{
     }
   }
 
+  static String typeDescription(String residenceType) {
+    switch (residenceType) {
+      case 'VILLA':
+        return '원룸/빌라';
+      case 'APT':
+        return '아파트';
+      case 'OFFICETEL':
+        return '오피스텔';
+      default:
+        return '알 수 없는 유형';
+    }
+  }
+
   // ReviewList provider한테 알려 주는 함수야
   // 알려주려면 param에 대한 provider가 필요해
   // provider를 받고 걔한테 이제 현재 위치 가져와버려서
