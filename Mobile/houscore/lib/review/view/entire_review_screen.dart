@@ -107,7 +107,10 @@ SliverPadding renderRatings({
           // 리스트의 마지막 아이템인 경우 로딩 인디케이터를 렌더링
           if (models is CursorPaginationFetchingMore && index == models.data.length) {
             return Center(
-              child: CircularProgressIndicator(),
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 100.0),
+                child: CircularProgressIndicator(),
+              ),
             );
           }
           if (models is CursorPaginationRefetching && index == 0) {

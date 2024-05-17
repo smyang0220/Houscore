@@ -48,7 +48,8 @@ class _ResidenceDetailState extends State<ResidenceDetail>
     return DefaultLayout(
       title: widget.address,
       titleStyle: TextStyle(
-        fontSize: 24.0,
+        fontFamily: 'NotoSans',
+        fontSize: 20.0,
         fontWeight: FontWeight.bold,
       ),
       floatingActionButton: _tabController.index == 1 ? FloatingActionButton(
@@ -64,15 +65,7 @@ class _ResidenceDetailState extends State<ResidenceDetail>
           Container(
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-              // boxShadow: [
-              //   BoxShadow(
-              //     color: Colors.grey.withOpacity(0.3),
-              //     spreadRadius: 1,
-              //     blurRadius: 5,
-              //     offset: const Offset(0, 5), // 그림자 시작 위치
-              //   ),
-              // ],
+              borderRadius: BorderRadius.all(Radius.circular(8))
             ),
             child: TabBar(
               controller: _tabController,

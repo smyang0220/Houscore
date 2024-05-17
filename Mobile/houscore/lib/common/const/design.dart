@@ -5,8 +5,8 @@ final double VERTICAL_GAP = 32;
 
 final TextStyle myTextStyle = TextStyle(
   fontFamily: 'NotoSans',
-  fontSize: 12,
-  color: Colors.grey,
+  fontSize: 14,
+  color: Colors.black,
   fontWeight: FontWeight.w500,
 );
 

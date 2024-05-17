@@ -94,9 +94,10 @@ class ResidencePhotoReviewCard extends StatelessWidget {
                     Text(
                       address,
                       overflow: TextOverflow.ellipsis,
-                      maxLines: 2,
+                      maxLines: 1,
                       style: TextStyle(
-                        fontSize: 16.0,
+                        fontFamily: 'NotoSans',
+                        fontSize: 10.0,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
@@ -104,6 +105,7 @@ class ResidencePhotoReviewCard extends StatelessWidget {
                     Text(
                       pros,
                       overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
                       style: TextStyle(
                         fontSize: 10.0,
                         fontWeight: FontWeight.normal,
