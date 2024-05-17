@@ -47,8 +47,8 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
         children: [
           HomeScreen(),
           CreateReview(),
-          MyPage(),
           EntireReviewScreen(),
+          MyPage(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
