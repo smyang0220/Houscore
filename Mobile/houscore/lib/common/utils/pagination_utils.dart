@@ -14,6 +14,8 @@ class PaginationUtils {
     required ScrollController controller,
     required PaginationProvider provider,
   }) async {
+    print(controller.offset);
+
     if (controller.offset == controller.position.maxScrollExtent) {
       int page = await numberprovider.state++;
       provider.paginate(

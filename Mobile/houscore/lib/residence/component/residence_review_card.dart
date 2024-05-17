@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:houscore/common/utils/data_utils.dart';
+import 'package:photo_view/photo_view.dart';
 import '../../common/const/design.dart';
 import '../model/residence_review_model.dart';
 
@@ -37,17 +38,18 @@ class ResidenceReviewCard extends StatelessWidget {
     required bool isDetail,
   }) {
     return ResidenceReviewCard(
-        id: model.id,
-        address: model.address,
-        residenceType: model.residenceType,
-        residenceFloor: model.residenceFloor,
-        starRating: model.starRating,
-        pros: model.pros,
-        cons: model.cons,
-        maintenanceCost: model.maintenanceCost,
-        images: model.images,
-        residenceYear: model.residenceYear,
-         isDetail: isDetail,);
+      id: model.id,
+      address: model.address,
+      residenceType: model.residenceType,
+      residenceFloor: model.residenceFloor,
+      starRating: model.starRating,
+      pros: model.pros,
+      cons: model.cons,
+      maintenanceCost: model.maintenanceCost,
+      images: model.images,
+      residenceYear: model.residenceYear,
+      isDetail: isDetail,
+    );
   }
 
   @override
@@ -79,11 +81,52 @@ class ResidenceReviewCard extends StatelessWidget {
               title: '별로에요',
               content: cons,
             ),
-            if(isDetail)
-            _Body(
-              title: '관리비',
-              content: maintenanceCost,
-            ),
+            if (isDetail)
+              _Body(
+                title: '관리비',
+                content: maintenanceCost,
+              ),
+            GestureDetector(
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return Dialog(
+                      backgroundColor: Colors.transparent,
+                      insetPadding: EdgeInsets.all(10),
+                      child: Stack(
+                        alignment: Alignment.topRight,
+                        children: [
+                          Container(
+                            constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.9),
+                            child: PhotoView(
+                              imageProvider: NetworkImage(images!),
+                              backgroundDecoration: BoxDecoration(
+                                color: Colors.transparent,
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.close, color: Colors.white),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              },
+              child: Image.network(
+                images!,
+                width: MediaQuery.of(context).size.width * 0.9,
+                height: MediaQuery.of(context).size.width * 0.4,
+                fit: BoxFit.cover,
+              ),
+            )
+
+
           ],
         ),
       ),
@@ -103,8 +146,8 @@ class _Header extends StatelessWidget {
       required this.residenceFloor,
       required this.residenceYear,
       required this.avg,
-        required this.isDetail,
-        required this.address});
+      required this.isDetail,
+      required this.address});
 
   @override
   Widget build(BuildContext context) {
@@ -119,17 +162,17 @@ class _Header extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(children: [
-              if(isDetail)
+              if (isDetail)
                 Text(
                   " ${floorText} : ",
                   style: myTextStyle,
                 ),
-              if(isDetail)
+              if (isDetail)
                 Text(
                   "${residenceYear}까지 거주",
                   style: myTextStyle,
                 ),
-              if(!isDetail)
+              if (!isDetail)
                 Text(
                   "${address}",
                   style: myTextStyle,
@@ -139,11 +182,11 @@ class _Header extends StatelessWidget {
               children: [
                 ...List.generate(
                     5,
-                        (index) => Icon(
-                      index < avg ? Icons.star : Icons.star_border_outlined,
-                      color: Colors.yellow,
-                      size: 16,
-                    )),
+                    (index) => Icon(
+                          index < avg ? Icons.star : Icons.star_border_outlined,
+                          color: Colors.yellow,
+                          size: 16,
+                        )),
               ],
             )
           ],
@@ -152,7 +195,6 @@ class _Header extends StatelessWidget {
     );
   }
 }
-
 
 class _Body extends StatelessWidget {
   final String title;
@@ -168,16 +210,15 @@ class _Body extends StatelessWidget {
         children: [
           Text(
             title,
-              style: title == "추천해요"
-                  ? bodyTextColorStyle
-                  : (title == "별로에요"
-                  ? bodyTextColorStyle2
-                  : (title == "관리비"
-                  ? bodyTextColorStyle3
-                  : null)),
-
+            style: title == "추천해요"
+                ? bodyTextColorStyle
+                : (title == "별로에요"
+                    ? bodyTextColorStyle2
+                    : (title == "관리비" ? bodyTextColorStyle3 : null)),
           ),
-          SizedBox(width: 5,),
+          SizedBox(
+            width: 5,
+          ),
           Flexible(
             child: Text(
               content,

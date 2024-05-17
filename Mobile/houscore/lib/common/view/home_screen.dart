@@ -129,13 +129,31 @@ SliverPadding renderPhotos({
               return Text("에러입니다");
             } else {
               // 데이터가 로딩 중이거나 불러올 데이터가 없는 경우
-              return Center(
-                child: CircularProgressIndicator(),
-              );
+              return  Skeleton(height: 250.0);
             }
           },
         ),
       ),
     ),
   );
+}
+
+
+class Skeleton extends StatelessWidget {
+  final double width;
+  final double height;
+
+  const Skeleton({Key? key, this.width = double.infinity, required this.height}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        color: Colors.grey[300],
+        borderRadius: BorderRadius.circular(4.0),
+      ),
+    );
+  }
 }

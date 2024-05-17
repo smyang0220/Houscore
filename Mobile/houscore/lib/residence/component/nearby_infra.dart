@@ -29,14 +29,25 @@ class _NearbyInfraState extends State<NearbyInfra> {
   Widget build(BuildContext context) {
 
     // 버튼 구성
-    Widget buttonContent(String iconPath, String label) {
+    Widget buttonContent(String iconPath, String label, bool isSelected) {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 24),
         child: Row(
           children: [
             Image.asset(iconPath, width: 15),
-            SizedBox(width: 8),
-            Text(label)
+            SizedBox(width: 8, height: 38,),
+            if(isSelected)
+            Text(label, style: TextStyle(
+              fontFamily: 'NotoSans',
+              fontSize: 16,
+              color: Colors.black,
+              fontWeight: FontWeight.bold,),),
+            if(!isSelected)
+              Text(label,style: TextStyle(
+                fontFamily: 'NotoSans',
+                fontSize: 16,
+                color: Colors.grey,
+                fontWeight: FontWeight.w200,),)
           ],
         ),
       );
@@ -49,23 +60,37 @@ class _NearbyInfraState extends State<NearbyInfra> {
 
         return ListTile(
           leading: results['leadingIcon'],
+          contentPadding: EdgeInsets.zero,
+          minVerticalPadding: 0,
           title: Row(
             children: <Widget>[
               Expanded(
                 child: Text(
                   infra.name,
                   style: TextStyle(
-                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                    fontFamily: 'NotoSans',
+                    fontWeight: FontWeight.w200,
                   ),
                 ),
               ),
               Text(
                 // '${results['minute']}분 (${DataUtils.convertToKilometers(infra.distance)}km)',
-                '${results['minute']}분 (${infra.distance.toStringAsFixed(1)}km)',
+                '${results['minute']}분',
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: 12,
                   fontWeight: FontWeight.bold,
                   color: results['iconColor'],
+                ),
+              ),
+              Text(
+                // '${results['minute']}분 (${DataUtils.convertToKilometers(infra.distance)}km)',
+                ' (${infra.distance.toStringAsFixed(1)}km)',
+                style: TextStyle(
+                  fontFamily: 'NotoSans',
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey,
                 ),
               ),
             ],
@@ -82,56 +107,60 @@ class _NearbyInfraState extends State<NearbyInfra> {
         SizedBox(height: 15),
         Text(
           '주변 인프라',
-          style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.w600
-          ),
+          style:TextStyle(
+              fontFamily: 'NotoSans',fontSize: 18, fontWeight: FontWeight.w100),
         ),
         SizedBox(height: 15),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ToggleButtons(
-              fillColor: Colors.blue.shade50,
-              selectedColor: Colors.black,
-              textStyle: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold
-              ),
-              borderRadius: BorderRadius.all(Radius.circular(15)),
-              borderWidth: 0,
-              children: <Widget>[
-                // 병원
-                buttonContent('asset/icon/hospital.png', '병원'),
-                // 공원
-                buttonContent('asset/icon/park.png', '공원'),
-                // 학교
-                buttonContent('asset/icon/school.png', '학교'),
-              ],
-              onPressed: (int index) {
-                setState(() {
-                  switch (index) {
-                    case 0: // 병원 버튼
-                      _selectedType = InfraType.medicalFacilities;
-                      break;
-                    case 1: // 공원 버튼
-                      _selectedType = InfraType.park;
-                      break;
-                    case 2: // 학교 버튼
-                      _selectedType = InfraType.school;
-                      break;
-                  }
-                });
-              },
-              isSelected: [
-                _selectedType == InfraType.medicalFacilities, // 병원 버튼이 선택되었는지
-                _selectedType == InfraType.park, // 공원 버튼이 선택되었는지
-                _selectedType == InfraType.school, // 학교 버튼이 선택되었는지
-              ],
-            ),
+        ToggleButtons(
+          fillColor: Colors.blue.shade50,
+          selectedColor: Colors.black,
+          textStyle: TextStyle(
+              fontSize: 16,
+              fontFamily: 'NotoSans',
+              fontWeight: FontWeight.w200,
+          ),
+          borderRadius: BorderRadius.all(Radius.circular(35)),
+          borderWidth: 0,
+          constraints: BoxConstraints(maxHeight: 50, minWidth: MediaQuery.of(context).size.width * 0.3 ),
+          children: <Widget>[
+            // 병원
+            if(_selectedType == InfraType.medicalFacilities)
+            buttonContent('asset/icon/hospital.png', '병원', true),
+            if(_selectedType != InfraType.medicalFacilities)
+              buttonContent('asset/icon/hospital.png', '병원',false),
+            // 공원
+            if(_selectedType == InfraType.park)
+            buttonContent('asset/icon/park.png', '공원',true),
+            if(_selectedType != InfraType.park)
+            buttonContent('asset/icon/park.png', '공원',false),
+            // 학교
+            if(_selectedType == InfraType.school)
+            buttonContent('asset/icon/school.png', '학교',true),
+            if(_selectedType != InfraType.school)
+            buttonContent('asset/icon/school.png', '학교',false),
+          ],
+          onPressed: (int index) {
+            setState(() {
+              switch (index) {
+                case 0: // 병원 버튼
+                  _selectedType = InfraType.medicalFacilities;
+                  break;
+                case 1: // 공원 버튼
+                  _selectedType = InfraType.park;
+                  break;
+                case 2: // 학교 버튼
+                  _selectedType = InfraType.school;
+                  break;
+              }
+            });
+          },
+          isSelected: [
+            _selectedType == InfraType.medicalFacilities, // 병원 버튼이 선택되었는지
+            _selectedType == InfraType.park, // 공원 버튼이 선택되었는지
+            _selectedType == InfraType.school, // 학교 버튼이 선택되었는지
           ],
         ),
-        SizedBox(height: 15),
+        // SizedBox(height: 10),
         ...buildInfraList(filteredList),
         Divider(),
       ],
