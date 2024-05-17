@@ -52,7 +52,7 @@ class MyInfo extends ConsumerWidget {
               ],
             ),
             SizedBox(height: 16),
-            Divider(thickness: 1, endIndent: 8, indent: 8,),
+            Divider(thickness: 2, endIndent: 8, indent: 8,),
             // Divider(thickness: 4, endIndent: 40, indent: 40,),
           ],
         );
