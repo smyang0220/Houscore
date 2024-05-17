@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:houscore/common/utils/data_utils.dart';
 import '../../common/const/design.dart';
 import '../model/residence_review_model.dart';
@@ -58,33 +59,39 @@ class ResidenceReviewCard extends StatelessWidget {
             starRating.infra +
             starRating.building) ~/
         5;
-    return Container(
-      decoration: isDetail ? null : boxStyle,
-      child: Padding(
-        padding: isDetail ? EdgeInsets.all(0) : EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            _Header(
-              residenceFloor: residenceFloor,
-              residenceYear: residenceYear,
-              avg: avg,
-              isDetail: isDetail,
-              address: address,
-            ),
-            _Body(
-              title: '추천해요',
-              content: pros,
-            ),
-            _Body(
-              title: '별로에요',
-              content: cons,
-            ),
-            if(isDetail)
-            _Body(
-              title: '관리비',
-              content: maintenanceCost,
-            ),
-          ],
+
+    return GestureDetector(
+      onTap: () {
+        context.push('/residence/${address}');
+      },
+      child: Container(
+        decoration: isDetail ? null : boxStyle,
+        child: Padding(
+          padding: isDetail ? EdgeInsets.all(0) : EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              _Header(
+                residenceFloor: residenceFloor,
+                residenceYear: residenceYear,
+                avg: avg,
+                isDetail: isDetail,
+                address: address,
+              ),
+              _Body(
+                title: '추천해요',
+                content: pros,
+              ),
+              _Body(
+                title: '별로에요',
+                content: cons,
+              ),
+              if(isDetail)
+              _Body(
+                title: '관리비',
+                content: maintenanceCost,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -109,8 +116,6 @@ class _Header extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String floorText = DataUtils.floorDescription(residenceFloor);
-
-    print('floorText :  ${floorText}');
 
     return Row(
       children: [

@@ -3,6 +3,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:houscore/common/provider/data_list_param_provider.dart';
 import 'package:houscore/review/component/review_card.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lottie/lottie.dart';
 import '../../common/model/data_list_state_model.dart';
 import '../../residence/repository/naver_map_repository.dart';
 import '../model/homescreen_review_model.dart';
@@ -164,7 +165,20 @@ class _NearbyResidencesReviewState
           if (state is DataListStateLoading)
             CircularProgressIndicator(),
           if (state is DataListStateError)
-            Text('데이터를 불러오지 못했습니다.'),
+            Container(
+                height: 200,
+                child: Column(
+                  children: [
+                    Expanded(
+                      // child: Lottie.asset('asset/img/logo/error_lottie_animation_cat.json'),
+                      // child: Lottie.asset('asset/img/logo/error_lottie_animation_slime.json'),
+                      child: Lottie.asset('asset/img/logo/error_lottie_animation_docs.json'),
+                    ),
+                    Text('1km 내의 거주지에 리뷰가 없습니다.', style: TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold
+                    ),)
+                  ],
+                )),
           if (state is DataListState<HomescreenReviewModel>)
             ...state.data.map((review) => ReviewCard(
               address: review.address,

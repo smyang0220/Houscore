@@ -41,6 +41,33 @@ class _MyPageState extends ConsumerState<MyPage> {
     }
   }
 
+  Future<void> _showErrorDialog(BuildContext context, String message) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // 사용자가 다이얼로그 바깥을 터치해서 닫을 수 없게 함
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('등록 실패'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(message),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('확인'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final data = ref.watch(interestedAreaListProvider);
@@ -85,17 +112,13 @@ class _MyPageState extends ConsumerState<MyPage> {
                         'address': model.jibunAddress!,
                       });
 
-                      // print('등록은 무사히 마쳤습니다!!');
-                      // print('리스트를 다시 불러와볼까요?');
-
                       ref.refresh(interestedAreaListProvider);
 
-                      // print('리스트 다시 불러오기도 성공했네요!! 축하합니다!!');
                     } catch (e) {
-                      print('등록 실패: $e');
+                      _showErrorDialog(context, '등록 실패: $e');
                     }
                   } else {
-                    print('[[[[없는 주소입니다.]]]]');
+                    _showErrorDialog(context, '주소가 유효하지 않습니다.');
                   }
                 }, onDelete: (item) => _deleteInterestedArea(item),
               ),

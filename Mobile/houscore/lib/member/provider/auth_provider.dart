@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:houscore/common/view/home_screen.dart';
 import 'package:houscore/member/provider/user_me_provider.dart';
+import 'package:houscore/review/view/create_review.dart';
 import '../../common/view/root_tab.dart';
 import '../../common/view/splash_screen.dart';
 import '../../member/model/member_search_model.dart';
@@ -38,6 +39,10 @@ class AuthProvider extends ChangeNotifier {
           path: 'myReviews',
           builder: (context, state) => MyReviewList(),
         ),
+        GoRoute(
+          path: 'createReview',
+          builder: (context, state) => CreateReview(),
+        )
       ],
     ),
     GoRoute(
