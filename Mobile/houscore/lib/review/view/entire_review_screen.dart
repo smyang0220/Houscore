@@ -35,7 +35,6 @@ class _ScoreAndReviewState extends ConsumerState<EntireReviewScreen> {
       ref.read(paginationParameterProvider.notifier).updateParams(page: 0);
     });
 
-
     ref.read(entireReviewProvider.notifier);
 
     controller.addListener(listener);

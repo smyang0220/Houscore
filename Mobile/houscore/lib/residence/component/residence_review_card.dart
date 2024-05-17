@@ -72,11 +72,11 @@ class ResidenceReviewCard extends StatelessWidget {
               address: address,
             ),
             _Body(
-              title: '장점',
+              title: '추천해요',
               content: pros,
             ),
             _Body(
-              title: '단점',
+              title: '별로에요',
               content: cons,
             ),
             if(isDetail)
@@ -110,6 +110,8 @@ class _Header extends StatelessWidget {
   Widget build(BuildContext context) {
     String floorText = DataUtils.floorDescription(residenceFloor);
 
+    print('floorText :  ${floorText}');
+
     return Row(
       children: [
         Column(
@@ -120,17 +122,17 @@ class _Header extends StatelessWidget {
               if(isDetail)
                 Text(
                   " ${floorText} : ",
-                  style: myTextStyle, // 정의한 TextStyle 사용
+                  style: myTextStyle,
                 ),
               if(isDetail)
                 Text(
                   "${residenceYear}까지 거주",
-                  style: myTextStyle, // 같은 TextStyle 재사용
+                  style: myTextStyle,
                 ),
               if(!isDetail)
                 Text(
                   "${address}",
-                  style: myTextStyle, // 같은 TextStyle 재사용
+                  style: myTextStyle,
                 ),
             ]),
             Row(
@@ -166,23 +168,21 @@ class _Body extends StatelessWidget {
         children: [
           Text(
             title,
-              style: title == "장점"
+              style: title == "추천해요"
                   ? bodyTextColorStyle
-                  : (title == "단점"
+                  : (title == "별로에요"
                   ? bodyTextColorStyle2
                   : (title == "관리비"
                   ? bodyTextColorStyle3
                   : null)),
 
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 8.0),
-            child: Flexible(
-              child: Text(
-                content,
-                softWrap: true,
-                style: bodyTextStyle,
-              ),
+          SizedBox(width: 5,),
+          Flexible(
+            child: Text(
+              content,
+              softWrap: true,
+              style: bodyTextStyle,
             ),
           )
         ],

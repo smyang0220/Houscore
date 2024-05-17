@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:go_router/go_router.dart';
 import '../../residence/view/residence_detail.dart';
 
 class ReviewCard extends StatelessWidget {
@@ -26,12 +27,7 @@ class ReviewCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         // print('${this.address} tapped!');
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ResidenceDetail(address: address),
-          ),
-        );
+        context.push('/residence/${address}');
       },
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 4.0),
@@ -62,10 +58,16 @@ class ReviewCard extends StatelessWidget {
             SizedBox(height: 10),
             Row(
               children: [
-                Image.asset(
-                  'asset/img/logo/main_logo.png',
-                  width: MediaQuery.of(context).size.width * 0.2,
-                ),
+                if (imageUrl != null && imageUrl!.isNotEmpty)
+                  Image.network(
+                    imageUrl!,
+                    width: MediaQuery.of(context).size.width * 0.2,
+                  )
+                else
+                  Image.asset(
+                    'asset/img/logo/main_logo.png',
+                    width: MediaQuery.of(context).size.width * 0.2,
+                  ),
                 SizedBox(width: 15),
                 Flexible(
                   child: Column(

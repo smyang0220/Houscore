@@ -7,7 +7,6 @@ import 'package:houscore/common/component/list_section.dart';
 import 'package:houscore/common/const/design.dart';
 import 'package:houscore/common/layout/default_layout.dart';
 import 'package:houscore/member/provider/user_me_provider.dart';
-import 'package:houscore/residence/utils/place_utils.dart';
 import 'package:remedi_kopo/remedi_kopo.dart';
 import '../../common/model/data_state_model.dart';
 import '../../review/view/my_review_list.dart';
@@ -15,7 +14,7 @@ import '../component/my_info.dart';
 import '../model/interested_area.dart';
 import '../provider/interested_area_provider.dart';
 import '../repository/myinfo_repository.dart';
-import 'package:dio/dio.dart'; // Dio 패키지 추가
+import 'package:dio/dio.dart';
 
 class MyPage extends ConsumerStatefulWidget {
   static String get routeName => 'myPage';
@@ -38,11 +37,7 @@ class _MyPageState extends ConsumerState<MyPage> {
       final notifier = ref.watch(interestedAreaListProvider.notifier);
       notifier.fetchInterestedAreaList();
     } catch (e) {
-      if (e is DioError) {
-        // print('DioError: ${e.response?.statusCode} - ${e.response?.data}');
-      } else {
-        // print('Error deleting interested area: $e');
-      }
+      print('Error deleting interested area: $e');
     }
   }
 
@@ -86,22 +81,21 @@ class _MyPageState extends ConsumerState<MyPage> {
                     final repository = ref.watch(myinfoRepositoryProvider);
 
                     try {
-                      repository.registerInterestedArea({
+                      await repository.registerInterestedArea({
                         'address': model.jibunAddress!,
                       });
 
                       // print('등록은 무사히 마쳤습니다!!');
                       // print('리스트를 다시 불러와볼까요?');
 
-                      final notifier = ref.watch(interestedAreaListProvider.notifier);
-                      notifier.fetchInterestedAreaList();
+                      ref.refresh(interestedAreaListProvider);
 
                       // print('리스트 다시 불러오기도 성공했네요!! 축하합니다!!');
                     } catch (e) {
-                      // print('등록 실패: $e');
+                      print('등록 실패: $e');
                     }
                   } else {
-                    // print('[[[[없는 주소입니다.]]]]');
+                    print('[[[[없는 주소입니다.]]]]');
                   }
                 }, onDelete: (item) => _deleteInterestedArea(item),
               ),
@@ -144,22 +138,6 @@ class _MyPageState extends ConsumerState<MyPage> {
                 ],
               ),
               Divider(thickness: 2,),
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.start,
-              //   children: [
-              //     InkWell(
-              //       onTap: () {},
-              //       child: Container(
-              //         padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-              //         child: Text(
-              //           '회원탈퇴',
-              //           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red),
-              //         ),
-              //       ),
-              //     ),
-              //   ],
-              // ),
-              // Divider(thickness: 2,),
             ],
           ),
         ),
