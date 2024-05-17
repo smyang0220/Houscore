@@ -81,91 +81,95 @@ class _MyPageState extends ConsumerState<MyPage> {
     return DefaultLayout(
       child: SafeArea(
         child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              MyInfo(),
-              SizedBox(height: VERTICAL_GAP,),
-              ListSection(
-                title: '내 관심지역',
-                list: listToShow,
-                onItemTap: (item) =>
-                    context.push('/residence/${item.name}'),
-                onAddTap: () async {
-                  KopoModel model = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => RemediKopo(),
-                    ),
-                  );
-                  // 검색된 주소 정보를 바탕으로
-                  // 새로운 관심 지역을 등록하는 API 호출
-                  if (model != null && model.jibunAddress != null) {
-                    // print('Selected Address: ${PlaceUtils.mapAddressForAPI(model.jibunAddress!)}');
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(height: VERTICAL_GAP,),
+                MyInfo(),
+                SizedBox(height: VERTICAL_GAP,),
+                ListSection(
+                  title: '✨ 내 관심지역',
+                  list: listToShow,
+                  onItemTap: (item) =>
+                      context.push('/residence/${item.name}'),
+                  onAddTap: () async {
+                    KopoModel model = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => RemediKopo(),
+                      ),
+                    );
+                    // 검색된 주소 정보를 바탕으로
+                    // 새로운 관심 지역을 등록하는 API 호출
+                    if (model != null && model.jibunAddress != null) {
+                      // print('Selected Address: ${PlaceUtils.mapAddressForAPI(model.jibunAddress!)}');
 
-                    // 관심 지역 등록 API 호출
-                    final repository = ref.watch(myinfoRepositoryProvider);
+                      // 관심 지역 등록 API 호출
+                      final repository = ref.watch(myinfoRepositoryProvider);
 
-                    try {
-                      await repository.registerInterestedArea({
-                        'address': model.jibunAddress!,
-                      });
+                      try {
+                        await repository.registerInterestedArea({
+                          'address': model.jibunAddress!,
+                        });
 
-                      ref.refresh(interestedAreaListProvider);
+                        ref.refresh(interestedAreaListProvider);
 
-                    } catch (e) {
-                      _showErrorDialog(context, '등록 실패: $e');
+                      } catch (e) {
+                        _showErrorDialog(context, '등록 실패: $e');
+                      }
+                    } else {
+                      _showErrorDialog(context, '주소가 유효하지 않습니다.');
                     }
-                  } else {
-                    _showErrorDialog(context, '주소가 유효하지 않습니다.');
-                  }
-                }, onDelete: (item) => _deleteInterestedArea(item),
-              ),
-              SizedBox(height: VERTICAL_GAP,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  InkWell(
-                    onTap: () {
-                      // context.go('/myReviews');
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MyReviewList(),
+                  }, onDelete: (item) => _deleteInterestedArea(item),
+                ),
+                SizedBox(height: VERTICAL_GAP,),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        // context.go('/myReviews');
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MyReviewList(),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                        child: Text(
+                          '내 리뷰 관리',
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                         ),
-                      );
-                    },
-                    child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                      child: Text(
-                        '내 리뷰 관리',
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                     ),
-                  ),
-                ],
-              ),
-              Divider(thickness: 2,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  InkWell(
-                    onTap: () {
-                      ref.read(userMeProvider.notifier).logout();
-                    },
-                    child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                      child: Text(
-                        '로그아웃',
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.grey),
+                  ],
+                ),
+                Divider(thickness: 2, endIndent: 8, indent: 8,),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        ref.read(userMeProvider.notifier).logout();
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                        child: Text(
+                          '로그아웃',
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey),
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-              Divider(thickness: 2,),
-            ],
+                  ],
+                ),
+                Divider(thickness: 2, endIndent: 8, indent: 8,),
+              ],
+            ),
           ),
         ),
       ),
