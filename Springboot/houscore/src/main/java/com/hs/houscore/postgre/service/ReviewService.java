@@ -131,10 +131,11 @@ public class ReviewService {
         if(reviewEntity == null){
             throw new IllegalArgumentException("수정 가능한 리뷰가 없습니다.");
         }
-
-        //기존의 이미지 삭제
-        String result = s3UploadService.deleteImage(reviewEntity.getImages());
-        System.out.println(result);
+        if(review.getImageChange().equals("y")){
+            //기존의 이미지 삭제
+            String result = s3UploadService.deleteImage(reviewEntity.getImages());
+            System.out.println(result);
+        }
 
         ReviewEntity updateReviewEntity = ReviewEntity.builder()
                 .id(reviewEntity.getId())
