@@ -17,6 +17,7 @@ class ReviewToUpdateModel {
   final String maintenanceCost;
   final String? images;
   final String residenceYear;
+  final String imageChange;
 
   ReviewToUpdateModel({
     required this.id,
@@ -29,6 +30,7 @@ class ReviewToUpdateModel {
     required this.maintenanceCost,
     this.images,
     required this.residenceYear,
+    required this.imageChange,
 });
 
   factory ReviewToUpdateModel.fromJson(Map<String, dynamic> json) => _$ReviewToUpdateModelFromJson(json);
