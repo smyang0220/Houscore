@@ -16,7 +16,6 @@ import 'create_review.dart';
 
 class CreateReviewDetail extends ConsumerStatefulWidget {
   final ReviewData reviewData;
-  //이전 페이지에서 받아온 데이터
 
   CreateReviewDetail({required this.reviewData});
 
@@ -54,6 +53,8 @@ class _CreateReviewDetailState extends ConsumerState<CreateReviewDetail> {
     _maintenanceController.addListener(_updateButtonState);
   }
 
+  //TODO 뒤로가기하면 사진 없어지도록 처리
+  //TODO 사진 필수 처리
   @override
   void dispose() {
     _recommendController.dispose();
@@ -65,13 +66,8 @@ class _CreateReviewDetailState extends ConsumerState<CreateReviewDetail> {
   void submitReview() async {
     List<int> imageBytes = await images[0]!.readAsBytes();
     String base64String = base64Encode(imageBytes);
-    print(base64String);
-    await File('output_base64.txt').writeAsString(base64String);
-    print("나와욧");
 
-    //시도 매핑
     String convertedAddress = PlaceUtils.mapAddressForAPI(widget.reviewData.selectedAddress!);
-
     ReviewModel reviewModel = ReviewModel(
       address: convertedAddress,
       lat: widget.reviewData.lat!,
@@ -92,34 +88,15 @@ class _CreateReviewDetailState extends ConsumerState<CreateReviewDetail> {
       residenceYear: widget.reviewData.yearValue!,
     );
 
-    // ReviewModel reviewModel = ReviewModel(
-    //   address: '서울특별시 강남구 개포동 12',
-    //   lat: 37.4935,
-    //   lng: 127.0654,
-    //   residenceType: '아파트',
-    //   residenceFloor: '1층',
-    //   starRating: StarRating(
-    //     traffic: 1.0,
-    //     building: 2.0,
-    //     inside: 3.0,
-    //     infra: 4.0,
-    //     security: 5.0,
-    //   ),
-    //   pros: '넘 깨끗해요',
-    //   cons: '부엌이 좁아요',
-    //   maintenanceCost: '한 달에 10만원',
-    // images: 'iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAIAAADTED8xAAADMElEQVR4nOzVwQnAIBQFQYXff81RUkQCOyDj1YOPnbXWPmeTRef+/3O/OyBjzh3CD95BfqICMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMO0TAAD//2Anhf4QtqobAAAAAElFTkSuQmCC',
-    // residenceYear: '2024년',
-    // );
-
     try {
-    final repository = ref.read(reviewRepositoryProvider);
-    print(reviewModel);
-    await repository.createOneReview(reviewModel: reviewModel);
+      final repository = ref.read(reviewRepositoryProvider);
+      print(reviewModel);
+      final resp = await repository.createOneReview(
+          reviewModel: reviewModel
+      );
 
-    Navigator.push(
+      Navigator.push(
           context, MaterialPageRoute(builder: (_) => CreateConfirmed(reviewAddress: reviewModel.address,)));
-
     } catch (e) {
       print(reviewModel.toJson());
       print("Error submitting review: $e");
@@ -168,19 +145,19 @@ class _CreateReviewDetailState extends ConsumerState<CreateReviewDetail> {
                   ElevatedButton(
                     onPressed: _isButtonEnabled
                         ? () async {
-                            submitReview();
-                          }
+                      submitReview();
+                    }
                         : null,
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                        (Set<MaterialState> states) {
+                            (Set<MaterialState> states) {
                           if (states.contains(MaterialState.disabled))
                             return Colors.grey;
                           return Colors.blue; // Default enabled color
                         },
                       ),
                       foregroundColor:
-                          MaterialStateProperty.all<Color>(Colors.white),
+                      MaterialStateProperty.all<Color>(Colors.white),
                     ),
                     child: Text('완료'),
                   ),
@@ -227,19 +204,19 @@ class _CreateReviewDetailState extends ConsumerState<CreateReviewDetail> {
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderSide:
-                      BorderSide(color: INPUT_BORDER_COLOR), // 테두리 색상을 유지
+                  BorderSide(color: INPUT_BORDER_COLOR), // 테두리 색상을 유지
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderSide:
-                      BorderSide(color: INPUT_BORDER_COLOR), // 포커스 받았을 때의 색상
+                  BorderSide(color: INPUT_BORDER_COLOR), // 포커스 받았을 때의 색상
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 hintText: '작성하신 리뷰는 사용자들을 위해 노출되며,\n'
                     '\n'
                     '무의미한 내용 및 문자반복, 다른 리뷰 붙여넣기 등 성의 없는 리뷰는 지양해주세요.',
                 counterStyle:
-                    TextStyle(color: isRequired ? Colors.red : Colors.black),
+                TextStyle(color: isRequired ? Colors.red : Colors.black),
               ),
               minLines: 2,
               maxLines: 10,
@@ -318,11 +295,11 @@ class ImageUploadState extends State<ImageUpload> {
                 child: IconButton(
                   onPressed: () async {
                     pickedImage =
-                        await picker.pickImage(source: ImageSource.camera);
+                    await picker.pickImage(source: ImageSource.camera);
                     //카메라로 촬영하지 않고 뒤로가기 버튼을 누를 경우, null값이 저장되므로 if문을 통해 null이 아닐 경우에만 images변수로 저장하도록 합니다
                     if (pickedImage != null) {
                       setState(
-                        () {
+                            () {
                           images.add((pickedImage));
                         },
                       );
@@ -353,7 +330,7 @@ class ImageUploadState extends State<ImageUpload> {
                   onPressed: () async {
                     multiImage = await picker.pickMultiImage();
                     setState(
-                      () {
+                          () {
                         //갤러리에서 가지고 온 사진들은 리스트 변수에 저장되므로 addAll()을 사용해서 images와 multiImage 리스트를 합쳐줍니다.
                         images.addAll(multiImage);
                       },
@@ -375,7 +352,7 @@ class ImageUploadState extends State<ImageUpload> {
             padding: EdgeInsets.all(0),
             shrinkWrap: true,
             itemCount:
-                images.length, //보여줄 item 개수. images 리스트 변수에 담겨있는 사진 수 만큼.
+            images.length, //보여줄 item 개수. images 리스트 변수에 담겨있는 사진 수 만큼.
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3, //1 개의 행에 보여줄 사진 개수
               childAspectRatio: 1 / 1, //사진 의 가로 세로의 비율
@@ -394,8 +371,8 @@ class ImageUploadState extends State<ImageUpload> {
                         fit: BoxFit.cover, //사진을 크기를 상자 크기에 맞게 조절
                         image: FileImage(
                           File(images[index]!
-                                  .path // images 리스트 변수 안에 있는 사진들을 순서대로 표시함
-                              ),
+                              .path // images 리스트 변수 안에 있는 사진들을 순서대로 표시함
+                          ),
                         ),
                       ),
                     ),
@@ -413,7 +390,7 @@ class ImageUploadState extends State<ImageUpload> {
                       onPressed: () {
                         //버튼을 누르면 해당 이미지가 삭제됨
                         setState(
-                          () {
+                              () {
                             images.remove(images[index]);
                           },
                         );

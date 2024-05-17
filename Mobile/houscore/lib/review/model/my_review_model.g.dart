@@ -10,7 +10,7 @@ MyReviewModel _$MyReviewModelFromJson(Map<String, dynamic> json) =>
     MyReviewModel(
       createdAt: json['createdAt'] as String,
       updatedAt: json['updatedAt'] as String,
-      id: json['id'],
+      id: (json['id'] as num).toInt(),
       memberId: json['memberId'] as String,
       address: json['address'] as String,
       residenceType: json['residenceType'] as String,

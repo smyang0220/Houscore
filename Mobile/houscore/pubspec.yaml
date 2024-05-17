@@ -57,6 +57,8 @@ dependencies:
   go_router: ^7.0.1
   lottie: ^3.1.0
   skeletons: ^0.0.3
+  http: ^1.2.1
+  path: ^1.8.0
 
 dev_dependencies:
   flutter_test:
