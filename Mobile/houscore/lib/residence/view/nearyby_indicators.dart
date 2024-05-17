@@ -157,9 +157,6 @@ class _NearbyIndicatorsState extends ConsumerState<NearbyIndicators> {
 
   @override
   Widget build(BuildContext context) {
-    // final repository = ref.watch(residenceRepositoryProvider);
-    // final data = await repository.getResidenceDetailIndicator(address: widget.address);
-
     final data = ref.watch(residenceDetailIndicatorProvider(widget.address));
 
     // 상태에 따른 조건 처리
@@ -167,11 +164,6 @@ class _NearbyIndicatorsState extends ConsumerState<NearbyIndicators> {
       // 로딩 중 상태
       return Lottie.asset('asset/img/logo/loading_lottie_animation.json');
     }
-    // else if (data is DataStateError) {
-      // 에러 상태
-      // return const Text('주변 지표에 대한 데이터를 불러오는데 실패했습니다.');
-    // }
-    // else if (data is DataState<ResidenceDetailIndicatorsModel>) {
     else  {
       // 성공적으로 데이터를 불러온 상태
       final residenceData = data is DataState<ResidenceDetailIndicatorsModel> ? data.data : null;
@@ -184,7 +176,7 @@ class _NearbyIndicatorsState extends ConsumerState<NearbyIndicators> {
           getInfrasByTypes([InfraType.bus, InfraType.subway], residenceData);
 
       return Padding(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0 , vertical: 8),
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,

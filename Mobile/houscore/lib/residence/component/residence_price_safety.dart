@@ -72,70 +72,78 @@ class ResidencePriceSafety extends StatelessWidget {
     String formattedLongterm = PlaceUtils.formatPrice(realCost?.longterm);
     String formattedMonthly = monthlyPrices?.map((price) => PlaceUtils.formatPrice(double.tryParse(price))).join(' & ') ?? '-';
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text('실거래가 [ 매매 | 전세 | 월세 ]', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
-            Padding(
-              padding: EdgeInsets.only(right: 8.0),
-              child: Text('*단위: 만원', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: Colors.grey)),
-            ),
-          ],
-        ),
-        SizedBox(height: 5),
-        Text('$formattedBuy  |  $formattedLongterm  |  $formattedMonthly', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-        SizedBox(height: 15),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: Column(
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('실거래가 (매매/전세/월세)', style: TextStyle(
+                  fontFamily: 'NotoSans',fontSize: 18, fontWeight: FontWeight.w200)),
+              Padding(
+                padding: EdgeInsets.only(right: 8.0),
+                child: Text('*단위: 만원', style: TextStyle(
+                    fontFamily: 'NotoSans',fontSize: 11, fontWeight: FontWeight.w200, color: Colors.grey)),
+              ),
+            ],
+          ),
+          SizedBox(height: 5),
+          Text('$formattedBuy / $formattedLongterm / $formattedMonthly', style: TextStyle(fontFamily: 'NotoSans',fontSize: 14, fontWeight: FontWeight.w500)),
+          SizedBox(height: 15),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('평당 가격', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
-                      Opacity(
-                        opacity: 0,
-                        child: IconButton(
-                          icon: Icon(Icons.help_outline, color: Colors.grey, size: 18,),
-                          onPressed: () {},
-                        ),
-                      ),
+                      Text('평당 가격', style: TextStyle(fontFamily: 'NotoSans',fontSize: 18, fontWeight: FontWeight.w700)),
+                      Text('${PlaceUtils.formatPrice(pricePerPyeong?.toDouble())}만원', style: TextStyle(fontFamily: 'NotoSans',fontSize: 14, fontWeight: FontWeight.w500)),
                     ],
                   ),
-                  Text('${PlaceUtils.formatPrice(pricePerPyeong?.toDouble())}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                  Opacity(
+                    opacity: 0,
+                    child: IconButton(
+                      icon: Icon(Icons.help_outline, color: Colors.grey, size: 18,),
+                      onPressed: () {},
+                    ),
+                  ),
+
                 ],
               ),
-            ),
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('안전등급', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
+                      Text('안전등급', style: TextStyle(fontFamily: 'NotoSans',fontSize: 18, fontWeight: FontWeight.w700)),
                       IconButton(
-                        icon: Icon(Icons.help_outline, color: Colors.grey, size: 18,),
+                        icon: Icon(Icons.help_outline, color: Colors.grey, size: 16,),
                         onPressed: () => showSafetyGradeInfo(context),
                       ),
                     ],
                   ),
-                  Text('${safetyGrade ?? '-'}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: getSafetyColor(safetyGrade))),
+                  Text('${safetyGrade}등급', style: TextStyle(fontFamily: 'NotoSans',fontSize: 14, fontWeight: FontWeight.w200, color: getSafetyColor(safetyGrade))),
+               
                 ],
               ),
-            ),
-          ],
-        ),
-        SizedBox(height: 10),
-        Divider()
-      ],
+            ],
+          ),
+          SizedBox(height: 10),
+          Divider()
+        ],
+      ),
     );
   }
 }
