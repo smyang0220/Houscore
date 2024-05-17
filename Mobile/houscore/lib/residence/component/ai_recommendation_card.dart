@@ -135,7 +135,7 @@ class _AiRecommendationCardState extends State<AiRecommendationCard>
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                                '실거래가: ${PlaceUtils.formatPrice(widget.model.realPrice)}',
+                                '실거래가 :   ${PlaceUtils.formatPrice(widget.model.realPrice)}',
                                 style:  TextStyle(
                                   fontFamily: 'NotoSans',
                                   fontSize: 16, // 글자 크기를 작게 설정합니다.
@@ -144,7 +144,7 @@ class _AiRecommendationCardState extends State<AiRecommendationCard>
                                 )),
                             SizedBox(height: 5),
                             Text(
-                                '평당가격: ${PlaceUtils.formatPrice(widget.model.pricePerPyeong)}',
+                                '평당가격 :   ${PlaceUtils.formatPrice(widget.model.pricePerPyeong)}',
                                 style: TextStyle(
                                   fontFamily: 'NotoSans',
                                   fontSize: 16, // 글자 크기를 작게 설정합니다.
@@ -152,7 +152,7 @@ class _AiRecommendationCardState extends State<AiRecommendationCard>
                                   fontWeight: FontWeight.w500,
                                 ) ),
                             SizedBox(height: 5),
-                            Text('리뷰건수: ${widget.model.reviewCnt ?? '0'}건',
+                            Text('리뷰건수 :   ${widget.model.reviewCnt ?? '0'}건',
                                 style: TextStyle(
                                   fontFamily: 'NotoSans',
                                   fontSize: 16, // 글자 크기를 작게 설정합니다.

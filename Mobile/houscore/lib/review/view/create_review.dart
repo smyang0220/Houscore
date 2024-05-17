@@ -74,92 +74,100 @@ class _CreateReviewState extends State<CreateReview> {
     return DefaultLayout(
       child: SafeArea(
         child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                '리뷰 작성하기 (1/2)',
-                style: TextStyle(
-                  fontFamily: 'NotoSans',
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-              SearchResidence(
-                value: selectedAddress,
-                onChangedAdd: _updateSelectedAddress,
-                onChangedLatLng: _updatedLatLng,
-              ),
-              DropdownType(
-                value: typeValue,
-                onChanged: _updateTypeValue,
-              ),
-              DropdownYear(
-                value: yearValue,
-                onChanged: _updateYearValue,
-              ),
-              DropdownFloor(
-                value: floorValue,
-                onChanged: _updateFloorValue,
-              ),
-              Container(
-                alignment: Alignment.centerLeft,
-                padding: EdgeInsets.all(6.0),
-                child: Text(
-                  '만족도 평가',
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  '리뷰 작성하기 (1/2)',
                   style: TextStyle(
+                    fontFamily: 'NotoSans',
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    fontSize: 30,
+                    color: Colors.black,
                   ),
                 ),
-              ),
-              // 문제의 코드
-              ReviewRating(
-                onRatingUpdated: _updateRating,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(width: 20),
-                  ElevatedButton(
-                    onPressed: isButtonEnabled
-                        ? () {
-                            ReviewData reviewData = ReviewData(
-                              selectedAddress: selectedAddress!,
-                              lat: lat!,
-                              lng: lng!,
-                              typeValue: typeValue!,
-                              yearValue: yearValue!,
-                              floorValue: floorValue!,
-                              ratings: ratings,
-                            );
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    CreateReviewDetail(reviewData: reviewData),
-                              ),
-                            );
-                          }
-                        : null,
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                        (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.disabled))
-                            return Colors.grey;
-                          return Colors.blue; // Default enabled color
-                        },
-                      ),
-                      foregroundColor:
-                          MaterialStateProperty.all<Color>(Colors.white),
+                SearchResidence(
+                  value: selectedAddress,
+                  onChangedAdd: _updateSelectedAddress,
+                  onChangedLatLng: _updatedLatLng,
+                ),
+                SizedBox(height: 8,),
+                DropdownType(
+                  value: typeValue,
+                  onChanged: _updateTypeValue,
+                ),
+                SizedBox(height: 8,),
+                DropdownYear(
+                  value: yearValue,
+                  onChanged: _updateYearValue,
+                ),
+                SizedBox(height: 8,),
+                DropdownFloor(
+                  value: floorValue,
+                  onChanged: _updateFloorValue,
+                ),
+                SizedBox(height: 16,),
+                Container(
+                  alignment: Alignment.centerLeft,
+                  padding: EdgeInsets.all(6.0),
+                  child: Text(
+                    '항목별 평가',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 24,
                     ),
-                    child: Text('다음'),
                   ),
-                ],
-              ),
-            ],
+                ),
+                // 문제의 코드
+                ReviewRating(
+                  onRatingUpdated: _updateRating,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(width: 20),
+                    ElevatedButton(
+                      onPressed: isButtonEnabled
+                          ? () {
+                              ReviewData reviewData = ReviewData(
+                                selectedAddress: selectedAddress!,
+                                lat: lat!,
+                                lng: lng!,
+                                typeValue: typeValue!,
+                                yearValue: yearValue!,
+                                floorValue: floorValue!,
+                                ratings: ratings,
+                              );
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => CreateReviewDetail(
+                                      reviewData: reviewData),
+                                ),
+                              );
+                            }
+                          : null,
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.resolveWith<Color>(
+                          (Set<MaterialState> states) {
+                            if (states.contains(MaterialState.disabled))
+                              return Colors.grey;
+                            return Colors.blue; // Default enabled color
+                          },
+                        ),
+                        foregroundColor:
+                            MaterialStateProperty.all<Color>(Colors.white),
+                      ),
+                      child: Text('다음'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -193,7 +201,8 @@ class SearchResidence extends ConsumerStatefulWidget {
   final ValueChanged<String?> onChangedAdd;
   final Function(double, double) onChangedLatLng;
 
-  const SearchResidence({this.value, required this.onChangedAdd, required this.onChangedLatLng});
+  const SearchResidence(
+      {this.value, required this.onChangedAdd, required this.onChangedLatLng});
 
   @override
   ConsumerState<SearchResidence> createState() => _SearchResidenceState();
@@ -268,12 +277,16 @@ class _SearchResidenceState extends ConsumerState<SearchResidence> {
     );
   }
 
-  Future<Map<String, double>?> _fetchLatLng(String address, WidgetRef ref) async {
+  Future<Map<String, double>?> _fetchLatLng(
+      String address, WidgetRef ref) async {
     try {
-      final response = await ref.read(naverMapRepositoryProvider).getLatLngFromAddress(address);
+      final response = await ref
+          .read(naverMapRepositoryProvider)
+          .getLatLngFromAddress(address);
       if (response.data.isNotEmpty) {
         final responseData = response.data;
-        if (responseData['status'] == 'OK' && responseData['addresses'].isNotEmpty) {
+        if (responseData['status'] == 'OK' &&
+            responseData['addresses'].isNotEmpty) {
           final addressInfo = responseData['addresses'][0];
           final latitude = double.parse(addressInfo['y']);
           final longitude = double.parse(addressInfo['x']);
@@ -463,14 +476,21 @@ class ReviewRating extends StatelessWidget {
         children: categories
             .map(
               (category) => ListTile(
-            title: Center(
-              child: Text(category, textAlign: TextAlign.center),
-            ),
-            trailing: RatingWidget(
-              onRatingChanged: (rating) => onRatingUpdated(category, rating),
-            ),
-          ),
-        )
+                title: Center(
+                  child: Text(
+                    category,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 20,
+                    ),
+                  ),
+                ),
+                trailing: RatingWidget(
+                  onRatingChanged: (rating) =>
+                      onRatingUpdated(category, rating),
+                ),
+              ),
+            )
             .toList(),
       ),
     );
@@ -480,7 +500,8 @@ class ReviewRating extends StatelessWidget {
 class RatingWidget extends StatefulWidget {
   final Function(double) onRatingChanged;
 
-  const RatingWidget({Key? key, required this.onRatingChanged}) : super(key: key);
+  const RatingWidget({Key? key, required this.onRatingChanged})
+      : super(key: key);
 
   @override
   _RatingWidgetState createState() => _RatingWidgetState();
@@ -493,31 +514,34 @@ class _RatingWidgetState extends State<RatingWidget> {
   Widget build(BuildContext context) {
     return Wrap(
       crossAxisAlignment: WrapCrossAlignment.center,
+      spacing: 8,
       children: [
         Row(
           mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: List.generate(
             5,
-                (index) => IconButton(
-              icon: Icon(
+            (index) => GestureDetector(
+              child: Icon(
                 index < _currentRating
                     ? Icons.star_rounded
                     : Icons.star_border_rounded,
                 color: Colors.amber,
+                size: MediaQuery.of(context).size.width * 0.08,
               ),
-              onPressed: () {
+              onTap: () {
                 setState(() {
                   _currentRating = index + 1;
                 });
                 widget.onRatingChanged(_currentRating);
               },
-              iconSize: MediaQuery.of(context).size.width * 0.08,
             ),
           ),
         ),
+        SizedBox(width: 5,),
         Text(
-          '$_currentRating / 5',
-          style: TextStyle(fontSize: 16),
+          '${_currentRating.toStringAsFixed(0)} / 5',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
       ],
     );
