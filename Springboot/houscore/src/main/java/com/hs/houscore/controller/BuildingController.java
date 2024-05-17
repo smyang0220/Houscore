@@ -31,8 +31,8 @@ public class BuildingController {
 
     @GetMapping("/detail")
     @Operation(summary = "건물 상세 검색", description = "주소 기반으로 건물 상세 정보 검색")
-    public ResponseEntity<?> getBuildingDetail(@RequestParam String address,
-                                               @RequestParam Double lat, @RequestParam Double lng){
+    public ResponseEntity<?> getBuildingDetail(@RequestParam(name="address") String address,
+                                               @RequestParam(name="lat") Double lat, @RequestParam(name="lng") Double lng){
         try {
             BuildingDetailDTO buildingDetailDTO = buildingService.getBuildingByAddress(address,lat, lng);
             if(buildingDetailDTO == null) {
