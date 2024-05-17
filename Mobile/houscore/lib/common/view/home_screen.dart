@@ -116,7 +116,7 @@ SliverPadding renderPhotos({
     padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
     sliver: SliverToBoxAdapter( // SliverList 대신 SliverToBoxAdapter 사용
       child: Container(
-        height: 200.0, // 적절한 높이 설정
+        height: 250.0,
         child: ListView.builder(
           scrollDirection: Axis.horizontal, // 가로 스크롤 설정
           itemCount: models is DataListState<HomescreenReviewModel> ? models.data.length : 10, // itemCount 처리

@@ -83,7 +83,6 @@ class RealReviewCard extends StatelessWidget {
               height: 5,
             ),
             Image.asset(
-              //TODO 그리드뷰, 모든 사진 가져오도록 변경
               'asset/img/logo/main_logo.png',
               width: MediaQuery.of(context).size.width * 0.2,
             ),
