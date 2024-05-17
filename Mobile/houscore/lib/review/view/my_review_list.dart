@@ -123,8 +123,6 @@ class _MyReviewListState extends ConsumerState<MyReviewList> {
   }
 }
 
-//TODO 클릭할 경우 리뷰 상세 페이지
-
 class MyReviewCard extends StatelessWidget {
   final MyReviewModel review;
   final Function(int) deleteReview;
@@ -173,6 +171,12 @@ class MyReviewCard extends StatelessWidget {
                     ? Image.network(
                   review.images!,
                   width: MediaQuery.of(context).size.width * 0.2,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Image.asset(
+                      'asset/img/logo/main_logo.png',
+                      width: MediaQuery.of(context).size.width * 0.2,
+                    );
+                  },
                 )
                     : Image.asset(
                   'asset/img/logo/main_logo.png',

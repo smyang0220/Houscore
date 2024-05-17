@@ -22,7 +22,7 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    controller = TabController(length: 4, vsync: this);
+    controller = TabController(length: 3, vsync: this);
     controller.addListener(tabListener);
   }
 
@@ -46,7 +46,6 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
         physics: NeverScrollableScrollPhysics(),
         children: [
           HomeScreen(),
-          CreateReview(),
           EntireReviewScreen(),
           MyPage(),
         ],
@@ -66,7 +65,6 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
         currentIndex: index,
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
-          BottomNavigationBarItem(icon: Icon(Icons.rate_review_rounded), label: '리뷰'),
           BottomNavigationBarItem(icon: Icon(Icons.rate_review_sharp), label: '전체리뷰'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'My'),
         ],

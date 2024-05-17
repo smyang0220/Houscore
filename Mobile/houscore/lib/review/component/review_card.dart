@@ -72,6 +72,13 @@ class ReviewCard extends StatelessWidget {
                     imageUrl,
                     width: MediaQuery.of(context).size.width * 0.28,
                     height: MediaQuery.of(context).size.width * 0.28,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Image.asset(
+                        'asset/img/logo/main_logo.png',
+                        width: MediaQuery.of(context).size.width * 0.28,
+                        height: MediaQuery.of(context).size.width * 0.28,
+                      );
+                    },
                   ),
 
                   SizedBox(width: 15),

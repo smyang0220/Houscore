@@ -65,8 +65,8 @@ class CustomInterceptor extends Interceptor {
     }
 
     // if (options.path.contains('/residence')) {
-    //   options.connectTimeout = Duration(seconds: 3);
-    //   options.receiveTimeout = Duration(seconds: 3);
+      options.connectTimeout = Duration(seconds: 10);
+      options.receiveTimeout = Duration(seconds: 10);
     // }
 
     // 요청의 계속 처리를 위한 파이프라인 다음 단계로의 요청 전달

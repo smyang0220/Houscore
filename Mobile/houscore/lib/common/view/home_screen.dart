@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:houscore/common/model/data_list_state_model.dart';
 import 'package:houscore/residence/provider/main_photo_provider.dart';
 import 'package:houscore/common/component/search_residences.dart';
@@ -36,7 +37,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     return DefaultLayout(
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          context.push('/createReview');
+        },
         backgroundColor: PRIMARY_COLOR,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(50))),

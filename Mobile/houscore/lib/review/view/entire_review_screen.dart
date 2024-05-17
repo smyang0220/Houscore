@@ -5,6 +5,7 @@ import 'package:houscore/common/model/cursor_pagination_model.dart';
 import 'package:houscore/residence/component/residence_review_card.dart';
 import 'package:houscore/residence/model/residence_review_model.dart';
 import 'package:houscore/residence/utils/place_utils.dart';
+import 'package:lottie/lottie.dart';
 import 'package:skeletons/skeletons.dart';
 
 import '../../common/provider/number_provider.dart';
@@ -62,7 +63,20 @@ class _ScoreAndReviewState extends ConsumerState<EntireReviewScreen> {
     }
 
     if(reviewState is CursorPaginationError){
-      return Text(reviewState.message);
+      return Container(
+          height: 300,
+          child: Column(
+            children: [
+              Expanded(
+                child: Lottie.asset('asset/img/logo/error_lottie_animation_cat.json'),
+                // child: Lottie.asset('asset/img/logo/error_lottie_animation_slime.json'),
+              ),
+              Text('리뷰를 찾지 못했습니다. 인터넷 연결을 확인해주세요.', style: TextStyle(
+                  fontSize: 16, fontWeight: FontWeight.bold
+              ),),
+              SizedBox(height: 150,),
+            ],
+          ));
     }
 
     final cp = reviewState as CursorPagination<ResidenceReviewModel>;

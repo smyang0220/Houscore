@@ -56,6 +56,13 @@ class ResidencePhotoReviewCard extends StatelessWidget {
                 imageUrl,
                 width: MediaQuery.of(context).size.width * 0.4,
                 fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Image.asset(
+                    'asset/img/logo/main_logo.png',
+                    width: MediaQuery.of(context).size.width * 0.4,
+                    fit: BoxFit.cover,
+                  );
+                },
               )
             else
               Image.asset(

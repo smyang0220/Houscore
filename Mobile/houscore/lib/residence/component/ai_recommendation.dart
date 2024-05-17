@@ -16,9 +16,10 @@ class AiRecommendation extends ConsumerStatefulWidget {
   _AiRecommendationState createState() => _AiRecommendationState();
 }
 
-class _AiRecommendationState extends ConsumerState<AiRecommendation> {
+class _AiRecommendationState extends ConsumerState<AiRecommendation>
+    with WidgetsBindingObserver {
   final PageController _pageController =
-      PageController(viewportFraction: 0.9); // 한 스크롤에 카드가 하나씩 보이게 하기 위한 설정용
+  PageController(viewportFraction: 0.9); // 한 스크롤에 카드가 하나씩 보이게 하기 위한 설정용
   final GlobalKey _headerKey = GlobalKey();
   final GlobalKey _selectionKey = GlobalKey();
 
@@ -33,6 +34,29 @@ class _AiRecommendationState extends ConsumerState<AiRecommendation> {
 
   bool _isRegionExpanded = false; // 지역 선택창 열린지 여부
   bool _isSubRegionExpanded = false; // 세부 지역 선택창 열렸는지 여부
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this); // 상태 변화 감지용 옵저버 추가
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this); // 상태 변화 감지용 옵저버 제거
+    _overlayEntry?.remove();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.paused) {
+      _overlayEntry?.remove();
+      _overlayEntry = null;
+    }
+    super.didChangeAppLifecycleState(state);
+  }
 
   void _toggleOverlay(
       BuildContext context, List<String> items, bool isSubRegion) {
@@ -71,9 +95,9 @@ class _AiRecommendationState extends ConsumerState<AiRecommendation> {
     var offset = renderBox.localToGlobal(Offset.zero);
 
     final RenderBox headerBox =
-        _headerKey.currentContext?.findRenderObject() as RenderBox;
+    _headerKey.currentContext?.findRenderObject() as RenderBox;
     final RenderBox selectionBox =
-        _selectionKey.currentContext?.findRenderObject() as RenderBox;
+    _selectionKey.currentContext?.findRenderObject() as RenderBox;
     final double offsetTop = headerBox.size.height + selectionBox.size.height;
 
     return OverlayEntry(
@@ -98,8 +122,8 @@ class _AiRecommendationState extends ConsumerState<AiRecommendation> {
             padding: EdgeInsets.symmetric(vertical: 15, horizontal: 25),
             children: items.map((String region) {
               Color selectedOrNot = (isSubRegion
-                      ? selectedSubRegion == region
-                      : selectedRegion == region)
+                  ? selectedSubRegion == region
+                  : selectedRegion == region)
                   ? PRIMARY_COLOR
                   : Colors.black;
               return GestureDetector(
@@ -249,18 +273,18 @@ class _AiRecommendationState extends ConsumerState<AiRecommendation> {
                 ),
             if (residenceData is DataStateError)
               Container(
-                height: 300,
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: Lottie.asset('asset/img/logo/error_lottie_animation_cat.json'),
-                      // child: Lottie.asset('asset/img/logo/error_lottie_animation_slime.json'),
-                    ),
-                    Text('해당 지역의 AI 추천 거주지를 찾지 못했습니다.', style: TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.bold
-                    ),)
-                  ],
-                )),
+                  height: 300,
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: Lottie.asset('asset/img/logo/error_lottie_animation_cat.json'),
+                        // child: Lottie.asset('asset/img/logo/error_lottie_animation_slime.json'),
+                      ),
+                      Text('해당 지역의 AI 추천 거주지를 찾지 못했습니다.', style: TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold
+                      ),)
+                    ],
+                  )),
           ],
         ],
       ),
@@ -270,8 +294,8 @@ class _AiRecommendationState extends ConsumerState<AiRecommendation> {
   // 지역 및 세부지역 선택 버튼
   Widget _buildButton(
       {required String text,
-      required VoidCallback onTap,
-      required bool isExpanded}) {
+        required VoidCallback onTap,
+        required bool isExpanded}) {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(30.0),
@@ -305,9 +329,19 @@ class _AiRecommendationState extends ConsumerState<AiRecommendation> {
     );
   }
 
+  // 상위컴포넌트 변경 시에도 오버레이 제거
   @override
-  void dispose() {
+  void deactivate() {
     _overlayEntry?.remove();
-    super.dispose();
+    _overlayEntry = null;
+    super.deactivate();
+  }
+
+  // 앱 상태 변경 시 오버레이 제거
+  @override
+  void didChangeDependencies() {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
+    super.didChangeDependencies();
   }
 }
