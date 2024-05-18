@@ -52,13 +52,6 @@ U extends IBasePaginationRepository<T>>
         page: 0,
       );
 
-      // PaginationParams 생성
-      // PaginationParams paginationParams = PaginationParams().copyWith();
-      // print("복사완료");
-      // print(paginationParams.address);
-      // print(paginationParams.page);
-      // print(paginationParams.size);
-
       // fetchMore
       // 데이터를 추가로 더 가져오는 상황
       if (fetchMore) {
@@ -68,24 +61,25 @@ U extends IBasePaginationRepository<T>>
           data: pState.data,
         );
 
-        print("야싸야싸");
+        await Future.delayed(Duration(seconds: 1));
+
         paginationParams = paginationParams.copyWith(
           page : page
         );
-
-
       }
       // 데이터를 처음부터 가져오는 상황
       else {
         // 만약에 데이터가 있는 상황이라면
         // 기존 데이털르 보존한채로 Fetch (API 요청)를 진행
-        if (state is CursorPagination && !forceRefetch) {
+        if (state is CursorPagination && forceRefetch) {
           final pState = state as CursorPagination<T>;
 
           state = CursorPaginationRefetching<T>(
             meta: pState.meta,
             data: pState.data,
           );
+          await Future.delayed(Duration(seconds: 1));
+
         }
         // 나미저 상황
         else {

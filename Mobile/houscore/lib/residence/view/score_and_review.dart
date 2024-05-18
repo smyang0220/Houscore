@@ -10,6 +10,8 @@ import 'package:skeletons/skeletons.dart';
 import '../../common/provider/number_provider.dart';
 import '../../common/provider/parameter_provider.dart';
 import '../../common/utils/pagination_utils.dart';
+import '../component/score_by_ai.dart';
+import '../component/score_by_review.dart';
 import '../model/pagination_params.dart';
 import '../provider/residence_review_provider.dart';
 
@@ -77,9 +79,9 @@ class _ScoreAndReviewState extends ConsumerState<ScoreAndReview> {
         controller: controller,
         slivers:
         [
-          // ScoreByReview(),
-          // ScoreByAi(),
-          renderLabel(),
+          renderScoreByReview(),
+          renderScoreByAi(),
+          renderLabel(models : cp),
           renderRatings(models: cp),
         ],
       );
@@ -147,14 +149,16 @@ SliverPadding renderLoading() {
   );
 }
 
-SliverPadding renderLabel() {
+SliverPadding renderLabel({
+  required CursorPagination<ResidenceReviewModel> models,
+}) {
   return SliverPadding(
     padding: EdgeInsets.symmetric(horizontal: 16.0),
     sliver: SliverToBoxAdapter(
       child: Row(
         children: [
           Text(
-            '실 거주 리뷰',
+            '실 거주 리뷰 (${models.data.length})',
             style: TextStyle(
               fontSize: 18.0,
               fontWeight: FontWeight.w500,
@@ -187,6 +191,24 @@ SliverPadding indicatorLabel() {
     padding: EdgeInsets.symmetric(horizontal: 16.0),
     sliver: SliverToBoxAdapter(
       child: CircularProgressIndicator(),
+    ),
+  );
+}
+
+SliverPadding renderScoreByReview() {
+  return SliverPadding(
+    padding: EdgeInsets.symmetric(horizontal: 16.0),
+    sliver: SliverToBoxAdapter(
+      child: ScoreByReview(),
+    ),
+  );
+}
+
+SliverPadding renderScoreByAi() {
+  return SliverPadding(
+    padding: EdgeInsets.symmetric(horizontal: 16.0),
+    sliver: SliverToBoxAdapter(
+      child: ScoreByAi(),
     ),
   );
 }

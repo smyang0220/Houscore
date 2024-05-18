@@ -87,7 +87,7 @@ class ResidenceReviewCard extends StatelessWidget {
               ),
               if(isDetail)
                 _Body(
-                  title: '관리비',
+                  title: '관리비   ',
                   content: maintenanceCost,
                 ),
             ],
@@ -177,7 +177,7 @@ class _Body extends StatelessWidget {
                 ? bodyTextColorStyle
                 : (title == "별로에요"
                 ? bodyTextColorStyle2
-                : (title == "관리비"
+                : (title == "관리비   "
                 ? bodyTextColorStyle3
                 : null)),
 
