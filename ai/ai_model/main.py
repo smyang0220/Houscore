@@ -116,7 +116,6 @@ app = FastAPI()
 # 모델 로드
 model = joblib.load('models/model.pkl')
 feature_names = model.feature_names_in_
-feature_names.remove('label')
 
 
 @app.post("/predict")
@@ -153,6 +152,7 @@ async def predict(request: PredictionRequest):
             "nearest_market_related": extract_min_distance(info.infraInfo.supermarkets),
             "nearest_bus_stop_related": extract_min_distance(info.trafficInfo.bus),
             "nearest_subway_related": extract_min_distance(info.trafficInfo.subway),
+            "nearest_school_related": extract_min_distance(info.infraInfo.schools),
             "official_price": official_price,
         }])
 
@@ -164,7 +164,7 @@ async def predict(request: PredictionRequest):
         prediction = model.predict(filtered_df)
 
         # 정상적인 처리 또는 다른 계산 진행
-        return float(prediction[0])
+        return float(prediction[0]) + 1.0
 
     except Exception as e:
         exc_type, exc_value, exc_traceback = sys.exc_info()
