@@ -34,8 +34,8 @@ class _NearbyInfraState extends State<NearbyInfra> {
         padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 24),
         child: Row(
           children: [
-            Image.asset(iconPath, width: 15),
-            SizedBox(width: 8, height: 38,),
+            Image.asset(iconPath, width: 16),
+            SizedBox(width: 8, height: 40,),
             if(isSelected)
             Text(label, style: TextStyle(
               fontFamily: 'NotoSans',
@@ -47,7 +47,7 @@ class _NearbyInfraState extends State<NearbyInfra> {
                 fontFamily: 'NotoSans',
                 fontSize: 16,
                 color: Colors.grey,
-                fontWeight: FontWeight.w200,),)
+                fontWeight: FontWeight.w400,),)
           ],
         ),
       );
@@ -69,9 +69,9 @@ class _NearbyInfraState extends State<NearbyInfra> {
                 child: Text(
                   infra.name,
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: 14,
                     fontFamily: 'NotoSans',
-                    fontWeight: FontWeight.w200,
+                    fontWeight: FontWeight.w400,
                   ),
                 ),
               ),
@@ -79,8 +79,9 @@ class _NearbyInfraState extends State<NearbyInfra> {
                 // '${results['minute']}분 (${DataUtils.convertToKilometers(infra.distance)}km)',
                 '${results['minute']}분',
                 style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
+                  fontFamily: 'NotoSans',
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
                   color: results['iconColor'],
                 ),
               ),
@@ -89,8 +90,8 @@ class _NearbyInfraState extends State<NearbyInfra> {
                 ' (${infra.distance.toStringAsFixed(1)}km)',
                 style: TextStyle(
                   fontFamily: 'NotoSans',
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
                   color: Colors.grey,
                 ),
               ),
@@ -105,13 +106,13 @@ class _NearbyInfraState extends State<NearbyInfra> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(height: 15),
+        SizedBox(height: 16),
         Text(
           '주변 인프라',
           style:TextStyle(
-              fontFamily: 'NotoSans',fontSize: 18, fontWeight: FontWeight.w100),
+              fontFamily: 'NotoSans',fontSize: 18, fontWeight: FontWeight.w400),
         ),
-        SizedBox(height: 15),
+        SizedBox(height: 16),
         ToggleButtons(
           fillColor: Colors.blue.shade50,
           selectedColor: Colors.black,

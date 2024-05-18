@@ -26,14 +26,14 @@ class NearbyIndicators extends ConsumerStatefulWidget {
 class _NearbyIndicatorsState extends ConsumerState<NearbyIndicators> {
   Location? _currentLocation;
 
-// 위도와 경도 값을 불러오기 위한 함수
+  // 위도와 경도 값을 불러오기 위한 함수
   Future<void> _fetchLatLng(String address) async {
     try {
       final response = await ref
           .read(naverMapRepositoryProvider)
           .getLatLngFromAddress(widget.address);
 
-// 응답 데이터 파싱
+      // 응답 데이터 파싱
       if (response.data.isNotEmpty) {
         final responseData = response.data;
         // print("responseData['status'] = ${responseData['status']}");
@@ -44,7 +44,10 @@ class _NearbyIndicatorsState extends ConsumerState<NearbyIndicators> {
           final longitude = double.parse(addressInfo['x']);
           // print('( ${latitude}, ${longitude} )');
           setState(() {
-            _currentLocation = Location(address: widget.address, latitude: latitude, longitude: longitude);
+            _currentLocation = Location(
+                address: widget.address,
+                latitude: latitude,
+                longitude: longitude);
             // print(
             //     '_currentLocation = (${_currentLocation?.address} : ${_currentLocation?.latitude} , ${_currentLocation?.longitude})');
           });
@@ -52,8 +55,7 @@ class _NearbyIndicatorsState extends ConsumerState<NearbyIndicators> {
           // print('latLng change error [EMPTY ADDRESS OR BAD STATUS]');
           setState(() => _currentLocation = null);
         }
-      }
-      else {
+      } else {
         // print('latLng change error [EMPTY RESPONSE]');
         setState(() => _currentLocation = null);
       }
@@ -82,7 +84,7 @@ class _NearbyIndicatorsState extends ConsumerState<NearbyIndicators> {
   Infra? findClosestInfra(List<Infra> infras) {
     if (infras.isEmpty) return null;
     return infras.reduce((closest, current) =>
-    current.distance < closest.distance ? current : closest);
+        current.distance < closest.distance ? current : closest);
   }
 
   // 전체 카테고리에서 가까운 곳들 찾아서 리스트화
@@ -163,10 +165,37 @@ class _NearbyIndicatorsState extends ConsumerState<NearbyIndicators> {
     if (data is DataStateLoading) {
       // 로딩 중 상태
       return Lottie.asset('asset/img/logo/loading_lottie_animation.json');
-    }
-    else  {
+    } else if (data is DataStateError ||
+        (data is DataState &&
+            (data.data == null ||
+                (data.data!.infras.medicalFacilities.isEmpty &&
+                    data.data!.infras.park.isEmpty &&
+                    data.data!.infras.school.isEmpty &&
+                    data.data!.infras.library.isEmpty &&
+                    data.data!.infras.supermarket.isEmpty &&
+                    data.data!.publicTransport.bus.isEmpty &&
+                    data.data!.publicTransport.subway.isEmpty)))) {
+      // 오류 상태 또는 데이터가 비어있는 상태
+      return Column(
+        children: [
+          SizedBox(height: 50,),
+          Text(
+            '해당 지역의 주변 지표에 대한 정보가 없습니다.',
+            style: TextStyle(
+              fontFamily: 'NotoSans',
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: Colors.black,
+            ),
+          ),
+          SizedBox(height: 50,),
+          Lottie.asset('asset/img/logo/error_lottie_animation_hang.json'),
+        ],
+      );
+    } else {
       // 성공적으로 데이터를 불러온 상태
-      final residenceData = data is DataState<ResidenceDetailIndicatorsModel> ? data.data : null;
+      final residenceData =
+          data is DataState<ResidenceDetailIndicatorsModel> ? data.data : null;
 
       // 다음 함수들을 호출할 때 residenceData를 사용
       List<Infra>? nearbyInfras = getInfrasByTypes(
@@ -176,7 +205,7 @@ class _NearbyIndicatorsState extends ConsumerState<NearbyIndicators> {
           getInfrasByTypes([InfraType.bus, InfraType.subway], residenceData);
 
       return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0 , vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -198,8 +227,5 @@ class _NearbyIndicatorsState extends ConsumerState<NearbyIndicators> {
         ),
       );
     }
-    // else {
-    //   return Text('오류입니다.');
-    // }
   }
 }
