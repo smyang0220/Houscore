@@ -67,7 +67,6 @@ class _RealReviewListState extends State<RealReviewList> {
             ),
             TextButton(
               onPressed: () {},
-              //TODO 필터링 추가
               child: Row(
                 children: [
                   Text('filtering',style: TextStyle(color: Color(0xff8298E3)),),

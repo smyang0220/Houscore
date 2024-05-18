@@ -128,7 +128,15 @@ class _CreateReviewState extends State<CreateReview> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    SizedBox(width: 20),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                      child: ElevatedButton(
+                        child: Text('취소'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ),
                     ElevatedButton(
                       onPressed: isButtonEnabled
                           ? () {
@@ -251,25 +259,28 @@ class _SearchResidenceState extends ConsumerState<SearchResidence> {
             ),
           ),
         ),
-        GestureDetector(
-          onTap: () {
-            _navigateAndDisplaySelection(context);
-          },
-          child: Container(
-            height: 60,
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            decoration: BoxDecoration(
-              color: INPUT_BORDER_COLOR,
-              borderRadius: BorderRadius.circular(8.0),
-              border: Border.all(color: INPUT_BORDER_COLOR),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(selectedAddress ?? "실제 거주했던 집의 주소를 검색해주세요.",
-                    style: TextStyle(fontSize: 16, color: Colors.black)),
-                Icon(Icons.search, color: PRIMARY_COLOR),
-              ],
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+          child: GestureDetector(
+            onTap: () {
+              _navigateAndDisplaySelection(context);
+            },
+            child: Container(
+              height: 60,
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              decoration: BoxDecoration(
+                color: INPUT_BORDER_COLOR,
+                borderRadius: BorderRadius.circular(8.0),
+                border: Border.all(color: INPUT_BORDER_COLOR),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(selectedAddress ?? "실제 거주했던 집의 주소를 검색해주세요.",
+                      style: TextStyle(fontSize: 16, color: Colors.black)),
+                  Icon(Icons.search, color: PRIMARY_COLOR),
+                ],
+              ),
             ),
           ),
         ),

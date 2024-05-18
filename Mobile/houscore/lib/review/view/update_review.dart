@@ -74,7 +74,7 @@ class _UpdateReviewState extends State<UpdateReview> {
       child: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(12.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -104,22 +104,25 @@ class _UpdateReviewState extends State<UpdateReview> {
                     ),
                   ),
                 ),
-                Container(
-                  height: 60,
-                  padding: EdgeInsets.symmetric(horizontal: 10),
-                  decoration: BoxDecoration(
-                    color: INPUT_BORDER_COLOR,
-                    borderRadius: BorderRadius.circular(8.0),
-                    border: Border.all(color: INPUT_BORDER_COLOR),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        selectedAddress ?? "실제 거주했던 집의 주소를 검색해주세요.",
-                        style: TextStyle(fontSize: 16, color: Colors.black),
-                      ),
-                    ],
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: Container(
+                    height: 60,
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    decoration: BoxDecoration(
+                      color: INPUT_BORDER_COLOR,
+                      borderRadius: BorderRadius.circular(8.0),
+                      border: Border.all(color: INPUT_BORDER_COLOR),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          selectedAddress ?? "실제 거주했던 집의 주소를 검색해주세요.",
+                          style: TextStyle(fontSize: 16, color: Colors.black),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 SizedBox(height: 10),
@@ -154,7 +157,12 @@ class _UpdateReviewState extends State<UpdateReview> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    SizedBox(width: 20),
+                    ElevatedButton(
+                      child: Text('취소'),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
                     ElevatedButton(
                       onPressed: isButtonEnabled
                           ? () {

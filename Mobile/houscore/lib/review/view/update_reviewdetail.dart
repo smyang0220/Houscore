@@ -132,82 +132,85 @@ class _UpdateReviewDetailState extends ConsumerState<UpdateReviewDetail> {
     return DefaultLayout(
       child: SafeArea(
         child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 2),
-                child: Text(
-                  '리뷰 수정하기 (2/2)',
-                  style: TextStyle(
-                    fontFamily: 'NotoSans',
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 2),
+                  child: Text(
+                    '리뷰 수정하기 (2/2)',
+                    style: TextStyle(
+                      fontFamily: 'NotoSans',
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
                   ),
                 ),
-              ),
-              buildTextFieldSection(
-                _recommendController,
-                '추천해요!',
-                Colors.blue,
-                100,
-                _isRecommendRequired,
-              ),
-              SizedBox(height: 5),
-              buildTextFieldSection(
-                _dislikeController,
-                '별로예요!',
-                Colors.red,
-                100,
-                _isDislikeRequired,
-              ),
-              SizedBox(height: 5),
-              buildTextFieldSection(
-                _maintenanceController,
-                '관리비',
-                null,
-                10,
-                _isMaintenanceRequired,
-              ),
-              SizedBox(height: 5),
-              ImageUpload(
-                onImageChanged: _updateImage,
-                onImageDeleted: _updateImageChange, // 추가된 부분
-                initialImage: image,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text('이전으로'),
-                  ),
-                  ElevatedButton(
-                    onPressed: _isButtonEnabled
-                        ? () async {
-                      updateReview();
-                    }
-                        : null,
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                            (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.disabled))
-                            return Colors.grey;
-                          return Colors.blue; // Default enabled color
-                        },
-                      ),
-                      foregroundColor:
-                      MaterialStateProperty.all<Color>(Colors.white),
+                buildTextFieldSection(
+                  _recommendController,
+                  '추천해요!',
+                  Colors.blue,
+                  100,
+                  _isRecommendRequired,
+                ),
+                SizedBox(height: 5),
+                buildTextFieldSection(
+                  _dislikeController,
+                  '별로예요!',
+                  Colors.red,
+                  100,
+                  _isDislikeRequired,
+                ),
+                SizedBox(height: 5),
+                buildTextFieldSection(
+                  _maintenanceController,
+                  '관리비',
+                  null,
+                  10,
+                  _isMaintenanceRequired,
+                ),
+                SizedBox(height: 5),
+                ImageUpload(
+                  onImageChanged: _updateImage,
+                  onImageDeleted: _updateImageChange, // 추가된 부분
+                  initialImage: image,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text('이전으로'),
                     ),
-                    child: Text('완료'),
-                  ),
-                ],
-              ),
-            ],
+                    ElevatedButton(
+                      onPressed: _isButtonEnabled
+                          ? () async {
+                        updateReview();
+                      }
+                          : null,
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                              (Set<MaterialState> states) {
+                            if (states.contains(MaterialState.disabled))
+                              return Colors.grey;
+                            return Colors.blue; // Default enabled color
+                          },
+                        ),
+                        foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                      ),
+                      child: Text('완료'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
