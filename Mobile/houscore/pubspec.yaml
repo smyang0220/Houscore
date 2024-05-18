@@ -48,7 +48,7 @@ dependencies:
   image_picker: ^1.1.0
   animated_text_kit: ^4.2.2
   intl: ^0.19.0
-  remedi_kopo: ^0.0.1
+  remedi_kopo: ^0.0.2
   geolocator: ^11.0.0
   flutter_naver_map: ^1.1.1
   tabler_icons: ^2.5.0+1

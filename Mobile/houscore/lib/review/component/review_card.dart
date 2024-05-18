@@ -106,7 +106,7 @@ class ReviewCard extends StatelessWidget {
                         SizedBox(height: 10),
                         Row(
                           children: [
-                            Text("별로에요",style: bodyTextColorStyle2),
+                            Text("별로예요",style: bodyTextColorStyle2),
                             Expanded(child: Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 8),
                               child: Text(dislike, style:
