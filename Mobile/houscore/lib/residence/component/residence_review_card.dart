@@ -82,7 +82,7 @@ class ResidenceReviewCard extends StatelessWidget {
                 content: pros,
               ),
               _Body(
-                title: '별로에요',
+                title: '별로예요',
                 content: cons,
               ),
               if(isDetail)
@@ -175,7 +175,7 @@ class _Body extends StatelessWidget {
             title,
             style: title == "추천해요"
                 ? bodyTextColorStyle
-                : (title == "별로에요"
+                : (title == "별로예요"
                 ? bodyTextColorStyle2
                 : (title == "관리비   "
                 ? bodyTextColorStyle3

@@ -254,6 +254,8 @@ class MyReviewCard extends StatelessWidget {
                                 residenceYear: review.year,
                                 imageChange: 'n',
                             );
+                        print('리뷰 이미지');
+                        print(review.images);
                         updateReview(reviewToUpdate);
                       },
                       child: Text('수정'),
