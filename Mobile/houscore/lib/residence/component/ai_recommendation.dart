@@ -7,13 +7,22 @@ import 'package:houscore/common/const/data.dart';
 import 'package:houscore/common/model/data_state_model.dart';
 import 'package:houscore/residence/model/ai_recommended_residence_model.dart';
 import 'package:lottie/lottie.dart';
+import 'package:visibility_detector/visibility_detector.dart'; // VisibilityDetector 임포트
 
 import '../provider/ai_recommended_residence_provider.dart';
 import 'ai_recommendation_card.dart';
 
 class AiRecommendation extends ConsumerStatefulWidget {
+  AiRecommendation({Key? key}) : super(key: key);
+
+  final GlobalKey<_AiRecommendationState> aiRecommendationKey = GlobalKey<_AiRecommendationState>();
+
   @override
   _AiRecommendationState createState() => _AiRecommendationState();
+
+  void removeOverlay() {
+    aiRecommendationKey.currentState?._removeOverlay();
+  }
 }
 
 class _AiRecommendationState extends ConsumerState<AiRecommendation>
@@ -50,65 +59,48 @@ class _AiRecommendationState extends ConsumerState<AiRecommendation>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.inactive ||
-        state == AppLifecycleState.paused) {
+    if (state == AppLifecycleState.inactive || state == AppLifecycleState.paused) {
       _removeOverlay();
     }
     super.didChangeAppLifecycleState(state);
   }
 
-  void _toggleOverlay(
-      BuildContext context, List<String> items, bool isSubRegion) {
-    // 상태 먼저 반영
+  void _toggleOverlay(BuildContext context, List<String> items, bool isSubRegion) {
     setState(() {
-      // 세부 지역을 누른거면
       if (isSubRegion) {
         _isSubRegionExpanded = !_isSubRegionExpanded; // 세부 지역 토글
         _isRegionExpanded = false; // 지역의 상태를 안눌린 것으로!
-      }
-      // 지역을 누른거면
-      else {
+      } else {
         _isRegionExpanded = !_isRegionExpanded; // 지역 토글
         _isSubRegionExpanded = false; // 세부 지역의 상태를 안눌린 것으로!
       }
     });
 
-    // 이미 선택창이 나와있다면 선택창 닫기
     if (_overlayEntry != null) {
-      _overlayEntry!.remove();
-      _overlayEntry = null;
-    }
-    // 선택창이 닫혀있다면 새로 열기
-    else {
+      _removeOverlay();
+    } else {
       _overlayEntry = _createOverlayEntry(context, items, isSubRegion);
       Overlay.of(context)!.insert(_overlayEntry!);
     }
   }
 
-  // 지역 및 세부지역 선택 오버레이 관련
-  OverlayEntry _createOverlayEntry(
-      BuildContext context, List<String> items, bool isSubRegion) {
-    // 현재 위젯의 렌더링 상자 // 위젯의 크기 및 화면에서의 위치 파악용
+  OverlayEntry _createOverlayEntry(BuildContext context, List<String> items, bool isSubRegion) {
     final RenderBox renderBox = context.findRenderObject() as RenderBox;
     var size = renderBox.size;
     var offset = renderBox.localToGlobal(Offset.zero);
 
-    final RenderBox headerBox =
-    _headerKey.currentContext?.findRenderObject() as RenderBox;
-    final RenderBox selectionBox =
-    _selectionKey.currentContext?.findRenderObject() as RenderBox;
+    final RenderBox headerBox = _headerKey.currentContext?.findRenderObject() as RenderBox;
+    final RenderBox selectionBox = _selectionKey.currentContext?.findRenderObject() as RenderBox;
     final double offsetTop = headerBox.size.height + selectionBox.size.height;
 
     return OverlayEntry(
       builder: (BuildContext context) => Positioned(
-        // 오버레이 생기는 위치 기준
         left: offset.dx,
         top: offset.dy + offsetTop,
         width: size.width,
         child: Material(
           color: Color(0xfffafafa),
           elevation: 10, // 떠있는 정도 // 0 이상으로 둘 것!
-          // borderRadius: BorderRadius.all(Radius.circular(10)),
           borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(10),
             bottomRight: Radius.circular(10),
@@ -136,7 +128,7 @@ class _AiRecommendationState extends ConsumerState<AiRecommendation>
                       selectedSubRegion = null; // 지역 선택 시 세부 지역 리셋
                     }
                   });
-                  _toggleOverlay(context, [], isSubRegion);
+                  _removeOverlay();
                 },
                 child: Container(
                   height: 20,
@@ -180,155 +172,146 @@ class _AiRecommendationState extends ConsumerState<AiRecommendation>
         ? ref.watch(aiRecommendedResidenceProvider(selectedCode))
         : null;
 
-    // print('residenceData = ${residenceData}');
-
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          Padding(
-            key: _headerKey,
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  '🤖 AI 추천 거주지',
-                  style: TextStyle(
-                    fontFamily: 'NotoSans',
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            key: _selectionKey,
-            // width: MediaQuery.of(context).size.width * 0.8,
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey),
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(10),
-                topRight: Radius.circular(10),
-                bottomLeft: _isRegionExpanded || _isSubRegionExpanded
-                    ? Radius.zero
-                    : Radius.circular(10),
-                bottomRight: _isRegionExpanded || _isSubRegionExpanded
-                    ? Radius.zero
-                    : Radius.circular(10),
-              ),
-            ),
-            child: IntrinsicHeight(
+    return VisibilityDetector(
+      key: Key('ai-recommendation-visibility-detector'),
+      onVisibilityChanged: (visibilityInfo) {
+        if (visibilityInfo.visibleFraction == 0) {
+          _removeOverlay();
+        }
+      },
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              key: _headerKey,
+              padding: const EdgeInsets.symmetric(vertical: 8),
               child: Row(
-                children: <Widget>[
-                  // 지역 선택 버튼
-                  Flexible(
-                    child: _buildButton(
-                      child: Text(
-                        selectedRegion ?? '지역',
-                        style: TextStyle(
-                            fontSize: 12,
-                            color: selectedRegion != null
-                                ? Colors.black
-                                : Colors.grey[500]),
-                      ),
-                      onTap: () => _toggleOverlay(context, regions, false),
-                      isExpanded: _isRegionExpanded, // 지역 선택 버튼의 확장 상태
-                    ),
-                  ),
-                  VerticalDivider(
-                    width: 2,
-                    indent: 8,
-                    endIndent: 8,
-                  ),
-                  Flexible(
-                    child: _buildButton(
-                      child: Text(
-                        selectedSubRegion ?? '세부 지역',
-                        style: TextStyle(
-                            fontSize: 12,
-                            color: selectedSubRegion != null
-                                ? Colors.black
-                                : Colors.grey[500]),
-                      ),
-                      onTap: () => _toggleOverlay(
-                          context, subRegions[selectedRegion]!, true),
-                      isExpanded: _isSubRegionExpanded, // 세부지역 선택 버튼의 확장 상태
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    '🤖 AI 추천 거주지',
+                    style: TextStyle(
+                      fontFamily: 'NotoSans',
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
                     ),
                   ),
                 ],
               ),
             ),
-          ),
-          SizedBox(
-            height: 8,
-          ),
-          if (residenceData != null) ...[
-            if (residenceData is DataStateLoading)
-              Lottie.asset('asset/img/logo/loading_lottie_animation.json'),
-            // 로티 애니메이션 조정 시 테스트용 // if (residenceData is DataState) Lottie.asset('asset/img/logo/loading_lottie_animation.json'),
-            if (residenceData is DataState)
-              if (residenceData.data.isEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: Text('해당 지역에 AI 추천 거주지가 존재하지 않습니다.'),
-                )
-              else
-                Container(
-                  height: 220, // 고정 높이
-                  // child: ListView.builder(
-                  //   scrollDirection: Axis.horizontal,
-                  //   itemCount: residenceData.data.length,
-                  //   itemBuilder: (context, index) {
-                  //     return SizedBox(
-                  //       width: MediaQuery.of(context).size.width * 0.9,
-                  //       child: AiRecommendationCard(model: residenceData.data[index]),
-                  //     );
-                  //   },
-                  // ),
-                  child: PageView.builder(
-                    controller: _pageController,
-                    itemCount: residenceData.data.length,
-                    itemBuilder: (context, index) {
-                      return AiRecommendationCard(
-                          model: residenceData.data[index]);
-                    },
-                  ),
+            Container(
+              key: _selectionKey,
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10),
+                  topRight: Radius.circular(10),
+                  bottomLeft: _isRegionExpanded || _isSubRegionExpanded
+                      ? Radius.zero
+                      : Radius.circular(10),
+                  bottomRight: _isRegionExpanded || _isSubRegionExpanded
+                      ? Radius.zero
+                      : Radius.circular(10),
                 ),
-            if (residenceData is DataStateError)
-              Container(
-                  height: 300,
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: 15,
+              ),
+              child: IntrinsicHeight(
+                child: Row(
+                  children: <Widget>[
+                    Flexible(
+                      child: _buildButton(
+                        child: Text(
+                          selectedRegion ?? '지역',
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: selectedRegion != null
+                                  ? Colors.black
+                                  : Colors.grey[500]),
+                        ),
+                        onTap: () => _toggleOverlay(context, regions, false),
+                        isExpanded: _isRegionExpanded, // 지역 선택 버튼의 확장 상태
                       ),
-                      Text(
-                        '해당 지역의',
-                        style: TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.w500),
+                    ),
+                    VerticalDivider(
+                      width: 2,
+                      indent: 8,
+                      endIndent: 8,
+                    ),
+                    Flexible(
+                      child: _buildButton(
+                        child: Text(
+                          selectedSubRegion ?? '세부 지역',
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: selectedSubRegion != null
+                                  ? Colors.black
+                                  : Colors.grey[500]),
+                        ),
+                        onTap: () => _toggleOverlay(
+                            context, subRegions[selectedRegion]!, true),
+                        isExpanded: _isSubRegionExpanded, // 세부지역 선택 버튼의 확장 상태
                       ),
-                      Text(
-                        'AI 추천 거주지가 없습니다.',
-                        style: TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.w500),
-                      ),
-                      Expanded(
-                        child: Lottie.asset(
-                            'asset/img/logo/error_lottie_animation_cat.json'),
-                        // child: Lottie.asset('asset/img/logo/error_lottie_animation_slime.json'),
-                      ),
-                    ],
-                  )),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 8,
+            ),
+            if (residenceData != null) ...[
+              if (residenceData is DataStateLoading)
+                Lottie.asset('asset/img/logo/loading_lottie_animation.json'),
+              if (residenceData is DataState)
+                if (residenceData.data.isEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Text('해당 지역에 AI 추천 거주지가 존재하지 않습니다.'),
+                  )
+                else
+                  Container(
+                    height: 220, // 고정 높이
+                    child: PageView.builder(
+                      controller: _pageController,
+                      itemCount: residenceData.data.length,
+                      itemBuilder: (context, index) {
+                        return AiRecommendationCard(
+                            model: residenceData.data[index]);
+                      },
+                    ),
+                  ),
+              if (residenceData is DataStateError)
+                Container(
+                    height: 300,
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Text(
+                          '해당 지역의',
+                          style: TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.w500),
+                        ),
+                        Text(
+                          'AI 추천 거주지가 없습니다.',
+                          style: TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.w500),
+                        ),
+                        Expanded(
+                          child: Lottie.asset(
+                              'asset/img/logo/error_lottie_animation_cat.json'),
+                        ),
+                      ],
+                    )),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }
 
-  // 지역 및 세부지역 선택 버튼
   Widget _buildButton({
     required Widget child,
     required VoidCallback onTap,
@@ -360,14 +343,12 @@ class _AiRecommendationState extends ConsumerState<AiRecommendation>
     );
   }
 
-  // 상위 컴포넌트 변경 시에도 오버레이 제거
   @override
   void deactivate() {
     _removeOverlay();
     super.deactivate();
   }
 
-  // 앱 상태 변경 시 오버레이 제거
   @override
   void didChangeDependencies() {
     _removeOverlay();
