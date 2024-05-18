@@ -14,8 +14,6 @@ class PaginationUtils {
     required ScrollController controller,
     required PaginationProvider provider,
   }) async {
-    print(controller.offset);
-
     if (controller.offset == controller.position.maxScrollExtent) {
       int page = await numberprovider.state++;
       provider.paginate(
@@ -24,10 +22,7 @@ class PaginationUtils {
       );
     }
 
-    if (controller.offset < -150) {
-      print(
-        "새로고침"
-      );
+    if (controller.offset < -100) {
       numberprovider.state = 0;
       provider.paginate(
         forceRefetch : true,

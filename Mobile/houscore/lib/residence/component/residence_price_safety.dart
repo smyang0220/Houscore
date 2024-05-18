@@ -104,7 +104,7 @@ class ResidencePriceSafety extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text('실거래가 (매매/전세/월세)', style: TextStyle(
-                  fontFamily: 'NotoSans', fontSize: 18, fontWeight: FontWeight.w700)),
+                  fontFamily: 'NotoSans',fontSize: 16, fontWeight: FontWeight.bold)),
               Padding(
                 padding: EdgeInsets.only(right: 8.0),
                 child: Text('*단위: 만원', style: TextStyle(
@@ -122,7 +122,8 @@ class ResidencePriceSafety extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('평당 가격', style: TextStyle(fontFamily: 'NotoSans', fontSize: 18, fontWeight: FontWeight.w700)),
+                    Text('평당 가격', style: TextStyle(
+                        fontFamily: 'NotoSans',fontSize: 16, fontWeight: FontWeight.bold)),
                     Text(formattedPricePerPyeong, style: TextStyle(fontFamily: 'NotoSans', fontSize: 14, fontWeight: FontWeight.w500)),
                   ],
                 ),
@@ -136,7 +137,7 @@ class ResidencePriceSafety extends StatelessWidget {
                         children: [
                           TextSpan(
                             text: '안전등급',
-                            style: TextStyle(fontFamily: 'NotoSans', fontSize: 18, fontWeight: FontWeight.w700, color: Colors.black),
+                            style: TextStyle(fontFamily: 'NotoSans', fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
                           ),
                           WidgetSpan(
                             child: GestureDetector(
