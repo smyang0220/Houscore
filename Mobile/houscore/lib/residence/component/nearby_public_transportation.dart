@@ -28,25 +28,25 @@ class _NearbyPublicTransportationState
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(height: 15),
+        SizedBox(height: 16),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
               '주변 대중교통',
               style:TextStyle(
-                  fontFamily: 'NotoSans',fontSize: 18, fontWeight: FontWeight.w100),
+                  fontFamily: 'NotoSans',fontSize: 18, fontWeight: FontWeight.w400),
             ),
           ],
         ),
-        SizedBox(height: 15),
+        SizedBox(height: 16),
         ...transportList.map((transport) {
           int time = PlaceUtils.convertDistance(transport.distance)['minute'];
           Image leadingIcon = Image.asset(
             transport.type == InfraType.bus
                 ? 'asset/icon/bus.png'
                 : 'asset/icon/subway.png',
-            width: 15,
+            width: 16,
           );
 
           return Padding(
@@ -59,7 +59,7 @@ class _NearbyPublicTransportationState
                   child: Text(
                     transport.name,
                     style: TextStyle(
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w400,
                       overflow: TextOverflow.ellipsis,
                       fontSize: 14,
                     ),
@@ -69,7 +69,7 @@ class _NearbyPublicTransportationState
                   '${time}분 (${transport.distance.toStringAsFixed(1)}km)',
                   style: TextStyle(
                     fontSize: 14,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w400,
                     color: Colors.black,
                   ),
                 ),

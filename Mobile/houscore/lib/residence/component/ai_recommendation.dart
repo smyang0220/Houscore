@@ -44,7 +44,7 @@ class _AiRecommendationState extends ConsumerState<AiRecommendation>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this); // 상태 변화 감지용 옵저버 제거
-    _overlayEntry?.remove();
+    _removeOverlay();
     super.dispose();
   }
 
@@ -52,8 +52,7 @@ class _AiRecommendationState extends ConsumerState<AiRecommendation>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.inactive ||
         state == AppLifecycleState.paused) {
-      _overlayEntry?.remove();
-      _overlayEntry = null;
+      _removeOverlay();
     }
     super.didChangeAppLifecycleState(state);
   }
@@ -162,6 +161,15 @@ class _AiRecommendationState extends ConsumerState<AiRecommendation>
     );
   }
 
+  void _removeOverlay() {
+    if (_overlayEntry != null) {
+      _overlayEntry!.remove();
+      _overlayEntry = null;
+      _isRegionExpanded = false;
+      _isSubRegionExpanded = false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final selectedCode = selectedRegion != null && selectedSubRegion != null
@@ -220,7 +228,11 @@ class _AiRecommendationState extends ConsumerState<AiRecommendation>
                     child: _buildButton(
                       child: Text(
                         selectedRegion ?? '지역',
-                        style: TextStyle(fontSize: 12, color: selectedRegion != null ? Colors.black : Colors.grey[500]),
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: selectedRegion != null
+                                ? Colors.black
+                                : Colors.grey[500]),
                       ),
                       onTap: () => _toggleOverlay(context, regions, false),
                       isExpanded: _isRegionExpanded, // 지역 선택 버튼의 확장 상태
@@ -235,7 +247,11 @@ class _AiRecommendationState extends ConsumerState<AiRecommendation>
                     child: _buildButton(
                       child: Text(
                         selectedSubRegion ?? '세부 지역',
-                        style: TextStyle(fontSize: 12, color: selectedSubRegion != null ? Colors.black : Colors.grey[500]),
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: selectedSubRegion != null
+                                ? Colors.black
+                                : Colors.grey[500]),
                       ),
                       onTap: () => _toggleOverlay(
                           context, subRegions[selectedRegion]!, true),
@@ -246,7 +262,9 @@ class _AiRecommendationState extends ConsumerState<AiRecommendation>
               ),
             ),
           ),
-          SizedBox(height: 8,),
+          SizedBox(
+            height: 8,
+          ),
           if (residenceData != null) ...[
             if (residenceData is DataStateLoading)
               Lottie.asset('asset/img/logo/loading_lottie_animation.json'),
@@ -284,13 +302,24 @@ class _AiRecommendationState extends ConsumerState<AiRecommendation>
                   height: 300,
                   child: Column(
                     children: [
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Text(
+                        '해당 지역의',
+                        style: TextStyle(
+                            fontSize: 24, fontWeight: FontWeight.w500),
+                      ),
+                      Text(
+                        'AI 추천 거주지가 없습니다.',
+                        style: TextStyle(
+                            fontSize: 24, fontWeight: FontWeight.w500),
+                      ),
                       Expanded(
-                        child: Lottie.asset('asset/img/logo/error_lottie_animation_cat.json'),
+                        child: Lottie.asset(
+                            'asset/img/logo/error_lottie_animation_cat.json'),
                         // child: Lottie.asset('asset/img/logo/error_lottie_animation_slime.json'),
                       ),
-                      Text('해당 지역의 AI 추천 거주지를 찾지 못했습니다.', style: TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.bold
-                      ),)
                     ],
                   )),
           ],
@@ -331,19 +360,17 @@ class _AiRecommendationState extends ConsumerState<AiRecommendation>
     );
   }
 
-  // 상위컴포넌트 변경 시에도 오버레이 제거
+  // 상위 컴포넌트 변경 시에도 오버레이 제거
   @override
   void deactivate() {
-    _overlayEntry?.remove();
-    _overlayEntry = null;
+    _removeOverlay();
     super.deactivate();
   }
 
   // 앱 상태 변경 시 오버레이 제거
   @override
   void didChangeDependencies() {
-    _overlayEntry?.remove();
-    _overlayEntry = null;
+    _removeOverlay();
     super.didChangeDependencies();
   }
 }

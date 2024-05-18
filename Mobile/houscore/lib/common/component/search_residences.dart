@@ -48,12 +48,37 @@ class _SearchResidencesState extends State<SearchResidences> {
                   builder: (context) => RemediKopo(),
                 ),
               );
+
+              print("model.jibunAddress : ${model.jibunAddress}");
+              print("model.autoJibunAddress : ${model.autoJibunAddress}");
+
               // 받은 결과로 이동
-              if (model != null && model.jibunAddress != null) {
-                // GoRouter를 사용하여 ResidenceDetail로 라우팅
+              if (model != null && model.jibunAddress != null && model.jibunAddress != "") {
                 context.push('/residence/${model.jibunAddress}');
               }
-              // ResidenceDetail(address: model.address!);
+              else if (model != null && model.autoJibunAddress != null && model.autoJibunAddress != "") {
+                context.push('/residence/${model.autoJibunAddress}');
+              }
+              else if (model != null) {
+                // 경고창을 띄우고 전 화면으로 돌아가는 로직
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text('거주지 검색 실패'),
+                      content: Text('해당 주소의 거주지를 찾을 수 없습니다.'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            context.pop();
+                          },
+                          child: Text('확인'),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              }
               // print('model.toJson() == ${model.toJson()}');
             },
             child: Container(
@@ -78,3 +103,4 @@ class _SearchResidencesState extends State<SearchResidences> {
     );
   }
 }
+

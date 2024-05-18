@@ -260,7 +260,7 @@ class _NearbyLivingFacilitiesState extends State<NearbyLivingFacilities> {
           Text(
             '주변 생활 시설',
             style: TextStyle(
-                fontFamily: 'NotoSans',fontSize: 18, fontWeight: FontWeight.w100),
+                fontFamily: 'NotoSans',fontSize: 18, fontWeight: FontWeight.w400),
           ),
           Center(
             child: Text("반경 nkm 내에 주변 생활 시설이 없습니다.",

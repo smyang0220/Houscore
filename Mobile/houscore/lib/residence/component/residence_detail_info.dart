@@ -30,7 +30,7 @@ class _ResidenceDetailInfoState extends ConsumerState<ResidenceDetailInfo> {
           child: Text(
             '건물 상세 정보',
             style: TextStyle(
-                fontFamily: 'NotoSans',fontSize: 18, fontWeight: FontWeight.w100),
+                fontFamily: 'NotoSans',fontSize: 18, fontWeight: FontWeight.w400),
           ),
         ),
         SizedBox(height: 15,),
@@ -62,7 +62,8 @@ class _ResidenceDetailInfoState extends ConsumerState<ResidenceDetailInfo> {
                           ));
                     }
                     else if (state is DataState<ResidenceDetailInfoModel>) {return _buildDetailsTable(state.data);}
-                    else {return Text('데이터를 불러오는 중 문제가 발생했습니다.');}
+                    else {return Lottie.asset(
+                        'asset/img/logo/error_lottie_animation_cat.json');}
                   },
                 )
               : Text('위치 정보가 제공되지 않았습니다.'),

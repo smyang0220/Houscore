@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:houscore/common/layout/default_layout.dart';
 import 'package:houscore/common/model/cursor_pagination_model.dart';
 import 'package:houscore/residence/component/residence_review_card.dart';
@@ -8,6 +9,7 @@ import 'package:houscore/residence/utils/place_utils.dart';
 import 'package:lottie/lottie.dart';
 import 'package:skeletons/skeletons.dart';
 
+import '../../common/const/color.dart';
 import '../../common/provider/number_provider.dart';
 import '../../common/provider/parameter_provider.dart';
 import '../../common/utils/pagination_utils.dart';
@@ -82,6 +84,15 @@ class _ScoreAndReviewState extends ConsumerState<EntireReviewScreen> {
     final cp = reviewState as CursorPagination<ResidenceReviewModel>;
 
     return DefaultLayout(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          context.push('/createReview');
+        },
+        backgroundColor: PRIMARY_COLOR,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(50))),
+        child: Icon(Icons.create_rounded),
+      ),
       title: "전체리뷰보기",
       child: CustomScrollView(
         controller: controller,

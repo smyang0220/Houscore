@@ -26,20 +26,38 @@ class _AiRecommendationCardState extends State<AiRecommendationCard>
   @override
   void initState() {
     super.initState();
+    _initializeAnimation();
+  }
+
+  void _initializeAnimation() {
     _scoreAnimationController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 1300),
+      duration: Duration(milliseconds: 700),
     );
+
+    double aiScore = widget.model.aiScore.toDouble();
+    if (aiScore < 0) {
+      aiScore = 0;
+    }
 
     _scoreAnimation = Tween<double>(
       begin: 0.0,
-      end: widget.model.aiScore.toDouble(),
+      end: aiScore,
     ).animate(CurvedAnimation(
       parent: _scoreAnimationController,
       curve: Curves.easeOut,
     ));
 
     _scoreAnimationController.forward();
+  }
+
+  @override
+  void didUpdateWidget(covariant AiRecommendationCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.model.aiScore != widget.model.aiScore) {
+      _scoreAnimationController.dispose();
+      _initializeAnimation();
+    }
   }
 
   @override
@@ -50,6 +68,9 @@ class _AiRecommendationCardState extends State<AiRecommendationCard>
 
   @override
   Widget build(BuildContext context) {
+    final realPrice = widget.model.realPrice;
+    final pricePerPyeong = widget.model.pricePerPyeong;
+
     return Card(
       elevation: 1,
       color: Colors.white,
@@ -58,7 +79,6 @@ class _AiRecommendationCardState extends State<AiRecommendationCard>
       surfaceTintColor: PRIMARY_COLOR,
       child: GestureDetector(
         onTap: () {
-          // print('${widget.model.address} tapped!');
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -69,18 +89,16 @@ class _AiRecommendationCardState extends State<AiRecommendationCard>
         },
         child: SizedBox(
           width: MediaQuery.of(context).size.width,
-          // height: 200,
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
-              // mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Row(
                   children: [
                     Text(widget.model.address,
-                        style:
-                            TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold)),
                     Spacer()
                   ],
                 ),
@@ -98,96 +116,127 @@ class _AiRecommendationCardState extends State<AiRecommendationCard>
                             Text('AI 분석 점수',
                                 style: TextStyle(
                                   fontFamily: 'NotoSans',
-                                    fontSize: 16,
-                                fontWeight: FontWeight.w500,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
                                 )),
-                            SizedBox(height: 5),
+                            SizedBox(height: 2),
                             AnimatedBuilder(
                               animation: _scoreAnimation,
                               builder: (context, child) => Row(
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
                                   Text(
-                                    '${_scoreAnimation.value.toStringAsFixed(1)}',
+                                    widget.model.aiScore < 0
+                                        ? '측정 불가'
+                                        : '${_scoreAnimation.value.toStringAsFixed(0)}',
                                     style: TextStyle(
-                                        fontSize: 26,
+                                        fontSize: widget.model.aiScore < 0
+                                            ? 24 : 32,
                                         color: PRIMARY_COLOR,
                                         fontWeight: FontWeight.bold),
                                   ),
-                                  Text('/', style: TextStyle(
-                                      fontSize: 28,
-                                      color: Colors.grey,
-                                      // color: Colors.black,
-                                      fontWeight: FontWeight.w500),
-                                  ),
-                                  Text('5', style: TextStyle(
-                                      fontSize: 24,
-                                      color: Colors.grey,
-                                      // color: Colors.black,
-                                      fontWeight: FontWeight.w500),
-                                  ),
+                                  if (widget.model.aiScore >= 0) ...[
+                                    Text(
+                                      '/',
+                                      style: TextStyle(
+                                          fontSize: 28,
+                                          color: Colors.grey,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                    Text(
+                                      '5',
+                                      style: TextStyle(
+                                          fontSize: 28,
+                                          color: Colors.grey,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ],
                                 ],
                               ),
                             ),
                           ],
                         ),
                         Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Text(
-                                '실거래가 :   ${PlaceUtils.formatPrice(widget.model.realPrice)}',
-                                style:  TextStyle(
-                                  fontFamily: 'NotoSans',
-                                  fontSize: 16, // 글자 크기를 작게 설정합니다.
-                                  color: Colors.black, // 글자 색상을 회색으로 설정합니다.
-                                  fontWeight: FontWeight.w500,
-                                )),
-                            SizedBox(height: 5),
-                            Text(
-                                '평당가격 :   ${PlaceUtils.formatPrice(widget.model.pricePerPyeong)}',
-                                style: TextStyle(
-                                  fontFamily: 'NotoSans',
-                                  fontSize: 16, // 글자 크기를 작게 설정합니다.
-                                  color: Colors.black, // 글자 색상을 회색으로 설정합니다.
-                                  fontWeight: FontWeight.w500,
-                                ) ),
-                            SizedBox(height: 5),
-                            Text('리뷰건수 :   ${widget.model.reviewCnt ?? '0'}건',
-                                style: TextStyle(
-                                  fontFamily: 'NotoSans',
-                                  fontSize: 16, // 글자 크기를 작게 설정합니다.
-                                  color: Colors.black, // 글자 색상을 회색으로 설정합니다.
-                                  fontWeight: FontWeight.w500,
-                                )),
+                              '(단위: 만원)',
+                              style: TextStyle(
+                                color: Colors.grey[500],
+                                fontSize: 8,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                    '실거래가 :   ${realPrice == 0 ? '자료 없음' : PlaceUtils.formatPrice(realPrice)}',
+                                    style: TextStyle(
+                                      fontFamily: 'NotoSans',
+                                      fontSize: 14,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w500,
+                                    )),
+                                SizedBox(height: 4),
+                                Text(
+                                    '평당가격 :   ${pricePerPyeong == 0 ? '자료 없음' : PlaceUtils.formatPrice(pricePerPyeong)}',
+                                    style: TextStyle(
+                                      fontFamily: 'NotoSans',
+                                      fontSize: 14,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w500,
+                                    )),
+                                SizedBox(height: 4),
+                                Text('리뷰건수 :   ${widget.model.reviewCnt ?? '0'}건',
+                                    style: TextStyle(
+                                      fontFamily: 'NotoSans',
+                                      fontSize: 14,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w500,
+                                    )),
+                              ],
+                            ),
                           ],
                         ),
                       ],
                     ),
                     SizedBox(
-                      height: 15,
+                      height: 16,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        SizedBox(width: 15,),
-                        Text('지역 평당가격 대비 ', style: TextStyle(
-                          fontFamily: 'NotoSans',
-                          fontSize: 16, // 글자 크기를 작게 설정합니다.
-                          color: Colors.black, // 글자 색상을 회색으로 설정합니다.
-                          fontWeight: FontWeight.w500,
-                        ),),
-                        SizedBox(width: 15,),
-                        Text(
-                          '${widget.model.pricePerRegion - 100.0 < 0 ? "" : "+"}${(widget.model.pricePerRegion - 100.0).toStringAsFixed(1)}%',
-                          style: TextStyle(
-                            color: widget.model.pricePerRegion - 100.0 < 0 ? Colors.blue : Colors.red,
-                            fontSize: 22,
-                            fontWeight: FontWeight.w800,
+                    if (pricePerPyeong > 0)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          SizedBox(
+                            width: 16,
                           ),
-                        ),
-                      ],
-                    )
+                          Text('지역 평당가격 대비 ',
+                              style: TextStyle(
+                                fontFamily: 'NotoSans',
+                                fontSize: 16,
+                                color: Colors.black,
+                                fontWeight: FontWeight.w500,
+                              )),
+                          SizedBox(
+                            width: 8,
+                          ),
+                          Text(
+                            '${widget.model.pricePerRegion - 100.0 < 0 ? "" : "+"}${(widget.model.pricePerRegion - 100.0).toStringAsFixed(1)}%',
+                            style: TextStyle(
+                              color: widget.model.pricePerRegion - 100.0 < 0
+                                  ? Colors.blue
+                                  : Colors.red,
+                              fontSize: 22,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 8,
+                          ),
+                        ],
+                      )
                   ],
                 ),
               ],

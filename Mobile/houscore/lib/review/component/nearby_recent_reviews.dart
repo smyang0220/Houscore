@@ -163,7 +163,7 @@ class _NearbyResidencesReviewState
             ),
           ),
           if (state is DataListStateLoading)
-            CircularProgressIndicator(),
+            Lottie.asset('asset/img/logo/loading_lottie_animation_dots.json'),
           if (state is DataListStateError)
             Container(
                 height: 200,
