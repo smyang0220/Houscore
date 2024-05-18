@@ -49,7 +49,7 @@ df['plat_plc'] = df['법정동명'].astype(str).str.strip() + " " + df['지번']
 df_sorted = df.sort_values(by=['데이터기준일자', 'announced_date'], ascending=[False, False])
 
 # 고유번호 별로 그룹화하고 각 그룹의 첫 번째 데이터 선택
-result = df_sorted.groupby('고유번호').head(1)
+result = df_sorted.groupby('plat_plc').head(1)
 
 result = result[['고유번호', 'plat_plc', '공시지가', 'announced_date', '데이터기준일자']]
 
@@ -58,7 +58,7 @@ result.rename(columns={'공시지가': 'official_price', '고유번호': 'pnu_co
 
 print(result)
 
-result.to_csv('files/dataset/건물정보/전처리_개별공시지가.csv')
+result.to_csv('files/dataset/건물정보/전처리_개별공시지가.csv',index=False)
 
 df = pd.read_csv('files/dataset/건물정보/전처리_개별공시지가.csv', dtype={'pnu_code': str})
 
