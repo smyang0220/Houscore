@@ -31,7 +31,6 @@ abstract class ReviewRepository {
     'accessToken': 'true',
   })
   Future<ReviewModel> reviewDetail({
-    //TODO return 타입 확인 필요
     @Query("id") required int id,
   });
 
