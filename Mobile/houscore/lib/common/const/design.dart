@@ -45,7 +45,7 @@ final TextStyle bodyTextColorStyle3 = TextStyle(
   fontFamily: 'NotoSans',
   fontSize: 12, // 글자 크기를 작게 설정합니다.
   color: Colors.grey, // 글자 색상을 녹색으로 설정합니다.
-  fontWeight: FontWeight.w100,
+  fontWeight: FontWeight.w500,
 );
 
 
