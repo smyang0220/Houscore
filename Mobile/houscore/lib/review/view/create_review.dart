@@ -74,92 +74,106 @@ class _CreateReviewState extends State<CreateReview> {
     return DefaultLayout(
       child: SafeArea(
         child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                '리뷰 작성하기 (1/2)',
-                style: TextStyle(
-                  fontFamily: 'NotoSans',
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-              SearchResidence(
-                value: selectedAddress,
-                onChangedAdd: _updateSelectedAddress,
-                onChangedLatLng: _updatedLatLng,
-              ),
-              DropdownType(
-                value: typeValue,
-                onChanged: _updateTypeValue,
-              ),
-              DropdownYear(
-                value: yearValue,
-                onChanged: _updateYearValue,
-              ),
-              DropdownFloor(
-                value: floorValue,
-                onChanged: _updateFloorValue,
-              ),
-              Container(
-                alignment: Alignment.centerLeft,
-                padding: EdgeInsets.all(6.0),
-                child: Text(
-                  '만족도 평가',
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  '리뷰 작성하기 (1/2)',
                   style: TextStyle(
+                    fontFamily: 'NotoSans',
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    fontSize: 30,
+                    color: Colors.black,
                   ),
                 ),
-              ),
-              // 문제의 코드
-              ReviewRating(
-                onRatingUpdated: _updateRating,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(width: 20),
-                  ElevatedButton(
-                    onPressed: isButtonEnabled
-                        ? () {
-                            ReviewData reviewData = ReviewData(
-                              selectedAddress: selectedAddress!,
-                              lat: lat!,
-                              lng: lng!,
-                              typeValue: typeValue!,
-                              yearValue: yearValue!,
-                              floorValue: floorValue!,
-                              ratings: ratings,
-                            );
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    CreateReviewDetail(reviewData: reviewData),
-                              ),
-                            );
-                          }
-                        : null,
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                        (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.disabled))
-                            return Colors.grey;
-                          return Colors.blue; // Default enabled color
+                SearchResidence(
+                  value: selectedAddress,
+                  onChangedAdd: _updateSelectedAddress,
+                  onChangedLatLng: _updatedLatLng,
+                ),
+                DropdownType(
+                  value: typeValue,
+                  onChanged: _updateTypeValue,
+                ),
+                DropdownYear(
+                  value: yearValue,
+                  onChanged: _updateYearValue,
+                ),
+                DropdownFloor(
+                  value: floorValue,
+                  onChanged: _updateFloorValue,
+                ),
+                Container(
+                  alignment: Alignment.centerLeft,
+                  padding: EdgeInsets.symmetric(vertical: 12.0),
+                  child: Text(
+                    '만족도 평가',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 30,
+                    ),
+                  ),
+                ),
+                // 문제의 코드
+                ReviewRating(
+                  onRatingUpdated: _updateRating,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                      child: ElevatedButton(
+                        child: Text('취소'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
                         },
                       ),
-                      foregroundColor:
-                          MaterialStateProperty.all<Color>(Colors.white),
                     ),
-                    child: Text('다음'),
-                  ),
-                ],
-              ),
-            ],
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                      child: ElevatedButton(
+                        onPressed: isButtonEnabled
+                            ? () {
+                                ReviewData reviewData = ReviewData(
+                                  selectedAddress: selectedAddress!,
+                                  lat: lat!,
+                                  lng: lng!,
+                                  typeValue: typeValue!,
+                                  yearValue: yearValue!,
+                                  floorValue: floorValue!,
+                                  ratings: ratings,
+                                );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        CreateReviewDetail(reviewData: reviewData),
+                                  ),
+                                );
+                              }
+                            : null,
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                            (Set<MaterialState> states) {
+                              if (states.contains(MaterialState.disabled))
+                                return Colors.grey;
+                              return Colors.blue; // Default enabled color
+                            },
+                          ),
+                          foregroundColor:
+                              MaterialStateProperty.all<Color>(Colors.white),
+                        ),
+                        child: Text('다음'),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -232,35 +246,40 @@ class _SearchResidenceState extends ConsumerState<SearchResidence> {
       children: [
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Text(
-            '주소',
-            style: TextStyle(
-              fontFamily: 'NotoSans',
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
+          child: Flexible(
+            child: Text(
+              '주소',
+              style: TextStyle(
+                fontFamily: 'NotoSans',
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
             ),
           ),
         ),
-        GestureDetector(
-          onTap: () {
-            _navigateAndDisplaySelection(context);
-          },
-          child: Container(
-            height: 60,
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            decoration: BoxDecoration(
-              color: INPUT_BORDER_COLOR,
-              borderRadius: BorderRadius.circular(8.0),
-              border: Border.all(color: INPUT_BORDER_COLOR),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(selectedAddress ?? "실제 거주했던 집의 주소를 검색해주세요.",
-                    style: TextStyle(fontSize: 16, color: Colors.black)),
-                Icon(Icons.search, color: PRIMARY_COLOR),
-              ],
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          child: GestureDetector(
+            onTap: () {
+              _navigateAndDisplaySelection(context);
+            },
+            child: Container(
+              height: 60,
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              decoration: BoxDecoration(
+                color: INPUT_BORDER_COLOR,
+                borderRadius: BorderRadius.circular(8.0),
+                border: Border.all(color: INPUT_BORDER_COLOR),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(selectedAddress ?? "실제 거주했던 집의 주소를 검색해주세요.",
+                      style: TextStyle(fontSize: 16, color: Colors.black)),
+                  Icon(Icons.search, color: PRIMARY_COLOR),
+                ],
+              ),
             ),
           ),
         ),
