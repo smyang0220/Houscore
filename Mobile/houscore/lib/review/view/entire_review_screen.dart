@@ -99,6 +99,9 @@ class _ScoreAndReviewState extends ConsumerState<EntireReviewScreen> {
         slivers:
         [
           renderRatings(models: cp),
+          SliverToBoxAdapter(
+            child: SizedBox(height: 50.0), // 원하는 만큼의 패딩 공간을 조정하세요.
+          ),
         ],
       ),
     );
@@ -109,7 +112,7 @@ class _ScoreAndReviewState extends ConsumerState<EntireReviewScreen> {
 SliverPadding renderRatings({
   required CursorPagination<ResidenceReviewModel> models,
 }) {
-  final int itemCount = models is CursorPaginationFetchingMore ? models.data.length + 1 : models.data.length;
+  final int itemCount = models is CursorPaginationFetchingMore || models is CursorPaginationRefetching ? models.data.length + 1 : models.data.length;
   return SliverPadding(
     padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
     sliver: SliverList(
@@ -126,10 +129,12 @@ SliverPadding renderRatings({
           }
           if (models is CursorPaginationRefetching && index == 0) {
             return Center(
-              child: CircularProgressIndicator(),
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 20.0),
+                child: CircularProgressIndicator(),
+              ),
             );
           }
-          // 그 외의 경우에는 ResidenceReviewCard를 렌더링
           return Padding(
             padding: const EdgeInsets.only(bottom: 16.0),
             child: ResidenceReviewCard.fromModel(
@@ -185,11 +190,11 @@ SliverPadding errorLabel() {
   );
 }
 
-SliverPadding indicatorLabel() {
+SliverPadding indicatorLabel(ScrollController controller) {
   return SliverPadding(
     padding: EdgeInsets.symmetric(horizontal: 16.0),
     sliver: SliverToBoxAdapter(
-      child: CircularProgressIndicator(),
+      child: Center(child: CircularProgressIndicator()),
     ),
   );
 }
