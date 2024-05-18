@@ -44,7 +44,6 @@ class _MyReviewListState extends ConsumerState<MyReviewList> {
     final repository = ref.read(reviewRepositoryProvider);
     await repository.deleteReview(id: id);
     await Navigator.push(
-      //TODO 뒤로가기 불가능하도록 페이지 쌓지 않기
       context,
       MaterialPageRoute(builder: (context) => DeleteConfirmed()),
     );
@@ -148,7 +147,6 @@ class MyReviewCard extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 10),
         padding: const EdgeInsets.all(16),
-        //TODO 동적으로 구성
         width: MediaQuery.of(context).size.width * 0.8,
         decoration: BoxDecoration(
           border: Border.all(color: Colors.grey, width: 1),
@@ -268,8 +266,7 @@ class MyReviewCard extends StatelessWidget {
                     child: TextButton(
                       onPressed: () {
                         Blurry.info(
-                          //TODO 글자 overflow 처리
-                          title: review.address,
+                          title: review.address.length > 20 ? '${review.address.substring(0, 14)}...' : review.address,
                           cancelButtonText: '취소',
                           description: '리뷰를 삭제하시겠습니까?',
                           confirmButtonText: '삭제',
