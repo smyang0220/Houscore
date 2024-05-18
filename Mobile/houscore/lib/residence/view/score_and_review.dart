@@ -104,11 +104,11 @@ SliverPadding renderRatings({
               child: CircularProgressIndicator(),
             );
           }
-          if (models is CursorPaginationRefetching && index == 0) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
+          // if (models is CursorPaginationRefetching && index == 0) {
+          //   return Center(
+          //     child: CircularProgressIndicator(),
+          //   );
+          // }
           // 그 외의 경우에는 ResidenceReviewCard를 렌더링
           return Padding(
             padding: const EdgeInsets.only(bottom: 16.0),

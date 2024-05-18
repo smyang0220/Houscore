@@ -69,9 +69,10 @@ class _NearbyInfraState extends State<NearbyInfra> {
                 child: Text(
                   infra.name,
                   style: TextStyle(
-                    fontSize: 14,
                     fontFamily: 'NotoSans',
-                    fontWeight: FontWeight.w400,
+                    overflow: TextOverflow.ellipsis,
+                    color: Colors.black,
+                    fontSize: 14,
                   ),
                 ),
               ),
@@ -110,8 +111,7 @@ class _NearbyInfraState extends State<NearbyInfra> {
         Text(
           '주변 인프라',
           style:TextStyle(
-              fontFamily: 'NotoSans',fontSize: 18, fontWeight: FontWeight.w400),
-        ),
+              fontFamily: 'NotoSans',fontSize: 16, fontWeight: FontWeight.bold)),
         SizedBox(height: 16),
         ToggleButtons(
           fillColor: Colors.blue.shade50,

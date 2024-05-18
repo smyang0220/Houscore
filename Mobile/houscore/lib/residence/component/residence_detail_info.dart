@@ -26,14 +26,13 @@ class _ResidenceDetailInfoState extends ConsumerState<ResidenceDetailInfo> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          padding: const EdgeInsets.only(bottom: 16.0),
           child: Text(
             '건물 상세 정보',
             style: TextStyle(
-                fontFamily: 'NotoSans',fontSize: 18, fontWeight: FontWeight.w400),
+                fontFamily: 'NotoSans',fontSize: 16, fontWeight: FontWeight.bold),
           ),
         ),
-        SizedBox(height: 15,),
         Visibility(
           visible: _isExpanded,
           maintainState: true,
@@ -89,21 +88,33 @@ class _ResidenceDetailInfoState extends ConsumerState<ResidenceDetailInfo> {
   }
 
   Widget _buildDetailsTable(ResidenceDetailInfoModel data) {
-    double tableWidth = MediaQuery.of(context).size.width;
-
+    double tableWidth = MediaQuery
+        .of(context)
+        .size
+        .width;
     return DataTable(
       headingRowColor: MaterialStateProperty.resolveWith<Color>(
             (Set<MaterialState> states) {
           if (states.contains(MaterialState.hovered))
-            return Theme.of(context).colorScheme.primary.withOpacity(0.08);
-          return PRIMARY_COLOR; // 기본 색상 설정
+            return Theme
+                .of(context)
+                .colorScheme
+                .primary
+                .withOpacity(0.08);
+          return Colors.white; // 열(Columns)의 배경색을 빨간색으로 설정
         },
       ),
       headingRowHeight: 40,
       dividerThickness: 2,
+      dataRowColor: MaterialStateProperty.resolveWith<Color>(
+            (Set<MaterialState> states) {
+          return Colors.white; // 항목 테이블의 배경색을 회색으로 설정
+        },
+      ),
       border: TableBorder(
         horizontalInside: BorderSide(color: Colors.grey),
         verticalInside: BorderSide(color: Colors.grey),
+        top: BorderSide(color: Colors.grey),
         left: BorderSide(color: Colors.grey),
         right: BorderSide(color: Colors.grey),
         bottom: BorderSide(color: Colors.grey, width: 2),
@@ -112,24 +123,44 @@ class _ResidenceDetailInfoState extends ConsumerState<ResidenceDetailInfo> {
         DataColumn(
           label: Container(
             alignment: Alignment.center,
-            width: tableWidth / 4,  // 나머지 반을 사용하여 두 번째 열의 너비를 설정합니다.
-            child: Text('항목'),
+            width: tableWidth * 0.25,
+            // 나머지 반을 사용하여 두 번째 열의 너비를 설정합니다.
+            child: Text('항목', style: TextStyle(fontFamily: 'NotoSans',color: Colors.black)),
+            // 텍스트 색상을 흰색으로 설정
+            decoration: BoxDecoration( // 배경색을 빨간색으로 설정
+              color: Colors.white,
+            ),
           ),
         ),
         DataColumn(
           label: Container(
             alignment: Alignment.center,
-            width: tableWidth / 4,  // 나머지 반을 사용하여 두 번째 열의 너비를 설정합니다.
-            child: Text('값'),
+            width: tableWidth * 0.4,
+            // 나머지 반을 사용하여 두 번째 열의 너비를 설정합니다.
+            child: Text('값', style: TextStyle(fontFamily: 'NotoSans',color: Colors.black)),
+            // 텍스트 색상을 흰색으로 설정
+            decoration: BoxDecoration( // 배경색을 빨간색으로 설정
+              color: Colors.white,
+            ),
           ),
         ),
       ],
       rows: [
-        _buildDataRow('대지 면적(㎡)', '${data.buildingInfo.platArea == 0 ? '정보 없음' : data.buildingInfo.platArea}'),
-        _buildDataRow('건축 면적(㎡)', '${data.buildingInfo.archArea == 0 ? '정보 없음' : data.buildingInfo.archArea}'),
-        _buildDataRow('총 면적(㎡)', '${data.buildingInfo.totArea == 0 ? '정보 없음' : data.buildingInfo.totArea}'),
-        _buildDataRow('건폐율(%)', '${data.buildingInfo.bcRat == 0 ? '정보 없음' : data.buildingInfo.bcRat}'),
-        _buildDataRow('용적률(%)', '${data.buildingInfo.vlRat == 0 ? '정보 없음' : data.buildingInfo.vlRat}'),
+        _buildDataRow('대지 면적(㎡)',
+            '${data.buildingInfo.platArea == 0 ? '정보 없음' : data.buildingInfo
+                .platArea}'),
+        _buildDataRow('건축 면적(㎡)',
+            '${data.buildingInfo.archArea == 0 ? '정보 없음' : data.buildingInfo
+                .archArea}'),
+        _buildDataRow('총 면적(㎡)',
+            '${data.buildingInfo.totArea == 0 ? '정보 없음' : data.buildingInfo
+                .totArea}'),
+        _buildDataRow('건폐율(%)',
+            '${data.buildingInfo.bcRat == 0 ? '정보 없음' : data.buildingInfo
+                .bcRat}'),
+        _buildDataRow('용적률(%)',
+            '${data.buildingInfo.vlRat == 0 ? '정보 없음' : data.buildingInfo
+                .vlRat}'),
         _buildDataRow('주요 용도', data.buildingInfo.mainPurpsCdNm),
         _buildDataRow('등기 종류', data.buildingInfo.regstrKindCdNm),
         _buildDataRow('세대 수', '${data.buildingInfo.hhldCnt}'),
@@ -142,8 +173,8 @@ class _ResidenceDetailInfoState extends ConsumerState<ResidenceDetailInfo> {
   DataRow _buildDataRow(String name, String value) {
     return DataRow(
       cells: [
-        DataCell(Center(child: Text(name))),
-        DataCell(Center(child: Text(value))),
+        DataCell(Center(child: Text(name,style: TextStyle(fontFamily: 'NotoSans'),))),
+        DataCell(Center(child: Text(value,style: TextStyle(fontFamily: 'NotoSans')))),
       ],
     );
   }
