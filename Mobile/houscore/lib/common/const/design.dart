@@ -48,6 +48,8 @@ final TextStyle bodyTextColorStyle3 = TextStyle(
   fontWeight: FontWeight.w500,
 );
 
+final TextStyle detailTitleStyle = TextStyle(
+fontFamily: 'NotoSans',fontSize: 16, fontWeight: FontWeight.bold);
 
 
 final BoxDecoration boxStyle = BoxDecoration(
