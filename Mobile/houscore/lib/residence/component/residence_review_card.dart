@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:houscore/common/utils/data_utils.dart';
+import 'package:photo_view/photo_view.dart';
 import '../../common/const/design.dart';
 import '../model/residence_review_model.dart';
 
@@ -90,6 +91,48 @@ class ResidenceReviewCard extends StatelessWidget {
                   title: '관리비   ',
                   content: maintenanceCost,
                 ),
+              GestureDetector(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return Dialog(
+                        backgroundColor: Colors.transparent,
+                        insetPadding: EdgeInsets.all(10),
+                        child: Stack(
+                          alignment: Alignment.topRight,
+                          children: [
+                            Container(
+                              constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.9),
+                              child: PhotoView(
+                                imageProvider: NetworkImage(images!),
+                                backgroundDecoration: BoxDecoration(
+                                  color: Colors.transparent,
+                                ),
+                              ),
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.close, color: Colors.white),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                },
+                child: Image.network(
+                  images!,
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  height: MediaQuery.of(context).size.width * 0.4,
+                  fit: BoxFit.cover,
+                ),
+              ),
+
+              if(isDetail)
+                Divider()
             ],
           ),
         ),

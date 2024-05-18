@@ -35,8 +35,7 @@ class _NearbyPublicTransportationState
             Text(
               '주변 대중교통',
               style:TextStyle(
-                  fontFamily: 'NotoSans',fontSize: 18, fontWeight: FontWeight.w400),
-            ),
+    fontFamily: 'NotoSans',fontSize: 16, fontWeight: FontWeight.bold)),
           ],
         ),
         SizedBox(height: 16),
@@ -53,24 +52,43 @@ class _NearbyPublicTransportationState
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2.0),
             child: Row(
               children: <Widget>[
-                leadingIcon,
-                SizedBox(width: 8),
+                Padding(
+                  padding: const EdgeInsets.only(left: 7.0, right: 15),
+                  child: leadingIcon,
+                ),
                 Expanded(
                   child: Text(
                     transport.name,
                     style: TextStyle(
-                      fontWeight: FontWeight.w400,
+                      fontFamily: 'NotoSans',
                       overflow: TextOverflow.ellipsis,
+                      color: Colors.black,
                       fontSize: 14,
                     ),
                   ),
                 ),
                 Text(
-                  '${time}분 (${transport.distance.toStringAsFixed(1)}km)',
-                  style: TextStyle(
+                  '${time}분 ',
+                  style:
+                  transport.type == InfraType.bus ?
+                  TextStyle(
+                    fontFamily: 'NotoSans',
                     fontSize: 14,
                     fontWeight: FontWeight.w400,
-                    color: Colors.black,
+                    color: Colors.green,
+                  ) : TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.blue
+                  ) ,
+                ),
+                Text(
+                  '(${transport.distance.toStringAsFixed(1)}km)',
+                  style: TextStyle(
+                    fontFamily: 'NotoSans',
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.grey,
                   ),
                 ),
               ],

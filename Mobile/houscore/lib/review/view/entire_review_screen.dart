@@ -131,9 +131,11 @@ SliverPadding renderRatings({
             return Center(
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 20.0),
-                child: CircularProgressIndicator(),
+                child: Lottie.asset('asset/img/logo/refetching_lottie_animation.json',
+                  width: 80, // 원하는 너비로 설정
+                  height: 80, // 원하는 높이로 설정),
               ),
-            );
+            ));
           }
           return Padding(
             padding: const EdgeInsets.only(bottom: 16.0),
