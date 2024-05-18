@@ -38,26 +38,26 @@ class ResidenceReviewCard extends StatelessWidget {
     required bool isDetail,
   }) {
     return ResidenceReviewCard(
-        id: model.id,
-        address: model.address,
-        residenceType: model.residenceType,
-        residenceFloor: model.residenceFloor,
-        starRating: model.starRating,
-        pros: model.pros,
-        cons: model.cons,
-        maintenanceCost: model.maintenanceCost,
-        images: model.images,
-        residenceYear: model.residenceYear,
-         isDetail: isDetail,);
+      id: model.id,
+      address: model.address,
+      residenceType: model.residenceType,
+      residenceFloor: model.residenceFloor,
+      starRating: model.starRating,
+      pros: model.pros,
+      cons: model.cons,
+      maintenanceCost: model.maintenanceCost,
+      images: model.images,
+      residenceYear: model.residenceYear,
+      isDetail: isDetail,);
   }
 
   @override
   Widget build(BuildContext context) {
     int avg = (starRating.traffic +
-            starRating.security +
-            starRating.inside +
-            starRating.infra +
-            starRating.building) ~/
+        starRating.security +
+        starRating.inside +
+        starRating.infra +
+        starRating.building) ~/
         5;
 
     return GestureDetector(
@@ -82,14 +82,14 @@ class ResidenceReviewCard extends StatelessWidget {
                 content: pros,
               ),
               _Body(
-                title: '별로에요',
+                title: '별로예요',
                 content: cons,
               ),
               if(isDetail)
-              _Body(
-                title: '관리비',
-                content: maintenanceCost,
-              ),
+                _Body(
+                  title: '관리비',
+                  content: maintenanceCost,
+                ),
             ],
           ),
         ),
@@ -107,9 +107,9 @@ class _Header extends StatelessWidget {
 
   const _Header(
       {super.key,
-      required this.residenceFloor,
-      required this.residenceYear,
-      required this.avg,
+        required this.residenceFloor,
+        required this.residenceYear,
+        required this.avg,
         required this.isDetail,
         required this.address});
 
@@ -173,13 +173,13 @@ class _Body extends StatelessWidget {
         children: [
           Text(
             title,
-              style: title == "추천해요"
-                  ? bodyTextColorStyle
-                  : (title == "별로에요"
-                  ? bodyTextColorStyle2
-                  : (title == "관리비"
-                  ? bodyTextColorStyle3
-                  : null)),
+            style: title == "추천해요"
+                ? bodyTextColorStyle
+                : (title == "별로예요"
+                ? bodyTextColorStyle2
+                : (title == "관리비"
+                ? bodyTextColorStyle3
+                : null)),
 
           ),
           SizedBox(width: 5,),

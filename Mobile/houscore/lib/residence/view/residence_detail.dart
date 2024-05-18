@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:go_router/go_router.dart';
 import 'package:houscore/common/layout/default_layout.dart';
 import 'package:houscore/common/const/color.dart';
 import 'package:houscore/residence/view/nearyby_indicators.dart';
 import 'package:houscore/residence/view/score_and_review.dart';
+import '../../common/utils/pagination_utils.dart';
 
 class ResidenceDetail extends StatefulWidget {
   final String address;
@@ -52,7 +54,9 @@ class _ResidenceDetailState extends State<ResidenceDetail>
         fontWeight: FontWeight.bold,
       ),
       floatingActionButton: _tabController.index == 1 ? FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          context.push('/createReview');
+        },
         backgroundColor: PRIMARY_COLOR,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(50))),
