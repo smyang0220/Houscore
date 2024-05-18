@@ -24,10 +24,11 @@ class PaginationUtils {
       );
     }
 
-    if (controller.offset < -100) {
+    if (controller.offset < -150) {
       print(
         "새로고침"
       );
+      numberprovider.state = 0;
       provider.paginate(
         forceRefetch : true,
       );
