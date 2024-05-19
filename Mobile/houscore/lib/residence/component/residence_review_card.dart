@@ -49,7 +49,8 @@ class ResidenceReviewCard extends StatelessWidget {
       maintenanceCost: model.maintenanceCost,
       images: model.images,
       residenceYear: model.residenceYear,
-      isDetail: isDetail,);
+      isDetail: isDetail,
+    );
   }
 
   @override
@@ -86,53 +87,59 @@ class ResidenceReviewCard extends StatelessWidget {
                 title: '별로예요',
                 content: cons,
               ),
-              if(isDetail)
+              if (isDetail)
                 _Body(
                   title: '관리비   ',
                   content: maintenanceCost,
                 ),
-              GestureDetector(
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return Dialog(
-                        backgroundColor: Colors.transparent,
-                        insetPadding: EdgeInsets.all(10),
-                        child: Stack(
-                          alignment: Alignment.topRight,
-                          children: [
-                            Container(
-                              constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.9),
-                              child: PhotoView(
-                                imageProvider: NetworkImage(images!),
-                                backgroundDecoration: BoxDecoration(
-                                  color: Colors.transparent,
-                                ),
+              if (images != null && images!.isNotEmpty)
+                Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return Dialog(
+                              backgroundColor: Colors.transparent,
+                              insetPadding: EdgeInsets.all(10),
+                              child: Stack(
+                                alignment: Alignment.topRight,
+                                children: [
+                                  Container(
+                                    constraints: BoxConstraints(
+                                        maxHeight:
+                                        MediaQuery.of(context).size.height *
+                                            0.9),
+                                    child: PhotoView(
+                                      imageProvider: NetworkImage(images!),
+                                      backgroundDecoration: BoxDecoration(
+                                        color: Colors.transparent,
+                                      ),
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: Icon(Icons.close, color: Colors.white),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
                               ),
-                            ),
-                            IconButton(
-                              icon: Icon(Icons.close, color: Colors.white),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  );
-                },
-                child: Image.network(
-                  images!,
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  height: MediaQuery.of(context).size.width * 0.4,
-                  fit: BoxFit.cover,
+                            );
+                          },
+                        );
+                      },
+                      child: Image.network(
+                        images!,
+                        width: MediaQuery.of(context).size.width * 0.9,
+                        height: MediaQuery.of(context).size.width * 0.4,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-
-              if(isDetail)
-                Divider()
+              if (isDetail) Divider()
             ],
           ),
         ),
@@ -148,13 +155,14 @@ class _Header extends StatelessWidget {
   final bool isDetail;
   final String address;
 
-  const _Header(
-      {super.key,
-        required this.residenceFloor,
-        required this.residenceYear,
-        required this.avg,
-        required this.isDetail,
-        required this.address});
+  const _Header({
+    super.key,
+    required this.residenceFloor,
+    required this.residenceYear,
+    required this.avg,
+    required this.isDetail,
+    required this.address,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -167,17 +175,17 @@ class _Header extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(children: [
-              if(isDetail)
+              if (isDetail)
                 Text(
                   " ${floorText} : ",
                   style: myTextStyle,
                 ),
-              if(isDetail)
+              if (isDetail)
                 Text(
                   "${residenceYear}까지 거주",
                   style: myTextStyle,
                 ),
-              if(!isDetail)
+              if (!isDetail)
                 Text(
                   "${address}",
                   style: myTextStyle,
@@ -188,7 +196,9 @@ class _Header extends StatelessWidget {
                 ...List.generate(
                     5,
                         (index) => Icon(
-                      index < avg ? Icons.star : Icons.star_border_outlined,
+                      index < avg
+                          ? Icons.star
+                          : Icons.star_border_outlined,
                       color: Colors.yellow,
                       size: 16,
                     )),
@@ -201,10 +211,10 @@ class _Header extends StatelessWidget {
   }
 }
 
-
 class _Body extends StatelessWidget {
   final String title;
   final String content;
+
   const _Body({super.key, required this.title, required this.content});
 
   @override
@@ -223,9 +233,10 @@ class _Body extends StatelessWidget {
                 : (title == "관리비   "
                 ? bodyTextColorStyle3
                 : null)),
-
           ),
-          SizedBox(width: 5,),
+          SizedBox(
+            width: 5,
+          ),
           Flexible(
             child: Text(
               content,
