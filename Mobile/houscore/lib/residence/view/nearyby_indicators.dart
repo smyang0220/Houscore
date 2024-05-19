@@ -176,21 +176,29 @@ class _NearbyIndicatorsState extends ConsumerState<NearbyIndicators> {
                     data.data!.publicTransport.bus.isEmpty &&
                     data.data!.publicTransport.subway.isEmpty)))) {
       // 오류 상태 또는 데이터가 비어있는 상태
-      return Column(
-        children: [
-          SizedBox(height: 50,),
-          Text(
-            '해당 지역의 주변 지표에 대한 정보가 없습니다.',
-            style: TextStyle(
-              fontFamily: 'NotoSans',
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              color: Colors.black,
-            ),
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 50,),
+              Text(
+                '해당 지역의 주변 지표에 대한 정보가 없습니다.',
+                style: TextStyle(
+                  fontFamily: 'NotoSans',
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black,
+                ),
+              ),
+              SizedBox(height: 50,),
+              Lottie.asset('asset/img/logo/error_lottie_animation_hang.json'),
+              ResidenceDetailInfo(location: _currentLocation),
+            ],
           ),
-          SizedBox(height: 50,),
-          Lottie.asset('asset/img/logo/error_lottie_animation_hang.json'),
-        ],
+        ),
       );
     } else {
       // 성공적으로 데이터를 불러온 상태
