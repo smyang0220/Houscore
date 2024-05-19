@@ -79,8 +79,8 @@ class _ScoreAndReviewState extends ConsumerState<ScoreAndReview> {
         controller: controller,
         slivers:
         [
-          renderScoreByReview(),
-          renderScoreByAi(),
+          // renderScoreByReview(),
+          // renderScoreByAi(),
           renderLabel(models : cp),
           renderRatings(models: cp),
         ],
