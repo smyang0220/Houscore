@@ -43,14 +43,14 @@ class AuthProvider extends ChangeNotifier {
           path: 'createReview',
           builder: (context, state) => CreateReview(),
         )
+        ,GoRoute(
+          path: 'residence/:address',
+          builder: (context, state) {
+            final address = state.pathParameters['address']!;
+            return ResidenceDetail(address: address);
+          },
+        ),
       ],
-    ),
-    GoRoute(
-      path: '/residence/:address',
-      builder: (context, state) {
-        final address = state.pathParameters['address']!;
-        return ResidenceDetail(address: address);
-      },
     ),
     GoRoute(
       path: '/splash',

@@ -88,7 +88,7 @@ class _CreateConfirmedState extends State<CreateConfirmed> {
                     onPressed: () {
                       if (widget.reviewAddress != '') {
                         // GoRouter를 사용하여 ResidenceDetail로 라우팅
-                        context.push('/residence/${widget.reviewAddress}');
+                        context.go('/residence/${widget.reviewAddress}');
                       }
                     },
                     style: OutlinedButton.styleFrom(
@@ -106,13 +106,7 @@ class _CreateConfirmedState extends State<CreateConfirmed> {
                   ),
                   OutlinedButton(
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              MyReviewList(),
-                        ),
-                      );
+                      context.go('/');
                     },
                     style: OutlinedButton.styleFrom(
                       foregroundColor: Colors.white,
