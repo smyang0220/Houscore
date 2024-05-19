@@ -92,15 +92,9 @@ class _CreateReviewDetailState extends ConsumerState<CreateReviewDetail> {
     try {
       final repository = ref.read(reviewRepositoryProvider);
       await repository.createOneReview(reviewModel: reviewModel);
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => CreateConfirmed(
-            reviewAddress: reviewModel.address,
-          ),
-        ),
-      );
     } catch (e) {
+      print("Error submitting review: $e");
+    } finally {
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -109,7 +103,6 @@ class _CreateReviewDetailState extends ConsumerState<CreateReviewDetail> {
           ),
         ),
       );
-      print("Error submitting review: $e");
     }
   }
 
