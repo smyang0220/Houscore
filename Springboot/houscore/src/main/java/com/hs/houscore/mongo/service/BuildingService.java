@@ -251,11 +251,16 @@ public class BuildingService {
     //지역평균가격 계산
     private Double calRegionAvg(List<BuildingEntity> buildingEntities) {
         Double avgCostSum = 0.0;
+        int avgCnt = 0;
         for(BuildingEntity buildingEntity : buildingEntities) {
-            avgCostSum += buildingEntity.getInformation().getPriceInfo().getSaleAvg();
+            Long saleAvg = buildingEntity.getInformation().getPriceInfo().getSaleAvg();
+            if(saleAvg > 0){
+                avgCostSum += saleAvg;
+                avgCnt++;
+            }
         }
 
-        return avgCostSum / buildingEntities.size();
+        return avgCostSum / avgCnt;
     }
 
     //평당 가격
