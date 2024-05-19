@@ -80,8 +80,28 @@
 ***
 # 🏡 AI
 ***
+### 활용 공공데이터 구성
+![gonggongdata.png](resources/gonggongdata.png)
 
-
+![score_data.png](resources/score_data.png)
+- 집품으로부터 제공받은 25,000건의 건물별 거주자 리뷰 평점 데이터와 공공데이터를 활용하여 리뷰가 없는 건물에 대해 예상 평점을 예측하는 모델을 만들고자 함
+- 위와 같이 범위를 지정하여 라벨링을 진행한 결과 클래스별 데이터 불균형 존재
+- pycaret automl을 사용하여 **classfication** 시도
+  ![automl.png](resources/automl.png)
+- 상위 모델 중 ligthtgbm, rf, xgboost를 채택하여 클래스별 데이터 불균형이 존재했기 때문에 SMOTE 기법을 활용하여 train 데이터셋에 대해 오버샘플링 진행
+  - 각 모델 별 하이퍼파라미터 튜닝 후 Accuracy, AUC
+    ![modeling.png](resources/modeling.png)<br/>
+  - 성능이 가장 좋은 **RandomForest 모델** 채택
+  
+###  SMOTE → StandardScaler → RandomForestClassifier
+![rf_result.png](resources/rf_result.png)<br/>
+기본 모델 **Accuracy : 44.9%**, **AUC: 0.66** <br/>
+하이퍼파라미터 튜닝 후 **Accuracy : 45.4%**, **AUC: 0.66** <br/>
+10번의 k-fold 교차검증 진행 **Accuracy : 42.5%**, **AUC: 0.66** <br/>
+### 변수 중요도
+![rf_importance.png](resources/rf_importance.png)<br/>
+### 혼동행렬
+![rf_confusion_matrix.png](resources/rf_confusion_matrix.png)<br/>
 
 ***
 # 🏡 팀 소개
