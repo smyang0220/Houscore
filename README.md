@@ -18,7 +18,7 @@
 
 | 메인 페이지 |주소 검색|리뷰 작성|리뷰 작성2|전체 리뷰 페이지| 
 |:----:|:----:|:----:|:----:|:----:|
-|![main](resources/메인화면.gif)|![search]((resources/주소검색.gif)|![review1](resources/리뷰작성.gif)|![review2](resources/리뷰작성2.gif)|![wholereview]|![search](resources/전체리뷰페이지.gif)|
+|![main](resources/메인화면.gif)|![search]((resources/주소검색.gif)|![review1](resources/리뷰작성.gif)|![review2](resources/리뷰작성2.gif)|![wholereview](resources/전체리뷰페이지.gif)|
 
 ### 메인 화면
 
