@@ -1,4 +1,3 @@
-![header](https://capsule-render.vercel.app/api?type=waving&height=250&color=gradient&reversal=true&fontAlignY=44&stroke=FFFFFF)
 ![img.png](resources/img.png)
 # 🏡 개요
 ***
